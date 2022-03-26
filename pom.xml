@@ -14,7 +14,8 @@
     <groupId>org.example</groupId>
     <artifactId>task</artifactId>
     <packaging>pom</packaging>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0.0</version>
+
     <modules>
         <module>service</module>
         <module>repository</module>
@@ -27,66 +28,58 @@
         <org.projectlombok.version>1.18.2</org.projectlombok.version>
         <org.apache.maven.plugins.version>3.5.1</org.apache.maven.plugins.version>
         <org.modelmapper.version>3.1.0</org.modelmapper.version>
-        <com.example.version>1.0.0</com.example.version>
-<!--        <maven.compiler.source>8</maven.compiler.source>-->
-<!--        <maven.compiler.target>8</maven.compiler.target>-->
+        <org.example.version>1.0.0</org.example.version>
     </properties>
+
     <dependencies>
-        <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-dependencies -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-dependencies</artifactId>
-            <version>2.6.4</version>
-            <type>pom</type>
-            <scope>import</scope>
-        </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.22</version>
-            <scope>provided</scope>
+            <version>${org.projectlombok.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.modelmapper</groupId>
-            <artifactId>modelmapper</artifactId>
-            <version>3.0.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <version>42.3.3</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-autoconfigure</artifactId>
-            <version>2.6.4</version>
-        </dependency>
+
+
     </dependencies>
 
     <dependencyManagement>
         <dependencies>
             <dependency>
-                <groupId>org.springframework.data</groupId>
-                <artifactId>spring-data-jpa</artifactId>
-                <version>2.6.3</version>
+                <groupId>org.modelmapper</groupId>
+                <artifactId>modelmapper</artifactId>
+                <version>${org.modelmapper.version}</version>
             </dependency>
+
+            <dependency>
+                <groupId>org.postgresql</groupId>
+                <artifactId>postgresql</artifactId>
+                <version>42.3.3</version>
+            </dependency>
+
             <dependency>
                 <groupId>org.example</groupId>
                 <artifactId>entity</artifactId>
-                <version>1.0-SNAPSHOT</version>
+                <version>${org.example.version}</version>
             </dependency>
+
+            <dependency>
+                <groupId>org.example</groupId>
+                <artifactId>controller</artifactId>
+                <version>${org.example.version}</version>
+            </dependency>
+
+
             <dependency>
                 <groupId>org.example</groupId>
                 <artifactId>repository</artifactId>
-                <version>1.0-SNAPSHOT</version>
+                <version>${org.example.version}</version>
             </dependency>
+
             <dependency>
                 <groupId>org.example</groupId>
                 <artifactId>service</artifactId>
-                <version>1.0-SNAPSHOT</version>
+                <version>${org.example.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
-
 
 </project>

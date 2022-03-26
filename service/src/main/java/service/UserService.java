@@ -1,29 +1,27 @@
 package service;
 
 import dto.UserDTO;
-import entity.User;
 import inteface.UserRepository;
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import mapper.UserMapper;
 import org.springframework.stereotype.Service;
+import entity.User;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@RequiredArgsConstructor
-public class UserService {
+@AllArgsConstructor
+public class UserService implements UserServiceInt {
+
     private final UserRepository userRepository;
+    private final UserMapper mapper;
 
-    public List<UserDTO> getAll() {
+    @Override
+    public List<UserDTO> findAll() {
         return userRepository.findAll().stream().map((User u)->{
-            UserMapper mapper = new UserMapper();
-            UserDTO new_user = mapper.mapToUserDTO(u);
-            return new_user;
+            UserDTO userDTO = mapper.mapToUserDTO(u);
+            return userDTO;
         }).collect(Collectors.toList());
-    }
-
-    public void saveAll(List<User> users){
-        userRepository.saveAll(users);
     }
 }
