@@ -63,13 +63,6 @@
 
             <dependency>
                 <groupId>org.example</groupId>
-                <artifactId>controller</artifactId>
-                <version>${org.example.version}</version>
-            </dependency>
-
-
-            <dependency>
-                <groupId>org.example</groupId>
                 <artifactId>repository</artifactId>
                 <version>${org.example.version}</version>
             </dependency>
