@@ -5,6 +5,8 @@ import entity.User;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Component;
 
+import java.util.function.Function;
+
 @Component
 public class UserMapper {
     private final ModelMapper mapper;

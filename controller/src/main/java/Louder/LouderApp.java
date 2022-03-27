@@ -7,7 +7,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
-import service.UserService;
+import service.UserServiceImpl;
 
 
 @SpringBootApplication(scanBasePackageClasses = {
@@ -15,7 +15,7 @@ import service.UserService;
         UserController.class,
         UserMapper.class,
         UserRepository.class,
-        UserService.class})
+        UserServiceImpl.class})
 @EnableJpaRepositories(basePackageClasses = UserRepository.class)
 @EntityScan(basePackageClasses = User.class)
 public class LouderApp {
