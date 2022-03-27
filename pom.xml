@@ -29,6 +29,7 @@
         <org.apache.maven.plugins.version>3.5.1</org.apache.maven.plugins.version>
         <org.modelmapper.version>3.1.0</org.modelmapper.version>
         <org.example.version>1.0.0</org.example.version>
+        <org.postgresql>42.3.3</org.postgresql>
     </properties>
 
     <dependencies>
@@ -52,7 +53,7 @@
             <dependency>
                 <groupId>org.postgresql</groupId>
                 <artifactId>postgresql</artifactId>
-                <version>42.3.3</version>
+                <version>${org.postgresql}</version>
             </dependency>
 
             <dependency>
