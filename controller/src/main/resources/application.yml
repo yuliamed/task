@@ -1,0 +1,15 @@
+spring:
+  datasource:
+    url: 'jdbc:postgresql://localhost/spring-security'
+    username: root
+    password: 1243
+  jpa:
+    show-sql: true
+    generate-ddl: false
+    hibernate:
+      ddl-auto: update
+
+jwt:
+  token:
+    secret: jwtapp
+    expired: 3600000
