@@ -5,21 +5,17 @@ import lombok.*;
 import javax.persistence.*;
 
 @Entity
-@Table(name="t_role")
+@Table(name="role")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Role {
-    @Id
-    private Long id;
+public class Role extends AbstractEntity{
+
+    @Column(name="name", length = 128)
     private String name;
     @Transient
     @ManyToMany(mappedBy = "roles", fetch = FetchType.LAZY)
     private List<User> users;
 
-    public Role(Long id, String name) {
-        this.id = id;
-        this.name = name;
-    }
 }
