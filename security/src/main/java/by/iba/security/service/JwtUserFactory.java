@@ -1,7 +1,8 @@
-package by.iba.security.jwt;
+package by.iba.security.service;
 
 import by.iba.entity.Role;
 import by.iba.entity.User;
+import by.iba.security.service.JwtUser;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -12,14 +13,13 @@ import java.util.stream.Collectors;
 
 @NoArgsConstructor
 public final class JwtUserFactory {
+
     public static JwtUser create(User user){
         return new JwtUser(
                 user.getId(),
                 user.getEmail(),
-                user.getUserName(),
-                user.getUserSurname(),
                 user.getPass(),
-                mapToGrantedAuthorities(new ArrayList<>(user.getRoles()))
+                mapToGrantedAuthorities(new ArrayList<Role>(user.getRoles()))
         );
     }
 

@@ -1,4 +1,4 @@
-package by.iba.security.jwt;
+package by.iba.security.service;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
@@ -16,8 +16,6 @@ public class JwtUser implements UserDetails {
 
     private final Long id;
     private final String email;
-    private final String userName;
-    private final String userSurname;
     private final String pass;
     private final Collection<? extends GrantedAuthority> authorities;
 
@@ -35,16 +33,19 @@ public class JwtUser implements UserDetails {
     public String getUsername() {
         return email;
     }
+
     @JsonIgnore
     @Override
     public boolean isAccountNonExpired() {
         return true;
     }
+
     @JsonIgnore
     @Override
     public boolean isAccountNonLocked() {
         return true;
     }
+
     @JsonIgnore
     @Override
     public boolean isCredentialsNonExpired() {
