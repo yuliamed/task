@@ -21,6 +21,7 @@
         <module>repository</module>
         <module>entity</module>
         <module>controller</module>
+        <module>security</module>
     </modules>
 
     <properties>
@@ -28,11 +29,13 @@
         <org.projectlombok.version>1.18.22</org.projectlombok.version>
         <org.apache.maven.plugins.version>3.5.1</org.apache.maven.plugins.version>
         <org.modelmapper.version>3.1.0</org.modelmapper.version>
-        <org.example.version>1.0.0</org.example.version>
+        <by.iba.version>1.0.0</by.iba.version>
         <org.postgresql>42.3.3</org.postgresql>
         <springframework.security>5.6.2</springframework.security>
         <spring.security.oauth2>2.1.0.RELEASE</spring.security.oauth2>
         <spring-security-jwt>1.1.1.RELEASE</spring-security-jwt>
+        <validation-api>2.0.1.Final</validation-api>
+        <io.jsonwebtoken>0.9.1</io.jsonwebtoken>
     </properties>
 
     <dependencies>
@@ -46,6 +49,31 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
+                <groupId>by.iba</groupId>
+                <artifactId>entity</artifactId>
+                <version>${by.iba.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>by.iba</groupId>
+                <artifactId>repository</artifactId>
+                <version>${by.iba.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>by.iba</groupId>
+                <artifactId>security</artifactId>
+                <version>${by.iba.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>by.iba</groupId>
+                <artifactId>service</artifactId>
+                <version>${by.iba.version}</version>
+            </dependency>
+
+
+            <dependency>
                 <groupId>org.modelmapper</groupId>
                 <artifactId>modelmapper</artifactId>
                 <version>${org.modelmapper.version}</version>
@@ -55,24 +83,6 @@
                 <groupId>org.postgresql</groupId>
                 <artifactId>postgresql</artifactId>
                 <version>${org.postgresql}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>by.iba</groupId>
-                <artifactId>entity</artifactId>
-                <version>${org.example.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>by.iba</groupId>
-                <artifactId>repository</artifactId>
-                <version>${org.example.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>by.iba</groupId>
-                <artifactId>service</artifactId>
-                <version>${org.example.version}</version>
             </dependency>
 
             <dependency>
@@ -96,12 +106,13 @@
             <dependency>
                 <groupId>io.jsonwebtoken</groupId>
                 <artifactId>jjwt</artifactId>
-                <version>0.9.1</version>
+                <version>${io.jsonwebtoken}</version>
             </dependency>
 
             <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-data-jpa</artifactId>
+                <groupId>javax.validation</groupId>
+                <artifactId>validation-api</artifactId>
+                <version>${validation-api}</version>
             </dependency>
 
         </dependencies>

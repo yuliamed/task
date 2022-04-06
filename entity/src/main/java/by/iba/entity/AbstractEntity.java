@@ -7,15 +7,16 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDate;
 
 @Getter
-@Setter
 @MappedSuperclass
-@NoArgsConstructor @AllArgsConstructor
+@NoArgsConstructor
 public abstract class AbstractEntity implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false, unique = true)
     private Long id;
+
 }
