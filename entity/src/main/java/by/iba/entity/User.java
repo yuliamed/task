@@ -33,6 +33,12 @@ public class User extends TrackingAbstractEntity {
     private Boolean isActive = false;
     @Column(name = "image_url")
     private String imageUrl;
+    @Column(name = "recovery_token")
+    private String recoveryToken;
+    @Column(name="activation_token")
+    private String activationToken;
+    @Column(name = "token_creation_date")
+    private LocalDateTime tokenCreationDate;
     @Column(name = "last_visited_date")
     private LocalDateTime lastVisitDate;
     @ManyToMany(fetch = FetchType.EAGER)

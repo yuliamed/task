@@ -1,6 +1,9 @@
 package by.iba.service.impl;
 
+import by.iba.dto.ResetPassDTO;
 import by.iba.dto.UserUpdate;
+import by.iba.dto.req.SignUpReq;
+import by.iba.dto.resp.ApiResp;
 import by.iba.dto.resp.UserResp;
 import by.iba.entity.Role;
 import by.iba.entity.TypeOfRole;
@@ -12,9 +15,9 @@ import by.iba.inteface.UserRepository;
 import by.iba.mapper.UserMapper;
 import by.iba.security.dto.JwtResp;
 import by.iba.security.dto.SignInReq;
-import by.iba.dto.req.SignUpReq;
 import by.iba.security.jwt.JwtTokenProvider;
 import by.iba.security.service.JwtUser;
+import by.iba.service.MailService;
 import by.iba.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -25,8 +28,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Base64;
+import java.util.UUID;
 
 @Service
 @AllArgsConstructor
@@ -38,6 +43,9 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final JwtTokenProvider jwtTokenProvider;
     private final AuthenticationManager authenticationManager;
+    private final MailService mailService;
+
+    private final Duration TOKEN_TIME_VALIDITY = Duration.ofMinutes(5);
 
     @Transactional
     @Override
@@ -50,11 +58,30 @@ public class UserServiceImpl implements UserService {
 
         User userToSave = userMapper.toEntityFromReq(userReq);
         userToSave.setPass(passwordEncoder.encode(userReq.getPass()));
+        userToSave.setActivationToken(generateToken());
         Role roleUser = roleRepository.getByName(TypeOfRole.USER.name());
         userToSave.getRoles().add(roleUser);
         User savesUser = userRepository.save(userToSave);
 
+        String subject = "Confirm your account";
+        //TODO
+        String link = "http://localhost:8080/api/v1/users/activate/" + userToSave.getActivationToken();
+        mailService.sendEmail(userToSave.getEmail(), subject, link);
+
         return userMapper.toDto(savesUser);
+    }
+
+    @Transactional
+    @Override
+    public UserResp confirmAccount(String token) {
+        //TODO Может не надо хранить этот токен в юзере?
+        User user = userRepository.findByRecoveryToken(token)
+                .orElseThrow(()-> new ServiceException("User can't confirm his account, because there is no token = " + token));
+        user.setIsActive(true);
+        user.setActivationToken(null);
+        userRepository.save(user);
+
+        return userMapper.toDto(user);
     }
 
     @Override
@@ -72,6 +99,38 @@ public class UserServiceImpl implements UserService {
         return new JwtResp(jwt, userDetails.getUsername());
     }
 
+    @Override
+    public ApiResp recoveryPass(Long userId, String email) {
+        User user = userRepository.getById(userId);
+        user.setRecoveryToken(generateToken());
+        user.setTokenCreationDate(LocalDateTime.now());
+
+        String subject = "Recovery your pass";
+        String message = "Token to recovery your pass is " + user.getRecoveryToken();
+        mailService.sendEmail(user.getEmail(), subject, message);
+
+        ApiResp resp = new ApiResp("Message with recovered token has been sent to your email");
+        return resp;
+    }
+
+    @Override
+    public ApiResp resetPass(String token, ResetPassDTO dto) {
+        User user = userRepository.findByRecoveryToken(token)
+                .orElseThrow(() -> new ResourceNotFoundException("User with recovery token: " + token
+                        + " not found"));
+        if (tokenIsActual(user.getTokenCreationDate())) {
+            throw new ServiceException("Token for resetting is not actual");
+        }
+
+        user.setPass(passwordEncoder.encode(dto.getPass()));
+        user.setRecoveryToken(null);
+        user.setTokenCreationDate(null);
+
+        userRepository.save(user);
+
+        ApiResp resp = new ApiResp("Your pass was successfully changed");
+        return resp;
+    }
 
     @Override
     public UserResp findByEmail(String email) {
@@ -132,4 +191,17 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    private boolean tokenIsActual(LocalDateTime tokenCreationDate) {
+        Duration duration = Duration.between(tokenCreationDate, LocalDateTime.now());
+
+        return duration.compareTo(TOKEN_TIME_VALIDITY) < 0;
+    }
+
+    private String generateToken() {
+        StringBuilder token = new StringBuilder();
+
+        return token
+                .append(UUID.randomUUID())
+                .append(UUID.randomUUID()).toString();
+    }
 }
