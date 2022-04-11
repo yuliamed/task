@@ -1,0 +1,30 @@
+version: '2.1'
+
+services:
+  db:
+    image: postgres:13
+    ports:
+      - "5432:5432"
+    command: --init-file /controller/src/main/resources/script/init.sql
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: 1243
+    volumes:
+      - ./init.sql:/controller/src/main/resources/script/init.sql
+    networks:
+      - backend
+  app:
+    container_name: maven-task
+    restart: always
+    build: .
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+
+networks:
+  backend:
+
+volumes:
+  postgres:
+
