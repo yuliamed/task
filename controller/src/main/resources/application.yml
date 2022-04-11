@@ -8,6 +8,12 @@ spring:
     generate-ddl: false
     hibernate:
       ddl-auto: update
+  mail:
+    protocol: smtps
+    host: smtp.mail.ru
+    port: 465
+    username: test_my_sender
+    password: 'sJ1Pf3BiSRjFy8h29ftR'
 
 jwt:
   token:

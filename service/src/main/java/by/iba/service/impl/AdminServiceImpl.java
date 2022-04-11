@@ -1,7 +1,7 @@
 package by.iba.service.impl;
 
-import by.iba.dto.RoleDTO;
-import by.iba.dto.UserBanDTO;
+import by.iba.dto.req.RoleReq;
+import by.iba.dto.req.UserBanReq;
 import by.iba.dto.resp.UserResp;
 import by.iba.entity.Role;
 import by.iba.entity.User;
@@ -34,11 +34,11 @@ public class AdminServiceImpl implements AdminService {
 
     @Transactional
     @Override
-    public UserResp changeUserRole(Long userId, RoleDTO roleDTO) {
+    public UserResp changeUserRole(Long userId, RoleReq roleReq) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("There is no uer with id = " + userId));
-        Role userRole = roleRepository.findByName(roleDTO.getTypeOfRole().name())
-                .orElseThrow(() -> new ResourceNotFoundException("There is no role with name = " + roleDTO.getTypeOfRole().name()));
+        Role userRole = roleRepository.findByName(roleReq.getTypeOfRole().name())
+                .orElseThrow(() -> new ResourceNotFoundException("There is no role with name = " + roleReq.getTypeOfRole().name()));
         user.getRoles().add(userRole);
         userRepository.save(user);
         return userMapper.toDto(user);
@@ -60,9 +60,9 @@ public class AdminServiceImpl implements AdminService {
 
     @Transactional
     @Override
-    public UserResp banUser(Long id, UserBanDTO userBanDTO) {
+    public UserResp banUser(Long id, UserBanReq userBanReq) {
         User user = userRepository.getById(id);
-        if (userBanDTO.getIsBanned()) {
+        if (userBanReq.getIsBanned()) {
             if (Objects.nonNull(user.getBanDate())) {
                 throw new ServiceException("User with id = " + id + " is already banned");
             }

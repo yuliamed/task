@@ -14,7 +14,10 @@ public class SignUpReq extends AbstractReq {
     @NotBlank(message = "User name can`t be empty")
     private String name;
 
-    @NotBlank
+    @NotBlank(message = "User surname can`t be empty")
+    private String surname;
+
+    @NotBlank(message = "email can`t be empty")
     @Pattern(regexp = "^[a-z](\\.?\\w)*@[a-z]+(\\.[a-z]+)+", message = "The login must start with a letter," +
             " all letters are small," +
             " there may be a dot in it," +

@@ -1,7 +1,7 @@
 package by.iba.controller;
 
-import by.iba.dto.RoleDTO;
-import by.iba.dto.UserBanDTO;
+import by.iba.dto.req.RoleReq;
+import by.iba.dto.req.UserBanReq;
 import by.iba.dto.resp.UserResp;
 import by.iba.service.AdminService;
 import lombok.AllArgsConstructor;
@@ -25,13 +25,13 @@ public class AdminController {
     }
 
     @PostMapping("/users/{id}")
-    public ResponseEntity<UserResp> banUser(@PathVariable("id") Long id, @RequestBody UserBanDTO userBanDTO) {
-        UserResp user = service.banUser(id, userBanDTO);
+    public ResponseEntity<UserResp> banUser(@PathVariable("id") Long id, @RequestBody UserBanReq userBanReq) {
+        UserResp user = service.banUser(id, userBanReq);
         return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/users/{id}")
-    public ResponseEntity<UserResp> changeUserRole(@PathVariable("id") Long id, @RequestBody RoleDTO role) {
+    public ResponseEntity<UserResp> changeUserRole(@PathVariable("id") Long id, @RequestBody RoleReq role) {
         UserResp resp = service.changeUserRole(id, role);
         return ResponseEntity.ok(resp);
     }

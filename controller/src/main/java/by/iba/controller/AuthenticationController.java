@@ -29,7 +29,7 @@ public class AuthenticationController {
 
     @PostMapping("/sign-up")
     public ResponseEntity<UserResp> signUp(@RequestBody SignUpReq userReq) {
-        UserResp userResp = userService.register(userReq);
+        UserResp userResp = userService.signUp(userReq);
         return new ResponseEntity<>(userResp, HttpStatus.CREATED);
     }
 

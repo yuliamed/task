@@ -1,4 +1,4 @@
-package by.iba.dto;
+package by.iba.dto.req;
 
 import by.iba.dto.req.AbstractReq;
 import lombok.Getter;
@@ -11,7 +11,7 @@ import javax.validation.constraints.Pattern;
 @Getter
 @Setter
 @NoArgsConstructor
-public class UserUpdate extends AbstractReq {
+public class UserUpdateReq extends AbstractReq {
     @NotBlank(message = "Email can`t be empty")
     @Pattern(regexp = "^[a-z](\\.?\\w)*@[a-z]+(\\.[a-z]+)+", message = "The login must start with a letter," +
             " all letters are small," +

@@ -1,5 +1,6 @@
-package by.iba.dto;
+package by.iba.dto.req;
 
+import by.iba.dto.AbstractDTO;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -8,7 +9,7 @@ import javax.validation.constraints.NotBlank;
 @Getter
 @Setter
 @NoArgsConstructor
-public class UserBanDTO extends AbstractDTO{
+public class UserBanReq extends AbstractDTO {
     @NotBlank
-    Boolean isBanned;
+    private Boolean isBanned;
 }

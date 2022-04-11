@@ -58,6 +58,7 @@ public class JwtConfigurer extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .antMatchers("/api/v1/auth/**").permitAll()
+                .antMatchers("/api/v1/mail/**").permitAll()
                 .antMatchers("/api/v1/admin/**").hasAnyAuthority("ADMIN")
                 .antMatchers("/api/v1/users/**").hasAnyAuthority("USER")
                 .anyRequest()

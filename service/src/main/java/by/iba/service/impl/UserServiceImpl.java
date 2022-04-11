@@ -1,8 +1,9 @@
 package by.iba.service.impl;
 
-import by.iba.dto.ResetPassDTO;
-import by.iba.dto.UserUpdate;
+import by.iba.dto.req.EmailReq;
+import by.iba.dto.req.ResetPassReq;
 import by.iba.dto.req.SignUpReq;
+import by.iba.dto.req.UserUpdateReq;
 import by.iba.dto.resp.ApiResp;
 import by.iba.dto.resp.UserResp;
 import by.iba.entity.Role;
@@ -43,13 +44,13 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final JwtTokenProvider jwtTokenProvider;
     private final AuthenticationManager authenticationManager;
-    private final MailService mailService;
+    private MailService mailService;
 
     private final Duration TOKEN_TIME_VALIDITY = Duration.ofMinutes(5);
 
     @Transactional
     @Override
-    public UserResp register(SignUpReq userReq) {
+    public UserResp signUp(SignUpReq userReq) {
         validateEmailAvailability(userReq.getEmail());
 
         if (!userReq.getPass().equals(userReq.getConfirmPass())) {
@@ -61,22 +62,20 @@ public class UserServiceImpl implements UserService {
         userToSave.setActivationToken(generateToken());
         Role roleUser = roleRepository.getByName(TypeOfRole.USER.name());
         userToSave.getRoles().add(roleUser);
-        User savesUser = userRepository.save(userToSave);
 
         String subject = "Confirm your account";
-        //TODO
         String link = "http://localhost:8080/api/v1/users/activate/" + userToSave.getActivationToken();
         mailService.sendEmail(userToSave.getEmail(), subject, link);
 
-        return userMapper.toDto(savesUser);
+        User savedUser = userRepository.save(userToSave);
+        return userMapper.toDto(savedUser);
     }
 
     @Transactional
     @Override
     public UserResp confirmAccount(String token) {
-        //TODO Может не надо хранить этот токен в юзере?
-        User user = userRepository.findByRecoveryToken(token)
-                .orElseThrow(()-> new ServiceException("User can't confirm his account, because there is no token = " + token));
+        User user = userRepository.findByActivationToken(token)
+                .orElseThrow(() -> new ServiceException("User can't confirm his account, because there is no token = " + token));
         user.setIsActive(true);
         user.setActivationToken(null);
         userRepository.save(user);
@@ -84,6 +83,7 @@ public class UserServiceImpl implements UserService {
         return userMapper.toDto(user);
     }
 
+    @Transactional
     @Override
     public JwtResp signIn(SignInReq signInReq) {
         Authentication authentication = authenticationManager.authenticate(
@@ -99,9 +99,10 @@ public class UserServiceImpl implements UserService {
         return new JwtResp(jwt, userDetails.getUsername());
     }
 
+    @Transactional
     @Override
-    public ApiResp recoveryPass(Long userId, String email) {
-        User user = userRepository.getById(userId);
+    public ApiResp recoveryPass(EmailReq emailReq) {
+        User user = getUserByEmail(emailReq.getEmail());
         user.setRecoveryToken(generateToken());
         user.setTokenCreationDate(LocalDateTime.now());
 
@@ -109,12 +110,12 @@ public class UserServiceImpl implements UserService {
         String message = "Token to recovery your pass is " + user.getRecoveryToken();
         mailService.sendEmail(user.getEmail(), subject, message);
 
-        ApiResp resp = new ApiResp("Message with recovered token has been sent to your email");
-        return resp;
+        return new ApiResp("Message with recovered token has been sent to your email");
     }
 
+    @Transactional
     @Override
-    public ApiResp resetPass(String token, ResetPassDTO dto) {
+    public ApiResp resetPass(String token, ResetPassReq dto) {
         User user = userRepository.findByRecoveryToken(token)
                 .orElseThrow(() -> new ResourceNotFoundException("User with recovery token: " + token
                         + " not found"));
@@ -128,8 +129,7 @@ public class UserServiceImpl implements UserService {
 
         userRepository.save(user);
 
-        ApiResp resp = new ApiResp("Your pass was successfully changed");
-        return resp;
+        return new ApiResp("Your pass was successfully changed");
     }
 
     @Override
@@ -146,9 +146,9 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public UserResp updateInfo(Long id, UserUpdate userUpdate) {
+    public UserResp updateInfo(Long id, UserUpdateReq userUpdateReq) {
         User user = getUserById(id);
-        setUserFields(user, userUpdate);
+        setUserFields(user, userUpdateReq);
         userRepository.save(user);
         return userMapper.toDto(user);
     }
@@ -163,31 +163,32 @@ public class UserServiceImpl implements UserService {
         return userMapper.toDto(user);
     }
 
+    //TODO
     private User getUserById(Long id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Нет пользователя с полученным id"));
+                .orElseThrow(() -> new ResourceNotFoundException("There is no user with id = " + id));
     }
 
     private User getUserByEmail(String email) {
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> new ResourceNotFoundException("Нет пользователя с полученным email"));
+                .orElseThrow(() -> new ResourceNotFoundException("There is no user with email = " + email));
     }
 
-    private void setUserFields(final User user, final UserUpdate userUpdate) {
-        String newEmail = userUpdate.getEmail();
+    private void setUserFields(final User user, final UserUpdateReq userUpdateReq) {
+        String newEmail = userUpdateReq.getEmail();
         String oldEmail = user.getEmail();
         if (!newEmail.equals(oldEmail)) {
             validateEmailAvailability(newEmail);
             user.setEmail(newEmail);
         }
-        user.setName(userUpdate.getName());
-        user.setSurname(userUpdate.getSurname());
-        user.setImageUrl(userUpdate.getImageUrl());
+        user.setName(userUpdateReq.getName());
+        user.setSurname(userUpdateReq.getSurname());
+        user.setImageUrl(userUpdateReq.getImageUrl());
     }
 
     private void validateEmailAvailability(String newEmail) {
         if (userRepository.findByEmail(newEmail).isPresent()) {
-            throw new ServiceException("New email " + newEmail + " is not available");
+            throw new ServiceException("This email " + newEmail + " is not available");
         }
     }
 
@@ -198,9 +199,7 @@ public class UserServiceImpl implements UserService {
     }
 
     private String generateToken() {
-        StringBuilder token = new StringBuilder();
-
-        return token
+        return new StringBuilder()
                 .append(UUID.randomUUID())
                 .append(UUID.randomUUID()).toString();
     }
