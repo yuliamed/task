@@ -19,13 +19,13 @@ import java.util.Set;
 @Setter
 public class User extends TrackingAbstractEntity {
 
-    @Column(name = "email", length = 128, unique = true)
+    @Column(name = "email", length = 128, unique = true, nullable = false)
     private String email;
     @Column(name = "name", length = 64)
     private String name;
     @Column(name = "surname", length = 64)
     private String surname;
-    @Column(name = "pass", length = 256)
+    @Column(name = "pass", length = 256, nullable = false)
     private String pass;
     @Column(name = "ban_date")
     private LocalDateTime banDate;
