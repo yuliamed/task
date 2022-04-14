@@ -17,24 +17,20 @@ COPY security/pom.xml ./security
 COPY service/pom.xml ./service
 COPY pom.xml .
 
-RUN mvn clean package -Dmaven.test.skip -Dmaven.main.skip -Dspring-boot.repackage.skip
+RUN mvn clean package -Dmaven.test.skip -Dmaven.main.skip -Dspring-boot.repackage.skip && rm -r controller/target/
 
+RUN mvn clean package -Dmaven.test.skip
 
-RUN mvn -P clean package -Dmaven.test.skip
-
+RUN mkdir -p target/docker-packaging && cd target/docker-packaging && jar -xf /app/controller/target/controller*.jar
 
 FROM openjdk:8-jre
 
 WORKDIR /app
 
-COPY --from=maven_build /app/controller/target/controller-1.0.0.jar .
-COPY --from=maven_build /app/entity/target/entity-1.0.0.jar .
-COPY --from=maven_build /app/repository/target/repository-1.0.0.jar .
-COPY --from=maven_build /app/security/target/security-1.0.0.jar .
-COPY --from=maven_build /app/service/target/service-1.0.0.jar .
+COPY --from=maven_build /app/controller/target/controller*.jar .
 
-CMD [ "java", "-jar", "/app/controller/target/controller-1.0.0.jar" ]
+CMD [ "java", "-jar", "./controller.jar"]
 
 HEALTHCHECK --interval=30s --timeout=30s CMD curl -f http://localhost:8080/ || exit 1
 
-EXPOSE 8080:8080
+#EXPOSE 8080:8080
