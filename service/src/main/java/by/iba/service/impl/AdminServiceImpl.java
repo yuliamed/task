@@ -2,16 +2,22 @@ package by.iba.service.impl;
 
 import by.iba.dto.req.RoleReq;
 import by.iba.dto.req.UserBanReq;
+import by.iba.dto.req.UserSearchCriteria;
 import by.iba.dto.resp.UserResp;
 import by.iba.entity.Role;
 import by.iba.entity.User;
 import by.iba.exception.ResourceNotFoundException;
+import by.iba.exception.SearchingException;
 import by.iba.exception.ServiceException;
 import by.iba.inteface.RoleRepository;
 import by.iba.inteface.UserRepository;
 import by.iba.mapper.UserMapper;
 import by.iba.service.AdminService;
+import by.iba.service.search.UserSpecification;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -27,8 +33,19 @@ public class AdminServiceImpl implements AdminService {
     private final RoleRepository roleRepository;
 
     @Override
-    public List<UserResp> findAll() {
-        List<User> users = userRepository.findAll();
+    public List<UserResp> findAll(UserSearchCriteria userSearchCriteria, Integer pageNumber, Integer pageSize) {
+        List<User> users;
+        checkUserSearchCriteria(userSearchCriteria);
+        Pageable paging = PageRequest.of(pageNumber, pageSize);
+        if (Objects.isNull(userSearchCriteria)) {
+            users = userRepository.findAll(paging).toList();
+        } else {
+            Specification<User> specification = new UserSpecification(userSearchCriteria);
+            users = userRepository.findAll(specification, paging).toList();
+        }
+        if (users.isEmpty()) {
+            throw new SearchingException("There are no users with criteria: " + userSearchCriteria);
+        }
         return userMapper.toDtoList(users);
     }
 
@@ -73,5 +90,13 @@ public class AdminServiceImpl implements AdminService {
         userRepository.save(user);
 
         return userMapper.toDto(user);
+    }
+
+    private void checkUserSearchCriteria(UserSearchCriteria userSearchCriteria) {
+        if (Objects.isNull(userSearchCriteria.getKey()) ||
+                Objects.isNull(userSearchCriteria.getValue()) ||
+                Objects.isNull(userSearchCriteria.getOperation())) {
+            throw new ServiceException("Incorrect userSearchCriteria");
+        }
     }
 }

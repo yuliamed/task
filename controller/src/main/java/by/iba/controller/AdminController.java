@@ -2,10 +2,12 @@ package by.iba.controller;
 
 import by.iba.dto.req.RoleReq;
 import by.iba.dto.req.UserBanReq;
+import by.iba.dto.req.UserSearchCriteria;
 import by.iba.dto.resp.UserResp;
 import by.iba.service.AdminService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,9 +20,10 @@ import java.util.List;
 public class AdminController {
     private final AdminService service;
 
-    @GetMapping("/users")
-    public ResponseEntity<List<UserResp>> findAll() {
-        List<UserResp> resp = service.findAll();
+    @GetMapping("/users/{pageNumber}/{pageSize}")
+    public ResponseEntity<List<UserResp>> findAll(@RequestBody @Nullable UserSearchCriteria userSearchCriteria,
+                                                  @PathVariable Integer pageNumber, @PathVariable Integer pageSize) {
+        List<UserResp> resp = service.findAll(userSearchCriteria, pageNumber, pageSize);
         return ResponseEntity.ok().body(resp);
     }
 

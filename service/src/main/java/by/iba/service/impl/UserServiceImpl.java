@@ -15,7 +15,7 @@ import by.iba.inteface.RoleRepository;
 import by.iba.inteface.UserRepository;
 import by.iba.mapper.UserMapper;
 import by.iba.security.dto.JwtResp;
-import by.iba.security.dto.SignInReq;
+import by.iba.dto.req.SignInReq;
 import by.iba.security.jwt.JwtTokenProvider;
 import by.iba.security.service.JwtUser;
 import by.iba.service.MailService;

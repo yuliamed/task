@@ -49,6 +49,13 @@ public class ControllerAdviser extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(apiError, HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler({SearchingException.class})
+    public ResponseEntity<Object> handleIllegalRequestException(
+            SearchingException ex) {
+        ApiError apiError = new ApiError("SearchingException", ex.getMessage());
+        return new ResponseEntity<>(apiError, HttpStatus.NOT_FOUND);
+    }
+
 //TODO
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex,

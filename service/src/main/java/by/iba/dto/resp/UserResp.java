@@ -1,6 +1,6 @@
 package by.iba.dto.resp;
 
-import by.iba.dto.req.RoleReq;
+import by.iba.entity.Role;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -16,8 +16,8 @@ public class UserResp extends AbstractResp {
     private String name;
     private String email;
     private String surname;
-    private Set<RoleReq> roles = new HashSet<>();
-    private LocalDateTime lastVisitedDate;
+    private Set<Role> roles = new HashSet<>();
+    private LocalDateTime lastVisitDate;
     private String imageUrl;
     private Boolean isActive;
 }

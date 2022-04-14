@@ -7,7 +7,7 @@ import by.iba.dto.req.SignUpReq;
 import by.iba.dto.resp.ApiResp;
 import by.iba.dto.resp.UserResp;
 import by.iba.security.dto.JwtResp;
-import by.iba.security.dto.SignInReq;
+import by.iba.dto.req.SignInReq;
 
 public interface UserService {
     UserResp signUp(SignUpReq userReq);
