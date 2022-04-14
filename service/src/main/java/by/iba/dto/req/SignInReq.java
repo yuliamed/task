@@ -1,4 +1,4 @@
-package by.iba.security.dto;
+package by.iba.dto.req;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

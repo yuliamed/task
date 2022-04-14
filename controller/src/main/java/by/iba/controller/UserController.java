@@ -8,6 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @AllArgsConstructor
 @RestController
 @PreAuthorize("hasAnyAuthority('USER')")
@@ -22,7 +24,7 @@ public class UserController {
     }
 
     @PutMapping(value = "/{id}")
-    public ResponseEntity<UserResp> updateProfile(@PathVariable Long id, @RequestBody UserUpdateReq userUpdateReq) {
+    public ResponseEntity<UserResp> updateProfile(@PathVariable Long id, @Valid @RequestBody UserUpdateReq userUpdateReq) {
         UserResp user = userService.updateInfo(id, userUpdateReq);
         return ResponseEntity.ok(user);
     }

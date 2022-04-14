@@ -9,6 +9,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @AllArgsConstructor
 @RestController
 @RequestMapping("/api/v1/mail")
@@ -22,13 +24,13 @@ public class MailController {
     }
 
     @PostMapping("/recovery-password")
-    public ResponseEntity<ApiResp> recoveryPassword(@RequestBody EmailReq email) {
+    public ResponseEntity<ApiResp> recoveryPassword(@RequestBody @Valid EmailReq email) {
         ApiResp resp = userService.recoveryPass(email);
         return ResponseEntity.ok(resp);
     }
 
     @PutMapping("/reset-password")
-    public ResponseEntity<ApiResp> resetPassword(@RequestParam("token") String token, @RequestBody ResetPassReq resetDto) {
+    public ResponseEntity<ApiResp> resetPassword(@RequestParam("token") String token, @RequestBody @Valid ResetPassReq resetDto) {
         ApiResp resp = userService.resetPass(token, resetDto);
         return ResponseEntity.ok(resp);
     }
