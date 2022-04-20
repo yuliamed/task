@@ -35,15 +35,16 @@ public class User extends TrackingAbstractEntity {
     private String imageUrl;
     @Column(name = "recovery_token")
     private String recoveryToken;
-    @Column(name="activation_token")
+    @Column(name = "activation_token")
     private String activationToken;
     @Column(name = "token_creation_date")
     private LocalDateTime tokenCreationDate;
-    @Column(name = "last_visited_date")
-    private LocalDateTime lastVisitDate;
+    @Column(name = "last_visited_date", nullable = false)
+    private LocalDateTime lastVisitDate = LocalDateTime.now();
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles",
             joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "role_id", referencedColumnName = "id")})
     private Set<Role> roles = new HashSet<>();
+
 }
