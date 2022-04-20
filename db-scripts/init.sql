@@ -4,13 +4,13 @@ CREATE DATABASE "spring-security" WITH
 
 create table "roles"
 (
-    id   bigserial PRIMARY KEY not null,
+    id   bigserial constraint roles_pkey PRIMARY KEY not null,
     name varchar(64)           not null
 );
 
 create table "users"
 (
-    id                  bigserial PRIMARY KEY not null,
+    id                  bigserial constraint users_pkey PRIMARY KEY not null,
     email               varchar(64)           not null unique,
     name                varchar(64),
     surname             varchar(64),
@@ -27,21 +27,34 @@ create table "users"
     token_creation_date timestamp
 );
 
+-- create table user_roles
+-- (
+--     user_id bigserial not null primary key,
+--     role_id bigserial not null primary key,
+--     CONSTRAINT "FK_user_id" FOREIGN KEY ("user_id")
+--         REFERENCES "users" ("id"),
+--     CONSTRAINT "FK_role_id" FOREIGN KEY ("role_id")
+--         REFERENCES "roles" ("id")
+-- );
+
 create table user_roles
 (
-    user_id bigserial not null primary key,
-    role_id bigserial not null primary key,
-    CONSTRAINT "FK_user_id" FOREIGN KEY ("user_id")
-        REFERENCES "users" ("id"),
-    CONSTRAINT "FK_role_id" FOREIGN KEY ("role_id")
-        REFERENCES "roles" ("id")
+    user_id bigserial not null
+        constraint fk2o0jvgh89lemvvo17cbqvdxaa
+            references users,
+    role_id bigserial not null
+        constraint fkj6m8fwv7oqv74fcehir1a9ffy
+            references roles,
+    constraint user_roles_pkey
+        primary key (user_id, role_id)
 );
 
 insert into roles (name)
 values ('USER');
 insert into roles (name)
 values ('ADMIN');
-insert into users (id, email,
+
+insert into users ( email,
                    name,
                    surname,
                    pass,
@@ -49,16 +62,17 @@ insert into users (id, email,
                    last_update_date,
                    version,
                    is_active)
-values (1, 'adminmail@mail.ru',
+values ( 'pass@mail.ru',
         'admin',
         'admin',
-        'admin-1234',
+        '$2a$10$0EThLXXElNCyZxBW3eRJAOoicfsvs4AhJeuEaS/CsL..nMNMieTai',--admin-1234
         current_timestamp,
         current_timestamp,
         1,
         true);
 insert into "user_roles" (role_id, user_id)
 values (2, 1);
-
+select * from users;
+select * from roles;
 
 

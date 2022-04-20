@@ -33,4 +33,4 @@ CMD [ "java", "-jar", "./controller.jar"]
 
 HEALTHCHECK --interval=30s --timeout=30s CMD curl -f http://localhost:8080/ || exit 1
 
-#EXPOSE 8080:8080
+EXPOSE 8080:8080
