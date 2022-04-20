@@ -26,9 +26,11 @@ public class JwtTokenProvider {
         Date validity = new Date(now.getTime() + validityInMilliseconds);
 
         return Jwts.builder()//
-                .setSubject(jwtUser.getEmail())//
-                .setIssuedAt(now)//
-                .setExpiration(validity)//
+                .claim("id", jwtUser.getId())
+                .claim("email", jwtUser.getEmail())
+                .claim("time-create", now.toString())
+                .claim("time-expiration", validity.toString())
+                .claim("role", jwtUser.getAuthorities())
                 .signWith(SignatureAlgorithm.HS512, secret)//
                 .compact();
     }
@@ -43,7 +45,7 @@ public class JwtTokenProvider {
     }
 
     public String getUserEmailFromJwtToken(String token) {
-        return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().getSubject();
+        return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().get("email").toString();
     }
 
 }
