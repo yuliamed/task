@@ -1,6 +1,7 @@
 spring:
   datasource:
-    url: 'jdbc:postgresql://localhost:5432/spring-security'
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/spring-security
     username: root
     password: 1243
   jpa:
@@ -13,7 +14,7 @@ spring:
     host: smtp.mail.ru
     port: 465
     username: test_my_sender
-    password: 'sJ1Pf3BiSRjFy8h29ftR'
+    password: 'VpWXD3mxgBSb2VaGDPmT'
 
 jwt:
   token:
