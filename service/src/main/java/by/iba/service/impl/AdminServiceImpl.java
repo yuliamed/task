@@ -1,20 +1,20 @@
 package by.iba.service.impl;
 
+import by.iba.dto.page.PageWrapper;
 import by.iba.dto.req.RoleReq;
 import by.iba.dto.req.UserBanReq;
-import by.iba.dto.req.UserSearchCriteria;
+import by.iba.dto.req.UserSearchCriteriaReq;
 import by.iba.dto.resp.UserResp;
 import by.iba.entity.Role;
 import by.iba.entity.User;
 import by.iba.exception.ResourceNotFoundException;
-import by.iba.exception.SearchingException;
 import by.iba.exception.ServiceException;
 import by.iba.inteface.RoleRepository;
 import by.iba.inteface.UserRepository;
 import by.iba.mapper.UserMapper;
 import by.iba.service.AdminService;
-import by.iba.service.search.UserSpecification;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -25,6 +25,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
+import static by.iba.inteface.specification.UserSpecification.*;
+
 @Service
 @AllArgsConstructor
 public class AdminServiceImpl implements AdminService {
@@ -33,29 +35,35 @@ public class AdminServiceImpl implements AdminService {
     private final RoleRepository roleRepository;
 
     @Override
-    public List<UserResp> findAll(UserSearchCriteria userSearchCriteria, Integer pageNumber, Integer pageSize) {
-        List<User> users;
-        checkUserSearchCriteria(userSearchCriteria);
-        Pageable paging = PageRequest.of(pageNumber, pageSize);
-        if (Objects.isNull(userSearchCriteria)) {
-            users = userRepository.findAll(paging).toList();
-        } else {
-            Specification<User> specification = new UserSpecification(userSearchCriteria);
-            users = userRepository.findAll(specification, paging).toList();
+    public PageWrapper<UserResp> findAll(UserSearchCriteriaReq userSearchCriteriaReq) {
+
+        Pageable pageable = PageRequest.of(userSearchCriteriaReq.getPageNumber(), userSearchCriteriaReq.getPageSize());
+        Specification<User> specification = Specification.where(findBySurnameLike(userSearchCriteriaReq.getSurname()));
+        specification = specification.and(findByNameLike(userSearchCriteriaReq.getName()));
+
+        if (Objects.nonNull(userSearchCriteriaReq.getTypeOfRole())) {
+            Role userRole = getRoleByName(userSearchCriteriaReq.getTypeOfRole().name());
+            specification = specification.and((findByRole(userRole)));
         }
-        if (users.isEmpty()) {
-            throw new SearchingException("There are no users with criteria: " + userSearchCriteria);
+        if (Objects.nonNull(userSearchCriteriaReq.getIsActive())) {
+            specification = specification.and(findByActiveStatus(userSearchCriteriaReq.getIsActive()));
         }
-        return userMapper.toDtoList(users);
+
+        Page<User> usersPage = userRepository.findAll(specification, pageable);
+
+        List<UserResp> users = userMapper.toDtoList(usersPage.toList());
+        return PageWrapper.of(users,
+                usersPage.getTotalPages(),
+                usersPage.getTotalElements(),
+                pageable.getPageNumber(),
+                pageable.getPageSize());
     }
 
     @Transactional
     @Override
-    public UserResp changeUserRole(Long userId, RoleReq roleReq) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("There is no uer with id = " + userId));
-        Role userRole = roleRepository.findByName(roleReq.getTypeOfRole().name())
-                .orElseThrow(() -> new ResourceNotFoundException("There is no role with name = " + roleReq.getTypeOfRole().name()));
+    public UserResp addUserRole(Long userId, RoleReq roleReq) {
+        User user = getUserById(userId);
+        Role userRole = getRoleByName(roleReq.getTypeOfRole().name());
         user.getRoles().add(userRole);
         userRepository.save(user);
         return userMapper.toDto(user);
@@ -64,8 +72,7 @@ public class AdminServiceImpl implements AdminService {
     @Transactional
     @Override
     public UserResp approveUser(Long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("there is no user with id = " + userId));
+        User user = getUserById(userId);
         if (user.getIsActive()) {
             throw new ServiceException("User with id = " + userId + " is already approved");
         }
@@ -79,6 +86,7 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public UserResp banUser(Long id, UserBanReq userBanReq) {
         User user = userRepository.getById(id);
+        //checkSelfBanning()
         if (userBanReq.getIsBanned()) {
             if (Objects.nonNull(user.getBanDate())) {
                 throw new ServiceException("User with id = " + id + " is already banned");
@@ -92,11 +100,13 @@ public class AdminServiceImpl implements AdminService {
         return userMapper.toDto(user);
     }
 
-    private void checkUserSearchCriteria(UserSearchCriteria userSearchCriteria) {
-        if (Objects.isNull(userSearchCriteria.getKey()) ||
-                Objects.isNull(userSearchCriteria.getValue()) ||
-                Objects.isNull(userSearchCriteria.getOperation())) {
-            throw new ServiceException("Incorrect userSearchCriteria");
-        }
+    private Role getRoleByName(String roleName) {
+        return roleRepository.findByName(roleName)
+                .orElseThrow(() -> new ResourceNotFoundException("There is no role with name = " + roleName));
+    }
+
+    private User getUserById(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("There is no user with id = " + userId));
     }
 }
