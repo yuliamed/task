@@ -18,23 +18,21 @@ public class SignUpReq extends AbstractReq {
     private String surname;
 
     @NotBlank(message = "email can`t be empty")
-    @Pattern(regexp = "^[a-z](\\.?\\w)*@[a-z]+(\\.[a-z]+)+", message = "The login must start with a letter," +
+    @Pattern(regexp = "^[a-z](\\.?\\w)*@[a-z]+(\\.[a-z]+)+", message = "The email must start with a letter," +
             " all letters are small," +
             " there may be a dot in it," +
             " but not 2 in a row." +
             " The @ must be present and the domain after it")
     private String email;
 
-    @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z][A-Z])(?=.*[!@#&()\"[{}]:;',?/*~$^+=<>]).{6,20}$",
-            message = "The pass must contain digits, letters and special characters like !, @, #, &, (, ), \", [{}]," +
-                    " :, ;, ', ,, ?, /, *, ~, $, ^, +, =, <, >. " +
+    @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-zA-Zа-яА-Я]).{6,20}$",
+            message = "The pass must contain digits and letters." +
                     "Min length of pass is 6, max length is 20")
     @NotBlank(message = "User pass can`t be empty")
     private String pass;
 
-    @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z][A-Z])(?=.*[!@#&()\"[{}]:;',?/*~$^+=<>]).{6,20}$",
-            message = "The pass must contain digits, letters and special characters like !, @, #, &, (, ), \", [{}]," +
-                    " :, ;, ', ,, ?, /, *, ~, $, ^, +, =, <, >. " +
+    @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-zA-Zа-яА-Я]).{6,20}$",
+            message = "The confirm pass must contain digits and letters"+
                     "Min length of pass is 6, max length is 20")
     @NotBlank(message = "User confirm pass can`t be empty")
     private String confirmPass;

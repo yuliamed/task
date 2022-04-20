@@ -7,11 +7,12 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 @Getter
 @Setter
 @NoArgsConstructor
 public class RoleReq extends AbstractDTO {
-    @NotBlank(message = "type of role can`t be empty")
+    @NotNull(message = "type of role can`t be empty")
     private TypeOfRole typeOfRole;
 }

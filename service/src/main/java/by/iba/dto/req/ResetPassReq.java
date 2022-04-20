@@ -13,9 +13,8 @@ import javax.validation.constraints.Pattern;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ResetPassReq {
-    @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z][A-Z])(?=.*[!@#&()\"[{}]:;',?/*~$^+=<>]).{6,20}$",
-            message = "The pass must contain digits, letters and special characters like !, @, #, &, (, ), \", [{}]," +
-                    " :, ;, ', ,, ?, /, *, ~, $, ^, +, =, <, >. " +
+    @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-zA-Zа-яА-Я]).{6,20}$",
+            message = "The pass must contain digits and letters." +
                     "Min length of pass is 6, max length is 20")
     @NotBlank(message = "User pass can`t be empty")
     private String pass;
