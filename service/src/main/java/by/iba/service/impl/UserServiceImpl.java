@@ -1,9 +1,6 @@
 package by.iba.service.impl;
 
-import by.iba.dto.req.EmailReq;
-import by.iba.dto.req.ResetPassReq;
-import by.iba.dto.req.SignUpReq;
-import by.iba.dto.req.UserUpdateReq;
+import by.iba.dto.req.*;
 import by.iba.dto.resp.ApiResp;
 import by.iba.dto.resp.UserResp;
 import by.iba.entity.Role;
@@ -15,12 +12,12 @@ import by.iba.inteface.RoleRepository;
 import by.iba.inteface.UserRepository;
 import by.iba.mapper.UserMapper;
 import by.iba.security.dto.JwtResp;
-import by.iba.dto.req.SignInReq;
 import by.iba.security.jwt.JwtTokenProvider;
 import by.iba.security.service.JwtUser;
 import by.iba.service.MailService;
 import by.iba.service.UserService;
 import lombok.AllArgsConstructor;
+import org.springframework.mail.MailAuthenticationException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -62,12 +59,11 @@ public class UserServiceImpl implements UserService {
         userToSave.setActivationToken(generateToken());
         Role roleUser = roleRepository.getByName(TypeOfRole.USER.name());
         userToSave.getRoles().add(roleUser);
-
+        User savedUser = userRepository.save(userToSave);
         String subject = "Confirm your account";
-        String link = "http://localhost:8080/api/v1/users/activate/" + userToSave.getActivationToken();
+        String link = "http://localhost:8080/api/v1/mail/activate/" + userToSave.getActivationToken();
         mailService.sendEmail(userToSave.getEmail(), subject, link);
 
-        User savedUser = userRepository.save(userToSave);
         return userMapper.toDto(savedUser);
     }
 
@@ -133,6 +129,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public UserResp deleteImage(Long id) {
+        User user = getUserById(id);
+        user.setImageUrl(null);
+        return userMapper.toDto(user);
+    }
+
+    @Override
     public UserResp findByEmail(String email) {
         User user = getUserByEmail(email);
         return userMapper.toDto(user);
@@ -163,7 +166,6 @@ public class UserServiceImpl implements UserService {
         return userMapper.toDto(user);
     }
 
-    //TODO
     private User getUserById(Long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("There is no user with id = " + id));
@@ -183,7 +185,6 @@ public class UserServiceImpl implements UserService {
         }
         user.setName(userUpdateReq.getName());
         user.setSurname(userUpdateReq.getSurname());
-        user.setImageUrl(userUpdateReq.getImageUrl());
     }
 
     private void validateEmailAvailability(String newEmail) {

@@ -27,4 +27,6 @@ public interface UserService {
     ApiResp recoveryPass(EmailReq email);
 
     ApiResp resetPass(String token, ResetPassReq dto);
+
+    UserResp deleteImage(Long id);
 }
