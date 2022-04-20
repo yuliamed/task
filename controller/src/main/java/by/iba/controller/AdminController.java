@@ -1,17 +1,19 @@
 package by.iba.controller;
 
+import by.iba.dto.page.PageWrapper;
 import by.iba.dto.req.RoleReq;
 import by.iba.dto.req.UserBanReq;
-import by.iba.dto.req.UserSearchCriteria;
+import by.iba.dto.req.UserSearchCriteriaReq;
 import by.iba.dto.resp.UserResp;
+import by.iba.exception.ControllerHelper;
 import by.iba.service.AdminService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.lang.Nullable;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping(value = "api/v1/admin/")
@@ -20,22 +22,23 @@ import java.util.List;
 public class AdminController {
     private final AdminService service;
 
-    @GetMapping("/users/{pageNumber}/{pageSize}")
-    public ResponseEntity<List<UserResp>> findAll(@RequestBody @Nullable UserSearchCriteria userSearchCriteria,
-                                                  @PathVariable Integer pageNumber, @PathVariable Integer pageSize) {
-        List<UserResp> resp = service.findAll(userSearchCriteria, pageNumber, pageSize);
+    @GetMapping("/users")
+    public ResponseEntity<PageWrapper<UserResp>> findAll(UserSearchCriteriaReq userSearchCriteriaReq) {
+        PageWrapper<UserResp> resp = service.findAll(userSearchCriteriaReq);
         return ResponseEntity.ok().body(resp);
     }
 
     @PostMapping("/users/{id}")
-    public ResponseEntity<UserResp> banUser(@PathVariable("id") Long id, @RequestBody UserBanReq userBanReq) {
+    public ResponseEntity<UserResp> banUser(@PathVariable("id") Long id, @RequestBody @Valid UserBanReq userBanReq, BindingResult result) {
+        ControllerHelper.checkBindingResultAndThrowExceptionIfInvalid(result);
         UserResp user = service.banUser(id, userBanReq);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(user);
     }
 
     @PutMapping("/users/{id}")
-    public ResponseEntity<UserResp> changeUserRole(@PathVariable("id") Long id, @RequestBody RoleReq role) {
-        UserResp resp = service.changeUserRole(id, role);
+    public ResponseEntity<UserResp> addUserRole(@PathVariable("id") Long id, @RequestBody @Valid RoleReq role, BindingResult result) {
+        ControllerHelper.checkBindingResultAndThrowExceptionIfInvalid(result);
+        UserResp resp = service.addUserRole(id, role);
         return ResponseEntity.ok(resp);
     }
 
