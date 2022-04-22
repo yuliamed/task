@@ -89,4 +89,30 @@ public class ControllerAdviser extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
     }
 
+    @Override
+    protected ResponseEntity<Object> handleHttpMessageNotReadable(
+            HttpMessageNotReadableException ex, HttpHeaders headers,
+            HttpStatus status, WebRequest request) {
+        ApiError apiError = new ApiError("Method Argument Not Valid", "You have sent empty body", HttpStatus.BAD_REQUEST.value());
+        return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
+    }
+
+    @Override
+    protected ResponseEntity handleHttpRequestMethodNotSupported(
+            HttpRequestMethodNotSupportedException ex,
+            HttpHeaders headers,
+            HttpStatus status,
+            WebRequest request) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(ex.getMethod());
+        builder.append(
+                " method is not supported for this request. Supported methods are ");
+        ex.getSupportedHttpMethods().forEach(t -> builder.append(t + " "));
+
+        ApiError apiError = new ApiError(
+                ex.getLocalizedMessage(), builder.toString(), HttpStatus.METHOD_NOT_ALLOWED.value());
+        return new ResponseEntity(
+                apiError, new HttpHeaders(), apiError.getStatus());
+    }
+
 }
