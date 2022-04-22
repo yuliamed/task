@@ -1,7 +1,3 @@
-CREATE DATABASE "spring-security" WITH
-    OWNER = root
-    ENCODING = 'UTF8';
-
 create table "roles"
 (
     id   bigserial constraint roles_pkey PRIMARY KEY not null,
@@ -48,31 +44,3 @@ create table user_roles
     constraint user_roles_pkey
         primary key (user_id, role_id)
 );
-
-insert into roles (name)
-values ('USER');
-insert into roles (name)
-values ('ADMIN');
-
-insert into users ( email,
-                   name,
-                   surname,
-                   pass,
-                   creation_date,
-                   last_update_date,
-                   version,
-                   is_active)
-values ( 'pass@mail.ru',
-        'admin',
-        'admin',
-        '$2a$10$0EThLXXElNCyZxBW3eRJAOoicfsvs4AhJeuEaS/CsL..nMNMieTai',--admin-1234
-        current_timestamp,
-        current_timestamp,
-        1,
-        true);
-insert into "user_roles" (role_id, user_id)
-values (2, 1);
-select * from users;
-select * from roles;
-
-
