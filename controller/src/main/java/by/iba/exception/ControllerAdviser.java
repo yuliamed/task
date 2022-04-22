@@ -1,13 +1,16 @@
 package by.iba.exception;
 
 import by.iba.security.jwt.JwtAuthenticationException;
+import io.jsonwebtoken.JwtException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.DataBinder;
 import org.springframework.validation.FieldError;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -30,37 +33,36 @@ public class ControllerAdviser extends ResponseEntityExceptionHandler {
     @ExceptionHandler({ServiceException.class})
     public ResponseEntity<Object> handleServiceException(
             ServiceException ex) {
-        ApiError apiError = new ApiError("ServiceException", ex.getMessage(), HttpStatus.BAD_REQUEST);
-
+        ApiError apiError = new ApiError("ServiceException", ex.getMessage(), HttpStatus.BAD_REQUEST.value());
         return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler({ResourceNotFoundException.class})
     public ResponseEntity<Object> handleResourceNotFoundException(
             ResourceNotFoundException ex) {
-        ApiError apiError = new ApiError("ResourceNotFoundException", ex.getLocalizedMessage(), HttpStatus.NOT_FOUND);
+        ApiError apiError = new ApiError("ResourceNotFoundException", ex.getLocalizedMessage(), HttpStatus.NOT_FOUND.value());
 
         return new ResponseEntity<>(apiError, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler({AuthenticationException.class})
+    @ExceptionHandler({AuthenticationException.class, JwtAuthenticationException.class, UsernameNotFoundException.class})
     public ResponseEntity<Object> handleAuthenticationException(
             AuthenticationException ex) {
-        ApiError apiError = new ApiError("Error in authentication", "Check your authentication parameters", HttpStatus.BAD_REQUEST);
+        ApiError apiError = new ApiError("Error in authentication", "Check your authentication parameters", HttpStatus.BAD_REQUEST.value());
         return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler({JwtAuthenticationException.class})
-    public ResponseEntity<Object> handleAuthenticationException(
-            JwtAuthenticationException ex) {
-        ApiError apiError = new ApiError("Error in authorization with token", "Check your authorization parameters", HttpStatus.BAD_REQUEST);
+    @ExceptionHandler({JwtException.class})
+    public ResponseEntity<Object> handleJwtAuthenticationException(
+            JwtException ex) {
+        ApiError apiError = new ApiError("Error in authorization with token", "Check your authorization parameters", HttpStatus.BAD_REQUEST.value());
         return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler({UsernameNotFoundException.class})
     public ResponseEntity<Object> handleUsernameNotFoundException(
             UsernameNotFoundException ex) {
-        ApiError apiError = new ApiError("Error in authorization ", "Check your authorization parameters", HttpStatus.NOT_FOUND);
+        ApiError apiError = new ApiError("Error in authorization", ex.getMessage(), HttpStatus.NOT_FOUND.value());
         return new ResponseEntity<>(apiError, HttpStatus.NOT_FOUND);
     }
 
@@ -70,7 +72,7 @@ public class ControllerAdviser extends ResponseEntityExceptionHandler {
         List<ApiError> errorList = new ArrayList<>();
         for (FieldError e : ex.getErrors()) {
             errorList.add(new ApiError("Request parameter " + e.getField()
-                    +" is incorrect", e.getDefaultMessage(), HttpStatus.BAD_REQUEST));
+                    + " is incorrect", e.getDefaultMessage(), HttpStatus.BAD_REQUEST.value()));
         }
         return new ResponseEntity<>(errorList, HttpStatus.BAD_REQUEST);
     }
@@ -83,7 +85,7 @@ public class ControllerAdviser extends ResponseEntityExceptionHandler {
                 .stream()
                 .map(x -> x.getDefaultMessage())
                 .collect(Collectors.toList());
-        ApiError apiError = new ApiError("Method Argument Not Valid", errors.toString(), HttpStatus.BAD_REQUEST);
+        ApiError apiError = new ApiError("Method Argument Not Valid", errors.toString(), HttpStatus.BAD_REQUEST.value());
         return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
     }
 

@@ -16,13 +16,4 @@ public class ApiError {
     private String nameError;
     private String message;
     private Integer status;
-
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private List<String> errors;
-
-    public ApiError(String nameError, String message, HttpStatus badRequest) {
-        this.nameError = nameError;
-        this.message = message;
-        this.status = badRequest.value();
-    }
 }
