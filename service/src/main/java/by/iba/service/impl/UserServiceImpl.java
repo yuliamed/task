@@ -60,6 +60,7 @@ public class UserServiceImpl implements UserService {
         Role roleUser = roleRepository.getByName(TypeOfRole.USER.name());
         userToSave.getRoles().add(roleUser);
         User savedUser = userRepository.save(userToSave);
+
         String subject = "Confirm your account";
         String link = "http://localhost:8080/api/v1/mail/activate/" + userToSave.getActivationToken();
         mailService.sendEmail(userToSave.getEmail(), subject, link);
@@ -129,8 +130,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResp deleteImage(Long id) {
-        User user = getUserById(id);
+    public UserResp deleteImage() {
+        User user = getUserById(getUserIdFromAuth());
         user.setImageUrl(null);
         return userMapper.toDto(user);
     }
@@ -142,15 +143,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResp findById(Long id) {
-        User user = getUserById(id);
+    public UserResp getProfile() {
+        User user = getUserById(getUserIdFromAuth());
         return userMapper.toDto(user);
     }
 
     @Transactional
     @Override
-    public UserResp updateInfo(Long id, UserUpdateReq userUpdateReq) {
-        User user = getUserById(id);
+    public UserResp updateInfo(UserUpdateReq userUpdateReq) {
+        User user = getUserById(getUserIdFromAuth());
         setUserFields(user, userUpdateReq);
         userRepository.save(user);
         return userMapper.toDto(user);
@@ -159,11 +160,17 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     @Override
-    public UserResp saveImage(Long id, String imageUrl) {
-        User user = getUserById(id);
-        user.setImageUrl(Base64.getEncoder().encodeToString(imageUrl.getBytes()));
+    public UserResp saveImage(ImageReq image) {
+        User user = getUserById(getUserIdFromAuth());
+        user.setImageUrl(Base64.getEncoder().encodeToString(image.getImagePath().getBytes()));
         userRepository.save(user);
         return userMapper.toDto(user);
+    }
+
+    private Long getUserIdFromAuth(){
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        JwtUser jwtUser = (JwtUser) auth.getPrincipal();
+        return jwtUser.getId();
     }
 
     private User getUserById(Long id) {
