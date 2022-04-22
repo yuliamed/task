@@ -36,14 +36,14 @@ public class AdminController {
         return ResponseEntity.ok(user);
     }
 
-    @PutMapping("/users/{id}")
+    @PatchMapping("/users/{id}")
     public ResponseEntity<UserResp> addUserRole(@PathVariable("id") Long id, @RequestBody @Valid RoleReq role, BindingResult result) {
         ControllerHelper.checkBindingResultAndThrowExceptionIfInvalid(result);
         UserResp resp = service.addUserRole(id, role);
         return ResponseEntity.ok(resp);
     }
 
-    @PutMapping("/users/approve/{id}")
+    @PatchMapping("/users/approve/{id}")
     public ResponseEntity<UserResp> approveUser(@PathVariable("id") Long id) {
         UserResp user = service.approveUser(id);
         return ResponseEntity.ok(user);
