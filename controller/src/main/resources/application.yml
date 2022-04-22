@@ -1,14 +1,16 @@
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/spring-security
+    url: jdbc:postgresql://db:5432/spring-security
     username: root
     password: 1243
+  sql.init.mode: always
   jpa:
+    defer-datasource-initialization: true
     show-sql: true
     generate-ddl: false
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
   mail:
     protocol: smtps
     host: smtp.mail.ru
