@@ -12,12 +12,15 @@ import by.iba.exception.ServiceException;
 import by.iba.inteface.RoleRepository;
 import by.iba.inteface.UserRepository;
 import by.iba.mapper.UserMapper;
+import by.iba.security.service.JwtUser;
 import by.iba.service.AdminService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -36,21 +39,18 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public PageWrapper<UserResp> findAll(UserSearchCriteriaReq userSearchCriteriaReq) {
-
         Pageable pageable = PageRequest.of(userSearchCriteriaReq.getPageNumber(), userSearchCriteriaReq.getPageSize());
         Specification<User> specification = Specification.where(findBySurnameLike(userSearchCriteriaReq.getSurname()));
         specification = specification.and(findByNameLike(userSearchCriteriaReq.getName()));
 
         if (Objects.nonNull(userSearchCriteriaReq.getTypeOfRole())) {
-            Role userRole = getRoleByName(userSearchCriteriaReq.getTypeOfRole().name());
+            Role userRole = getRoleByName(userSearchCriteriaReq.getTypeOfRole());
             specification = specification.and((findByRole(userRole)));
         }
         if (Objects.nonNull(userSearchCriteriaReq.getIsActive())) {
             specification = specification.and(findByActiveStatus(userSearchCriteriaReq.getIsActive()));
         }
-
         Page<User> usersPage = userRepository.findAll(specification, pageable);
-
         List<UserResp> users = userMapper.toDtoList(usersPage.toList());
         return PageWrapper.of(users,
                 usersPage.getTotalPages(),
@@ -63,7 +63,7 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public UserResp addUserRole(Long userId, RoleReq roleReq) {
         User user = getUserById(userId);
-        Role userRole = getRoleByName(roleReq.getTypeOfRole().name());
+        Role userRole = getRoleByName(roleReq.getTypeOfRole());
         user.getRoles().add(userRole);
         userRepository.save(user);
         return userMapper.toDto(user);
@@ -86,7 +86,7 @@ public class AdminServiceImpl implements AdminService {
     @Override
     public UserResp banUser(Long id, UserBanReq userBanReq) {
         User user = userRepository.getById(id);
-        //checkSelfBanning()
+        checkSelfBanning(id);
         if (userBanReq.getIsBanned()) {
             if (Objects.nonNull(user.getBanDate())) {
                 throw new ServiceException("User with id = " + id + " is already banned");
@@ -98,6 +98,13 @@ public class AdminServiceImpl implements AdminService {
         userRepository.save(user);
 
         return userMapper.toDto(user);
+    }
+
+    private void checkSelfBanning(Long id) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        JwtUser jwtUser = (JwtUser) auth.getPrincipal();
+        Long adminId = jwtUser.getId();
+        if (adminId.equals(id)) throw new ServiceException("You can`t ban yourself, input another user id to ban");
     }
 
     private Role getRoleByName(String roleName) {
