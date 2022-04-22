@@ -23,4 +23,5 @@ public class UserResp extends AbstractResp {
     private String imageUrl;
     private Boolean isActive;
     private LocalDateTime banDate;
+    private String activationToken;
 }
