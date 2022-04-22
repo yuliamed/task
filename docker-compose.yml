@@ -19,8 +19,8 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
-      - ./pg-scripts:/docker-entrypoint-initdb.d
-      - ./db-scripts:/docker-entrypoint-initdb.d
+#      - ./pg-sqript:/docker-entrypoint-initdb.d
+     - ./db-sqripts:/docker-entrypoint-initdb.d
     networks:
       - backend
 networks:
