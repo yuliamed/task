@@ -34,6 +34,7 @@ public class AuthenticationController {
 
     @PostMapping("/sign-up")
     public ResponseEntity<UserResp> signUp(@Valid @RequestBody SignUpReq userReq, BindingResult result) {
+        ControllerHelper.checkBindingResultAndThrowExceptionIfInvalid(result);
         UserResp userResp = userService.signUp(userReq);
         return new ResponseEntity<>(userResp, HttpStatus.CREATED);
     }

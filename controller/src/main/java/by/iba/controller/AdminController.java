@@ -23,7 +23,8 @@ public class AdminController {
     private final AdminService service;
 
     @GetMapping("/users")
-    public ResponseEntity<PageWrapper<UserResp>> findAll(UserSearchCriteriaReq userSearchCriteriaReq) {
+    public ResponseEntity<PageWrapper<UserResp>> findAll(@Valid UserSearchCriteriaReq userSearchCriteriaReq, BindingResult result) {
+        ControllerHelper.checkBindingResultAndThrowExceptionIfInvalid(result);
         PageWrapper<UserResp> resp = service.findAll(userSearchCriteriaReq);
         return ResponseEntity.ok().body(resp);
     }
