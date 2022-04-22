@@ -13,7 +13,6 @@ import javax.validation.constraints.Positive;
 @Setter
 public class PagingCriteriaReq extends AbstractReq {
     @Min(value = 0, message = "Min number of page is 0")
-    @Positive(message = "Page Number must be positive")
     private Integer pageNumber = 0;
 
     @Positive(message = "Page Size must be positive")
