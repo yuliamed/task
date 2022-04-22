@@ -39,7 +39,7 @@ public class User extends TrackingAbstractEntity {
     private String activationToken;
     @Column(name = "token_creation_date")
     private LocalDateTime tokenCreationDate;
-    @Column(name = "last_visited_date", nullable = false)
+    @Column(name = "last_visit_date", nullable = false)
     private LocalDateTime lastVisitDate = LocalDateTime.now();
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles",

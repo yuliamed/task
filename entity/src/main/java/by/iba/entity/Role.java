@@ -17,7 +17,7 @@ import javax.persistence.Table;
 @NoArgsConstructor
 public class Role extends AbstractEntity{
 
-    @Column(name="role_name", length = 64, unique = true)
+    @Column(name="name", length = 64, unique = true)
     private String name;
 
 }
