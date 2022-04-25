@@ -1,11 +1,11 @@
 package by.iba.security.jwt;
 
 import by.iba.security.service.JwtUser;
-import io.jsonwebtoken.*;
-import lombok.AllArgsConstructor;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -40,7 +40,7 @@ public class JwtTokenProvider {
             Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
             return true;
         } catch (JwtException | IllegalArgumentException e) {
-            throw new JwtAuthenticationException("JWT token is expired or invalid");
+            throw new JwtException("JWT token is expired or invalid");
         }
     }
 
@@ -48,4 +48,7 @@ public class JwtTokenProvider {
         return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().get("email").toString();
     }
 
+    public Long getUserIdFromJwtToken(String token) {
+        return Long.getLong(Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody().get("id").toString());
+    }
 }

@@ -20,28 +20,28 @@ import javax.validation.Valid;
 public class UserController {
     private final UserService userService;
 
-    @GetMapping(value = "")
-    public ResponseEntity<UserResp> getProfile() {
-        UserResp user = userService.getProfile();
+    @GetMapping(value = "/{id}")
+    public ResponseEntity<UserResp> getProfile(@PathVariable("id") Long id) {
+        UserResp user = userService.getProfile(id);
         return ResponseEntity.ok(user);
     }
 
-    @PutMapping(value = "")
-    public ResponseEntity<UserResp> updateProfile(@Valid @RequestBody UserUpdateReq userUpdateReq, BindingResult result) {
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<UserResp> updateProfile(@PathVariable("id") Long id, @Valid @RequestBody UserUpdateReq userUpdateReq, BindingResult result) {
         ControllerHelper.checkBindingResultAndThrowExceptionIfInvalid(result);
-        UserResp user = userService.updateInfo(userUpdateReq);
+        UserResp user = userService.updateInfo(id,userUpdateReq);
         return ResponseEntity.ok(user);
     }
 
-    @PatchMapping(value = "/add-image")
-    public ResponseEntity<UserResp> saveImage(@RequestBody ImageReq imageUrl) {
-        UserResp resp = userService.saveImage(imageUrl);
+    @PatchMapping(value = "/{id}/add-image")
+    public ResponseEntity<UserResp> saveImage(@PathVariable("id") Long id, @RequestBody ImageReq imageUrl) {
+        UserResp resp = userService.saveImage(id,imageUrl);
         return ResponseEntity.ok(resp);
     }
 
-    @DeleteMapping(value = "/delete-image")
-    public ResponseEntity<UserResp> deleteImage() {
-        UserResp resp = userService.deleteImage();
+    @DeleteMapping(value = "/{id}/delete-image")
+    public ResponseEntity<UserResp> deleteImage(@PathVariable("id") Long id) {
+        UserResp resp = userService.deleteImage(id);
         return ResponseEntity.ok(resp);
     }
 

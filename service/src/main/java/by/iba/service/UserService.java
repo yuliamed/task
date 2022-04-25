@@ -14,15 +14,15 @@ public interface UserService {
 
     UserResp findByEmail(String email);
 
-    UserResp getProfile();
+    UserResp getProfile(Long id);
 
-    UserResp updateInfo( UserUpdateReq res);
+    UserResp updateInfo(Long id, UserUpdateReq res);
 
-    UserResp saveImage( ImageReq image);
+    UserResp saveImage(Long id, ImageReq image);
 
     ApiResp recoveryPass(EmailReq email);
 
     ApiResp resetPass(String token, ResetPassReq dto);
 
-    UserResp deleteImage();
+    UserResp deleteImage(Long id);
 }

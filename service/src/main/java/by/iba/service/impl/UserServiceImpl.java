@@ -17,10 +17,10 @@ import by.iba.security.service.JwtUser;
 import by.iba.service.MailService;
 import by.iba.service.UserService;
 import lombok.AllArgsConstructor;
-import org.springframework.mail.MailAuthenticationException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -41,7 +41,7 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final JwtTokenProvider jwtTokenProvider;
     private final AuthenticationManager authenticationManager;
-    private MailService mailService;
+    private final MailService mailService;
 
     private final Duration TOKEN_TIME_VALIDITY = Duration.ofMinutes(5);
 
@@ -57,13 +57,14 @@ public class UserServiceImpl implements UserService {
         User userToSave = userMapper.toEntityFromReq(userReq);
         userToSave.setPass(passwordEncoder.encode(userReq.getPass()));
         userToSave.setActivationToken(generateToken());
+        userToSave.setImageUrl(Base64.getEncoder().encodeToString(new String("picture").getBytes()));
         Role roleUser = roleRepository.getByName(TypeOfRole.USER.name());
         userToSave.getRoles().add(roleUser);
         User savedUser = userRepository.save(userToSave);
 
         String subject = "Confirm your account";
         String link = "http://localhost:8080/api/v1/mail/activate/" + userToSave.getActivationToken();
-        mailService.sendEmail(userToSave.getEmail(), subject, link);
+        // mailService.sendEmail(userToSave.getEmail(), subject, link);
 
         return userMapper.toDto(savedUser);
     }
@@ -129,11 +130,14 @@ public class UserServiceImpl implements UserService {
         return new ApiResp("Your pass was successfully changed");
     }
 
+    @Transactional
     @Override
-    public UserResp deleteImage() {
-        User user = getUserById(getUserIdFromAuth());
-        user.setImageUrl(null);
-        return userMapper.toDto(user);
+    public UserResp deleteImage(Long id) {
+        if (isChangeAllowed(id)) {
+            User user = getUserById(id);
+            user.setImageUrl(null);
+            return userMapper.toDto(user);
+        } else throw new ServiceException("Changes are not allowed!");
     }
 
     @Override
@@ -143,34 +147,49 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResp getProfile() {
-        User user = getUserById(getUserIdFromAuth());
-        return userMapper.toDto(user);
+    public UserResp getProfile(Long id) {
+        if (isChangeAllowed(id)) {
+            User user = getUserById(id);
+            return userMapper.toDto(user);
+        } else throw new ServiceException("Action is not allowed!");
     }
 
     @Transactional
     @Override
-    public UserResp updateInfo(UserUpdateReq userUpdateReq) {
-        User user = getUserById(getUserIdFromAuth());
-        setUserFields(user, userUpdateReq);
-        userRepository.save(user);
-        return userMapper.toDto(user);
+    public UserResp updateInfo(Long id, UserUpdateReq userUpdateReq) {
+        if (isChangeAllowed(id)) {
+            User user = getUserById(id);
+            setUserFields(user, userUpdateReq);
+            userRepository.save(user);
+            return userMapper.toDto(user);
+        } else throw new ServiceException("Changes are not allowed!");
     }
 
 
     @Transactional
     @Override
-    public UserResp saveImage(ImageReq image) {
-        User user = getUserById(getUserIdFromAuth());
-        user.setImageUrl(Base64.getEncoder().encodeToString(image.getImagePath().getBytes()));
-        userRepository.save(user);
-        return userMapper.toDto(user);
+    public UserResp saveImage(Long id, ImageReq image) {
+        if (isChangeAllowed(id)) {
+            User user = getUserById(id);
+            user.setImageUrl(Base64.getEncoder().encodeToString(image.getImagePath().getBytes()));
+            userRepository.save(user);
+            return userMapper.toDto(user);
+        } else throw new ServiceException("Changes are not allowed!");
+
     }
 
-    private Long getUserIdFromAuth(){
+    boolean isChangeAllowed(Long id) {
+        JwtUser userFromToken = getUserFromAuth();
+        if (userFromToken.getAuthorities().contains(
+                new SimpleGrantedAuthority(TypeOfRole.ADMIN.name())) || userFromToken.getId().equals(id))
+            return true;
+        return false;
+    }
+
+    private JwtUser getUserFromAuth() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         JwtUser jwtUser = (JwtUser) auth.getPrincipal();
-        return jwtUser.getId();
+        return jwtUser;
     }
 
     private User getUserById(Long id) {

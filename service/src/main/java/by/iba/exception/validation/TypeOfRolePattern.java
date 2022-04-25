@@ -1,7 +1,5 @@
 package by.iba.exception.validation;
 
-import by.iba.entity.TypeOfRole;
-
 import javax.validation.Constraint;
 import javax.validation.Payload;
 import java.lang.annotation.Documented;

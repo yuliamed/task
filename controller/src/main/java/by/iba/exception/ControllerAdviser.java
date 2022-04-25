@@ -59,12 +59,12 @@ public class ControllerAdviser extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler({UsernameNotFoundException.class})
-    public ResponseEntity<Object> handleUsernameNotFoundException(
-            UsernameNotFoundException ex) {
-        ApiError apiError = new ApiError("Error in authorization", ex.getMessage(), HttpStatus.NOT_FOUND.value());
-        return new ResponseEntity<>(apiError, HttpStatus.NOT_FOUND);
-    }
+//    @ExceptionHandler({UsernameNotFoundException.class})
+//    public ResponseEntity<Object> handleUsernameNotFoundException(
+//            UsernameNotFoundException ex) {
+//        ApiError apiError = new ApiError("Error in authorization", ex.getMessage(), HttpStatus.NOT_FOUND.value());
+//        return new ResponseEntity<>(apiError, HttpStatus.NOT_FOUND);
+//    }
 
     @ExceptionHandler({IllegalRequestException.class})
     public ResponseEntity<Object> handleIllegalRequestException(

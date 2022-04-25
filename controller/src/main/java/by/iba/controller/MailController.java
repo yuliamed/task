@@ -19,7 +19,7 @@ import javax.validation.Valid;
 public class MailController {
     private final UserService userService;
 
-    @PutMapping("/activate/{token}")
+    @PatchMapping("/activate/{token}")
     public ResponseEntity<UserResp> activateAccount(@PathVariable("token") String token) {
         UserResp resp = userService.confirmAccount(token);
         return ResponseEntity.ok(resp);
