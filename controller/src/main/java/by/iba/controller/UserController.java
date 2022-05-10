@@ -15,8 +15,9 @@ import javax.validation.Valid;
 
 @AllArgsConstructor
 @RestController
+@CrossOrigin
 @PreAuthorize("hasAnyAuthority('USER')")
-@RequestMapping("/api/v1/users")
+@RequestMapping(value="/api/v1/users/")
 public class UserController {
     private final UserService userService;
 
@@ -29,13 +30,13 @@ public class UserController {
     @PutMapping(value = "/{id}")
     public ResponseEntity<UserResp> updateProfile(@PathVariable("id") Long id, @Valid @RequestBody UserUpdateReq userUpdateReq, BindingResult result) {
         ControllerHelper.checkBindingResultAndThrowExceptionIfInvalid(result);
-        UserResp user = userService.updateInfo(id,userUpdateReq);
+        UserResp user = userService.updateInfo(id, userUpdateReq);
         return ResponseEntity.ok(user);
     }
 
     @PatchMapping(value = "/{id}/add-image")
     public ResponseEntity<UserResp> saveImage(@PathVariable("id") Long id, @RequestBody ImageReq imageUrl) {
-        UserResp resp = userService.saveImage(id,imageUrl);
+        UserResp resp = userService.saveImage(id, imageUrl);
         return ResponseEntity.ok(resp);
     }
 

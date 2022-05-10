@@ -47,8 +47,8 @@ public class JwtConfigurer extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(HttpSecurity http) throws Exception {
         http
-                .cors()
-                .and()
+//                .cors()
+//                .and()
                 .csrf().disable()
                 .exceptionHandling()
                 .authenticationEntryPoint(entryPointJwt)
@@ -60,7 +60,7 @@ public class JwtConfigurer extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/v1/auth/**").permitAll()
                 .antMatchers("/api/v1/mail/**").permitAll()
                 .antMatchers("/api/v1/admin/**").hasAnyAuthority("ADMIN")
-                .antMatchers("/api/v1/users/**").hasAnyAuthority("USER")
+                .antMatchers("/api/v1/users/**").hasAnyAuthority("USER")//permitAll()
                 .anyRequest()
                 .authenticated();
 
