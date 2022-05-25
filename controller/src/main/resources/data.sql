@@ -14,7 +14,7 @@ insert into users ( email,
 values ('admin@mail.ru',
         'admin',
         'admin',
-        '$2a$10$SJTmO168dU4AOwWGnHOn3uybCJ7I2SAC06enVIEsF7mjNvF9uBClO',--pass
+        '$2a$10$pN0ELR5AmWsqzrZ2iADn7elWYuHM2ozMiMOc0WFX7d2dwJoq2HSbu',--yulia13
         current_timestamp,
         current_timestamp,
         1,

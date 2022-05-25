@@ -11,6 +11,20 @@ services:
       - db
     networks:
       - backend
+
+  react-app:
+    build:
+      context: ../../react/react-frontend-task
+      dockerfile: ../../react/react-frontend-task/Dockerfile
+    ports:
+      - "3000:80"
+    restart: always
+    depends_on:
+      - app
+    networks:
+      - frontend
+
+
   db:
     image: postgres:13
     ports:
@@ -25,6 +39,7 @@ services:
       - backend
 networks:
   backend:
+  frontend:
 
 volumes:
   postgres:

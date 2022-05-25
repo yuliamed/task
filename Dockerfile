@@ -17,9 +17,9 @@ COPY security/pom.xml ./security
 COPY service/pom.xml ./service
 COPY pom.xml .
 
-RUN mvn clean package -Dmaven.test.skip -Dmaven.main.skip -Dspring-boot.repackage.skip && rm -r controller/target/
+RUN mvn clean package -P docker -Dmaven.test.skip -Dmaven.main.skip -Dspring-boot.repackage.skip && rm -r controller/target/
 
-RUN mvn clean package -Dmaven.test.skip
+RUN mvn clean package -P docker -Dmaven.test.skip
 
 RUN mkdir -p target/docker-packaging && cd target/docker-packaging && jar -xf /app/controller/target/controller*.jar
 
