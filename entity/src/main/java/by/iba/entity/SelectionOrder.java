@@ -10,26 +10,29 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name="selection_orders")
+@Table(name = "selection_orders")
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class SelectionOrder extends AbstractEntity{
-    @Column(name="min_year")
+public class SelectionOrder extends AbstractEntity {
+    @Column(name = "min_year")
     private Integer minYear;
 
-    @Column(name="max_price")
+    @Column(name = "max_price")
     private Integer maxPrice;//default in $
 
-    @Column(name="mileage")
+    @Column(name = "mileage")
     private Integer mileage;//default in km
 
-    @Column(name="min_engine_volume")
+    @Column(name = "min_engine_volume")
     private Integer minEngineVolume;//default in km
 
-    @Column(name="max_engine_volume")
+    @Column(name = "max_engine_volume")
     private Integer maxEngineVolume;//default in km
+
+    @Column(name = "additional_info", length = 500)
+    private String additionalInfo;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "selec_orders_drives",
@@ -54,4 +57,9 @@ public class SelectionOrder extends AbstractEntity{
             joinColumns = {@JoinColumn(name = "order_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "brand_id", referencedColumnName = "id")})
     private Set<CarBrand> brands = new HashSet<>();
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "car_picker")
+    private User carPicker;
+
 }
