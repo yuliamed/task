@@ -47,5 +47,11 @@ public class SelectionOrder extends AbstractEntity{
     @JoinTable(name = "selec_orders_engines",
             joinColumns = {@JoinColumn(name = "order_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "engine_id", referencedColumnName = "id")})
-    private Set<Transmission> engines = new HashSet<>();
+    private Set<Engine> engines = new HashSet<>();
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "selec_orders_car_brands",
+            joinColumns = {@JoinColumn(name = "order_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "brand_id", referencedColumnName = "id")})
+    private Set<CarBrand> brands = new HashSet<>();
 }
