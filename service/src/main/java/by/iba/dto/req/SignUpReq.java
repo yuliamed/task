@@ -1,7 +1,7 @@
 package by.iba.dto.req;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
@@ -9,7 +9,7 @@ import javax.validation.constraints.Pattern;
 
 @Getter
 @Setter
-@AllArgsConstructor
+@NoArgsConstructor
 public class SignUpReq extends AbstractReq {
     @NotBlank(message = "User name can`t be empty")
     private String name;
@@ -32,8 +32,10 @@ public class SignUpReq extends AbstractReq {
     private String pass;
 
     @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-zA-Zа-яА-Я]).{6,20}$",
-            message = "The confirm pass must contain digits and letters"+
+            message = "The confirm pass must contain digits and letters" +
                     "Min length of pass is 6, max length is 20")
     @NotBlank(message = "User confirm pass can`t be empty")
     private String confirmPass;
+
+    private Boolean isAutoPicker = false;
 }

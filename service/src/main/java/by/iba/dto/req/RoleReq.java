@@ -1,13 +1,12 @@
 package by.iba.dto.req;
 
 import by.iba.dto.AbstractDTO;
-import by.iba.entity.TypeOfRole;
+import by.iba.entity.enam.TypeOfRole;
 import by.iba.exception.validation.TypeOfRolePattern;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @Getter

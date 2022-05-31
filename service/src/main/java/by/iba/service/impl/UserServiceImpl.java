@@ -4,7 +4,7 @@ import by.iba.dto.req.*;
 import by.iba.dto.resp.ApiResp;
 import by.iba.dto.resp.UserResp;
 import by.iba.entity.Role;
-import by.iba.entity.TypeOfRole;
+import by.iba.entity.enam.TypeOfRole;
 import by.iba.entity.User;
 import by.iba.exception.ResourceNotFoundException;
 import by.iba.exception.ServiceException;
@@ -57,14 +57,19 @@ public class UserServiceImpl implements UserService {
         User userToSave = userMapper.toEntityFromReq(userReq);
         userToSave.setPass(passwordEncoder.encode(userReq.getPass()));
         userToSave.setActivationToken(generateToken());
-        userToSave.setImageUrl(Base64.getEncoder().encodeToString(new String("picture").getBytes()));
-        Role roleUser = roleRepository.getByName(TypeOfRole.USER.name());
+        userToSave.setImageUrl(Base64.getEncoder().encodeToString(("picture").getBytes()));
+        Role roleUser;
+        if (userReq.getIsAutoPicker()) {
+            roleUser = roleRepository.getByName(TypeOfRole.AUTO_PICKER.name());
+        } else {
+            roleUser = roleRepository.getByName(TypeOfRole.USER.name());
+        }
         userToSave.getRoles().add(roleUser);
         User savedUser = userRepository.save(userToSave);
 
         String subject = "Confirm your account";
         String link = "http://localhost:8080/api/v1/mail/activate/" + userToSave.getActivationToken();
-        // mailService.sendEmail(userToSave.getEmail(), subject, link);
+        mailService.sendEmail(userToSave.getEmail(), subject, link);
 
         return userMapper.toDto(savedUser);
     }

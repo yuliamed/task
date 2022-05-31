@@ -1,7 +1,7 @@
 package by.iba.dto.req;
 
 import by.iba.dto.page.PagingCriteriaReq;
-import by.iba.entity.TypeOfRole;
+import by.iba.entity.enam.TypeOfRole;
 import by.iba.exception.validation.TypeOfRolePattern;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
