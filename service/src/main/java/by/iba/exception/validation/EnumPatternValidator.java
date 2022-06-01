@@ -7,11 +7,11 @@ import java.util.stream.Collectors;
 
 import static java.util.stream.Stream.of;
 
-public class TypeOfRolePatternValidator implements ConstraintValidator<TypeOfRolePattern, String> {
+public class EnumPatternValidator implements ConstraintValidator<EnumPattern, String> {
     private List<String> acceptedValues;
 
     @Override
-    public void initialize(TypeOfRolePattern pattern) {
+    public void initialize(EnumPattern pattern) {
         acceptedValues = of(pattern.enumClass().getEnumConstants())
                 .map(Enum::name)
                 .collect(Collectors.toList());

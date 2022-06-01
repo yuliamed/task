@@ -1,4 +1,4 @@
-package by.iba.controller;
+package by.iba.controller.admin;
 
 import by.iba.dto.page.PageWrapper;
 import by.iba.dto.req.RoleReq;

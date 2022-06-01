@@ -1,5 +1,6 @@
 package by.iba.security.conf;
 
+import by.iba.entity.enam.TypeOfRole;
 import by.iba.security.jwt.EntryPointJwt;
 import by.iba.security.jwt.JwtTokenFilter;
 import by.iba.security.service.JwtUserDetailsService;
@@ -61,6 +62,8 @@ public class JwtConfigurer extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/api/v1/auth/**").permitAll()
                 .antMatchers("/api/v1/mail/**").permitAll()
+                .antMatchers("/api/v1/orders/**")
+                    .hasAnyAuthority(TypeOfRole.USER.name(), TypeOfRole.AUTO_PICKER.name())
                 .antMatchers("/api/v1/admin/**").hasAnyAuthority("ADMIN")
                 .antMatchers("/api/v1/users/**").permitAll()//hasAnyAuthority("USER")
                 .anyRequest()

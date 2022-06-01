@@ -1,7 +1,5 @@
 package by.iba.dto.resp;
 
-import by.iba.dto.req.RoleReq;
-import by.iba.entity.Role;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

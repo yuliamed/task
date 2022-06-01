@@ -1,4 +1,4 @@
-package by.iba.controller;
+package by.iba.controller.user;
 
 import by.iba.dto.req.ImageReq;
 import by.iba.dto.req.UserUpdateReq;

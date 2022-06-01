@@ -40,7 +40,8 @@ public class ControllerAdviser extends ResponseEntityExceptionHandler {
     @ExceptionHandler({ResourceNotFoundException.class})
     public ResponseEntity<Object> handleResourceNotFoundException(
             ResourceNotFoundException ex) {
-        ApiError apiError = new ApiError("ResourceNotFoundException", ex.getLocalizedMessage(), HttpStatus.NOT_FOUND.value());
+        ApiError apiError = new ApiError("ResourceNotFoundException", ex.getLocalizedMessage(),
+                HttpStatus.NOT_FOUND.value());
 
         return new ResponseEntity<>(apiError, HttpStatus.NOT_FOUND);
     }
@@ -48,14 +49,16 @@ public class ControllerAdviser extends ResponseEntityExceptionHandler {
     @ExceptionHandler({AuthenticationException.class, JwtAuthenticationException.class, UsernameNotFoundException.class})
     public ResponseEntity<Object> handleAuthenticationException(
             AuthenticationException ex) {
-        ApiError apiError = new ApiError("Error in authentication", "Check your authentication parameters", HttpStatus.BAD_REQUEST.value());
+        ApiError apiError = new ApiError("Error in authentication", "Check your authentication parameters",
+                HttpStatus.BAD_REQUEST.value());
         return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler({JwtException.class})
     public ResponseEntity<Object> handleJwtAuthenticationException(
             JwtException ex) {
-        ApiError apiError = new ApiError("Error in authorization with token", "Check your authorization parameters", HttpStatus.BAD_REQUEST.value());
+        ApiError apiError = new ApiError("Error in authorization with token",
+                "Check your authorization parameters", HttpStatus.BAD_REQUEST.value());
         return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
     }
 
@@ -85,7 +88,8 @@ public class ControllerAdviser extends ResponseEntityExceptionHandler {
                 .stream()
                 .map(x -> x.getDefaultMessage())
                 .collect(Collectors.toList());
-        ApiError apiError = new ApiError("Method Argument Not Valid", errors.toString(), HttpStatus.BAD_REQUEST.value());
+        ApiError apiError = new ApiError("Method Argument Not Valid", errors.toString(),
+                HttpStatus.BAD_REQUEST.value());
         return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
     }
 
@@ -93,7 +97,8 @@ public class ControllerAdviser extends ResponseEntityExceptionHandler {
     protected ResponseEntity<Object> handleHttpMessageNotReadable(
             HttpMessageNotReadableException ex, HttpHeaders headers,
             HttpStatus status, WebRequest request) {
-        ApiError apiError = new ApiError("Method Argument Not Valid", "You have sent empty body", HttpStatus.BAD_REQUEST.value());
+        ApiError apiError = new ApiError("Method Argument Not Valid",
+                "You have sent empty body", HttpStatus.BAD_REQUEST.value());
         return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
     }
 

@@ -12,8 +12,8 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Target({METHOD, FIELD, ANNOTATION_TYPE})
 @Retention(RUNTIME)
 @Documented
-@Constraint(validatedBy = TypeOfRolePatternValidator.class)
-public @interface TypeOfRolePattern {
+@Constraint(validatedBy = EnumPatternValidator.class)
+public @interface EnumPattern {
     Class<? extends Enum<?>> enumClass();
     String message() default "must be any of {anyOf}";
     Class<?>[] groups() default {};

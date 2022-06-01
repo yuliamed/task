@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -15,23 +16,24 @@ import java.util.Set;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class SelectionOrder extends AbstractEntity {
+public class SelectionOrder extends TrackingAbstractEntity {
     @Column(name = "min_year")
     private Integer minYear;
 
-    @Column(name = "max_price")
-    private Integer maxPrice;//default in $
+    @OneToOne(cascade = CascadeType.ALL)
+    //@PrimaryKeyJoinColumn
+    private Cost cost;
 
     @Column(name = "mileage")
     private Integer mileage;//default in km
 
     @Column(name = "min_engine_volume")
-    private Integer minEngineVolume;//default in km
+    private Double minEngineVolume;//default in km
 
     @Column(name = "max_engine_volume")
-    private Integer maxEngineVolume;//default in km
+    private Double maxEngineVolume;//default in km
 
-    @Column(name = "additional_info", length = 500)
+    @Column(name = "additional_info", length = 512)
     private String additionalInfo;
 
     @ManyToMany(fetch = FetchType.EAGER)
@@ -62,4 +64,7 @@ public class SelectionOrder extends AbstractEntity {
     @JoinColumn(name = "car_picker")
     private User carPicker;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "creator")
+    private User creator;
 }
