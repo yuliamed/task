@@ -27,6 +27,10 @@ public class SelectionOrder extends TrackingAbstractEntity {
     @Column(name = "mileage")
     private Integer mileage;//default in km
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "order_status")
+    private OrderStatus orderStatus;
+
     @Column(name = "min_engine_volume")
     private Double minEngineVolume;//default in km
 

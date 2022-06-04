@@ -1,5 +1,7 @@
 package by.iba.controller.user;
 
+import by.iba.dto.req.OrderStatusReq;
+import by.iba.dto.req.UserBanReq;
 import by.iba.dto.req.order.OrderReq;
 import by.iba.dto.resp.OrderResp;
 import by.iba.exception.ControllerHelper;
@@ -27,5 +29,13 @@ public class OrderController {
         ControllerHelper.checkBindingResultAndThrowExceptionIfInvalid(result);
         OrderResp orderResp = orderService.createOrder(orderReq);
         return new ResponseEntity<>(orderResp, HttpStatus.CREATED);
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<OrderResp> changeOrderStatus(@PathVariable("id") Long id,
+                                                       @RequestBody @Valid OrderStatusReq orderStatusReq,
+                                                       BindingResult result){
+        OrderResp order = orderService.changeOrderStatus(id, orderStatusReq);
+        return new ResponseEntity<>(order, HttpStatus.CREATED);
     }
 }

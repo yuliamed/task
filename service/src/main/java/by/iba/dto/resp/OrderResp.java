@@ -44,4 +44,6 @@ public class OrderResp extends AbstractResp {
 
     private UserResp creator;
 
+    private OrderStatus status;
+
 }

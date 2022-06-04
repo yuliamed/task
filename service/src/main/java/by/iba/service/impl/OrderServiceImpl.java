@@ -1,8 +1,10 @@
 package by.iba.service.impl;
 
+import by.iba.dto.req.OrderStatusReq;
 import by.iba.dto.req.order.*;
 import by.iba.dto.resp.OrderResp;
 import by.iba.entity.*;
+import by.iba.entity.enam.OrderStatusEnum;
 import by.iba.entity.enam.TypeOfRole;
 import by.iba.exception.ResourceNotFoundException;
 import by.iba.exception.ServiceException;
@@ -33,6 +35,7 @@ public class OrderServiceImpl implements OrderService {
     private final DriveRepository driveRepository;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final OrderStatusRepository orderStatusRepository;
 
     @Transactional
     @Override
@@ -43,6 +46,7 @@ public class OrderServiceImpl implements OrderService {
         newOrder.setTransmissions(mapToTransmissionEntity(orderReq.getTransmissions()));
         newOrder.setBrands(mapToCarBrandEntity(orderReq.getBrands()));
         newOrder.setCreator(getUserById(getUserFromAuth().getId()));
+        newOrder.setOrderStatus(orderStatusRepository.getByName(OrderStatusEnum.CREATED.name()));
         if (Objects.nonNull(orderReq.getCarPickerId())) {
             newOrder.setCarPicker(getCarPickerById(orderReq.getCarPickerId()));
         }
@@ -51,27 +55,33 @@ public class OrderServiceImpl implements OrderService {
         return resp;
     }
 
-    private User getCarPickerById(Long id) {
-        User user = getUserById(id);
-        boolean isAllowed = user.getRoles().contains(roleRepository.getByName(TypeOfRole.AUTO_PICKER.name()));
-        if (!isAllowed) throw new ServiceException("User with id = " + id + " can't be auto-picker");
-        return user;
-
-    }
-
-    private Set<CarBrand> mapToCarBrandEntity(Set<CarBrandReq> brands) {
-        Set<CarBrand> drives = new HashSet<>();
-        drives = brands.stream().map((dto) -> {
-                    if (Objects.isNull(dto)) return null;
-                    return carBrandRepository.findByName(dto.getName());
-                })
-                .collect(Collectors.toSet());
-        return drives;
-    }
-
     @Override
     public List<OrderResp> findAll(OrderSearchCriteriaReq searchReq) {
         return null;
+    }
+
+    @Override
+    public OrderResp changeOrderStatus(Long id, OrderStatusReq orderStatusReq) {
+        SelectionOrder editingOrder = getOrderById(id);
+        if (isChangingOrderStatusAllowed(orderStatusReq.getNewOrderStatus())) {
+            editingOrder.setOrderStatus(orderStatusRepository.getByName(
+                    orderStatusReq.getNewOrderStatus()));
+        }
+        editingOrder = orderRepository.save(editingOrder);
+        return orderMapper.toDto(editingOrder);
+    }
+
+    private boolean isChangingOrderStatusAllowed(String newOrderStatus) {
+        Set<Role> roles = getUserById(getUserFromAuth().getId()).getRoles();
+
+        if (newOrderStatus.equals(OrderStatusEnum.CANCELED.name())) {
+            if(!roles.contains(roleRepository.getByName(TypeOfRole.USER.name())))
+                return false;
+        } else if(newOrderStatus.equals(OrderStatusEnum.IN_PROCESS.name())){
+            if(roles.contains(roleRepository.getByName(TypeOfRole.USER.name())))
+                return false;
+        }
+        return true;
     }
 
     private Set<Drive> mapToDriveEntity(Set<DriveReq> drivesReq) {
@@ -109,9 +119,33 @@ public class OrderServiceImpl implements OrderService {
                 .orElseThrow(() -> new ResourceNotFoundException("There is no user with id = " + id));
     }
 
+    private SelectionOrder getOrderById(Long id) {
+        return orderRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("There is no order with id = " + id));
+    }
+
     private JwtUser getUserFromAuth() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         JwtUser jwtUser = (JwtUser) auth.getPrincipal();
         return jwtUser;
+    }
+
+
+    private User getCarPickerById(Long id) {
+        User user = getUserById(id);
+        boolean isAllowed = user.getRoles().contains(roleRepository.getByName(TypeOfRole.AUTO_PICKER.name()));
+        if (!isAllowed) throw new ServiceException("User with id = " + id + " can't be auto-picker");
+        return user;
+
+    }
+
+    private Set<CarBrand> mapToCarBrandEntity(Set<CarBrandReq> brands) {
+        Set<CarBrand> drives = new HashSet<>();
+        drives = brands.stream().map((dto) -> {
+                    if (Objects.isNull(dto)) return null;
+                    return carBrandRepository.findByName(dto.getName());
+                })
+                .collect(Collectors.toSet());
+        return drives;
     }
 }

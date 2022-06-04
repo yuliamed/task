@@ -15,7 +15,7 @@ import javax.persistence.Table;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class StatusOfOrder extends AbstractEntity{
+public class OrderStatus extends AbstractEntity{
 
     @Column(name="name", length = 64, unique = true)
     private String name;
