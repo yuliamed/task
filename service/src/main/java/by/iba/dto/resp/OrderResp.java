@@ -40,7 +40,7 @@ public class OrderResp extends AbstractResp {
 
     private LocalDateTime createdDate;
 
-    private UserResp carPicker;
+    private UserResp autoPicker;
 
     private UserResp creator;
 

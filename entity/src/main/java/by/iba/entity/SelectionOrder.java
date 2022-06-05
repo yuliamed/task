@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -18,7 +17,7 @@ import java.util.Set;
 @NoArgsConstructor
 public class SelectionOrder extends TrackingAbstractEntity {
     @Column(name = "min_year")
-    private Integer minYear;
+    private Integer minYear = 1900;
 
     @OneToOne(cascade = CascadeType.ALL)
     //@PrimaryKeyJoinColumn
@@ -65,8 +64,8 @@ public class SelectionOrder extends TrackingAbstractEntity {
     private Set<CarBrand> brands = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "car_picker")
-    private User carPicker;
+    @JoinColumn(name = "auto_picker")
+    private User autoPicker;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "creator")

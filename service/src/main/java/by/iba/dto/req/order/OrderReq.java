@@ -42,7 +42,7 @@ public class OrderReq extends AbstractReq {
     //TODO validation
     private Set<@Valid CarBrandReq> brands = new HashSet<>();
 
-    private Long carPickerId;
+    private Long autoPickerId;
 
 
 }

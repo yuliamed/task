@@ -1,5 +1,6 @@
 package by.iba.service.impl;
 
+import by.iba.dto.page.PageWrapper;
 import by.iba.dto.req.OrderStatusReq;
 import by.iba.dto.req.order.*;
 import by.iba.dto.resp.OrderResp;
@@ -13,16 +14,19 @@ import by.iba.mapper.OrderMapper;
 import by.iba.security.service.JwtUser;
 import by.iba.service.OrderService;
 import lombok.AllArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
+
+import static by.iba.inteface.specification.OrderSpecification.*;
 
 @Service
 @AllArgsConstructor
@@ -47,8 +51,8 @@ public class OrderServiceImpl implements OrderService {
         newOrder.setBrands(mapToCarBrandEntity(orderReq.getBrands()));
         newOrder.setCreator(getUserById(getUserFromAuth().getId()));
         newOrder.setOrderStatus(orderStatusRepository.getByName(OrderStatusEnum.CREATED.name()));
-        if (Objects.nonNull(orderReq.getCarPickerId())) {
-            newOrder.setCarPicker(getCarPickerById(orderReq.getCarPickerId()));
+        if (Objects.nonNull(orderReq.getAutoPickerId())) {
+            newOrder.setAutoPicker(getAutoPickerById(orderReq.getAutoPickerId()));
         }
         newOrder = orderRepository.save(newOrder);
         OrderResp resp = orderMapper.toDto(newOrder);
@@ -56,10 +60,39 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<OrderResp> findAll(OrderSearchCriteriaReq searchReq) {
-        return null;
+    public PageWrapper<OrderResp> findAll(OrderSearchCriteriaReq searchReq) {
+        Pageable pageable = PageRequest.of(searchReq.getPageNumber(), searchReq.getPageSize());
+
+        Specification<SelectionOrder> specification = Specification
+                .where(findByMinYear(searchReq.getMinYear()));
+        if (Objects.nonNull(searchReq.getMileage())) {
+            specification = specification.and(findByMaxMileage(searchReq.getMileage()));
+        }
+        if (Objects.nonNull(searchReq.getMinEngineVolume())) {
+            specification = specification.and(findByMinEngineVolume(searchReq.getMinEngineVolume()));
+        }
+        if(Objects.nonNull(searchReq.getMaxEngineVolume())){
+            specification = specification.and(findByMaxEngineVolume(searchReq.getMaxEngineVolume()));
+        }
+        if (Objects.nonNull(searchReq.getOrderStatus())) {
+            OrderStatus status = getOrderStatusByName(searchReq.getOrderStatus());
+            specification = specification.and((findByOrderStatus(status)));
+        }
+        if (Objects.nonNull(searchReq.getBrands())) {
+            List<CarBrand> brands = resolveBrands(searchReq.getBrands());
+            specification = specification.and(findAllByBrands(brands));
+        }
+
+        Page<SelectionOrder> orders = orderRepository.findAll(specification, pageable);
+        List<OrderResp> resp = orderMapper.toDtoList(orders.toList());
+        return PageWrapper.of(resp,
+                orders.getTotalPages(),
+                orders.getTotalElements(),
+                pageable.getPageNumber(),
+                pageable.getPageSize());
     }
 
+    @Transactional
     @Override
     public OrderResp changeOrderStatus(Long id, OrderStatusReq orderStatusReq) {
         SelectionOrder editingOrder = getOrderById(id);
@@ -71,15 +104,40 @@ public class OrderServiceImpl implements OrderService {
         return orderMapper.toDto(editingOrder);
     }
 
+    @Override
+    public List<OrderResp> getUsersOrders(Long id) {
+        Specification<SelectionOrder> specification = Specification.where(findByCreatorIDLike(id));
+        List<SelectionOrder> orders = orderRepository.findAll(specification);
+        return orderMapper.toDtoList(orders);
+    }
+
+    @Override
+    public List<OrderResp> getAutoPickersOrders(Long id) {
+        Specification<SelectionOrder> specification = Specification.where(findByAutoPickerIDLike(id));
+        List<SelectionOrder> orders = orderRepository.findAll(specification);
+        return orderMapper.toDtoList(orders);
+    }
+
+    private List<CarBrand> resolveBrands(List<String> brands) {
+        return Objects.isNull(brands) ?
+                Collections.emptyList() :
+                brands.stream()
+                        .map(brandName -> carBrandRepository.findByName(brandName)
+                                .orElse(new CarBrand()))
+                        .collect(Collectors.toList());
+    }
+
     private boolean isChangingOrderStatusAllowed(String newOrderStatus) {
         Set<Role> roles = getUserById(getUserFromAuth().getId()).getRoles();
 
         if (newOrderStatus.equals(OrderStatusEnum.CANCELED.name())) {
-            if(!roles.contains(roleRepository.getByName(TypeOfRole.USER.name())))
+            if (!roles.contains(roleRepository.getByName(TypeOfRole.USER.name())))
                 return false;
-        } else if(newOrderStatus.equals(OrderStatusEnum.IN_PROCESS.name())){
-            if(roles.contains(roleRepository.getByName(TypeOfRole.USER.name())))
+            else throw new ServiceException("You are not allowed to change status of order");
+        } else if (newOrderStatus.equals(OrderStatusEnum.IN_PROCESS.name())) {
+            if (roles.contains(roleRepository.getByName(TypeOfRole.USER.name())))
                 return false;
+            else throw new ServiceException("You are not allowed to change status of order");
         }
         return true;
     }
@@ -131,7 +189,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
 
-    private User getCarPickerById(Long id) {
+    private User getAutoPickerById(Long id) {
         User user = getUserById(id);
         boolean isAllowed = user.getRoles().contains(roleRepository.getByName(TypeOfRole.AUTO_PICKER.name()));
         if (!isAllowed) throw new ServiceException("User with id = " + id + " can't be auto-picker");
@@ -143,9 +201,17 @@ public class OrderServiceImpl implements OrderService {
         Set<CarBrand> drives = new HashSet<>();
         drives = brands.stream().map((dto) -> {
                     if (Objects.isNull(dto)) return null;
-                    return carBrandRepository.findByName(dto.getName());
+                    return carBrandRepository.findByName(dto.getName())
+                            .orElseThrow(() -> new ServiceException("There is no car brand with name = " + dto.getName()));
                 })
                 .collect(Collectors.toSet());
         return drives;
     }
+
+    private OrderStatus getOrderStatusByName(String status) {
+        return orderStatusRepository.findByName(status)
+                .orElseThrow(() -> new ResourceNotFoundException("There is no role order status with name = "
+                        + status));
+    }
+
 }

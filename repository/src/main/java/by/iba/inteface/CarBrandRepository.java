@@ -1,11 +1,12 @@
 package by.iba.inteface;
 
 import by.iba.entity.CarBrand;
-import by.iba.entity.Drive;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface CarBrandRepository extends JpaRepository<CarBrand, Long> {
-    CarBrand findByName(String name);
+    Optional<CarBrand> findByName(String name);
 }

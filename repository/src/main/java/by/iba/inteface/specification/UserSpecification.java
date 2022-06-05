@@ -7,7 +7,6 @@ import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.criteria.Predicate;
 
-@NoArgsConstructor
 public final class UserSpecification {
 
     public static Specification<User> findByRole(Role role) {
@@ -31,5 +30,4 @@ public final class UserSpecification {
         return (root, query, criteriaBuilder) ->
                 criteriaBuilder.equal(root.get("isActive"), status);
     }
-
 }
