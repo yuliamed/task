@@ -8,20 +8,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Column;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.validation.Valid;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.Pattern;
+import javax.validation.constraints.*;
 import java.util.HashSet;
 import java.util.Set;
 
 @NoArgsConstructor
 @Getter
 @Setter
-public class OrderReq extends AbstractReq {
+public class OrderUpdateReq extends AbstractReq {
 
     @Min(value = 1900)
     @Max(value = 2022)
@@ -36,6 +31,7 @@ public class OrderReq extends AbstractReq {
     @Pattern(regexp = ".{0,512}", message = "AdditionalInfo can`t be bigger then 512 symbols")
     private String additionalInfo;
 
+
     private Double costValue;
 
     @EnumPattern(enumClass = TypeOfCurrency.class, message = "Input correct name of currency type")
@@ -47,10 +43,6 @@ public class OrderReq extends AbstractReq {
 
     private Set<@Valid EngineReq> engines = new HashSet<>();
 
-    //TODO validation
     private Set<@Valid CarBrandReq> brands = new HashSet<>();
-
-    private Long autoPickerId;
-
 
 }

@@ -40,6 +40,7 @@ public class OrderServiceImpl implements OrderService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final OrderStatusRepository orderStatusRepository;
+    private final CurrencyTypeRepository currencyTypeRepository;
 
     @Transactional
     @Override
@@ -50,12 +51,41 @@ public class OrderServiceImpl implements OrderService {
         newOrder.setTransmissions(mapToTransmissionEntity(orderReq.getTransmissions()));
         newOrder.setBrands(mapToCarBrandEntity(orderReq.getBrands()));
         newOrder.setCreator(getUserById(getUserFromAuth().getId()));
+        newOrder.setCurrencyType(mapToCurrencyType(orderReq.getCurrencyType()));
         newOrder.setOrderStatus(orderStatusRepository.getByName(OrderStatusEnum.CREATED.name()));
         if (Objects.nonNull(orderReq.getAutoPickerId())) {
             newOrder.setAutoPicker(getAutoPickerById(orderReq.getAutoPickerId()));
         }
         newOrder = orderRepository.save(newOrder);
         OrderResp resp = orderMapper.toDto(newOrder);
+        return resp;
+    }
+
+    private CurrencyType mapToCurrencyType(String currencyType) {
+        CurrencyType type = currencyTypeRepository.findByName(currencyType)
+                .orElseThrow(()->new ServiceException("There is no currency type with name " + currencyType));
+        return type;
+    }
+
+    @Transactional
+    @Override
+    public OrderResp updateOrder(Long id, OrderUpdateReq orderReq) {
+        SelectionOrder editingOrder = getOrderById(id);
+
+        editingOrder.setMinYear(orderReq.getMinYear());
+        editingOrder.setMileage(orderReq.getMileage());
+        editingOrder.setMinEngineVolume(orderReq.getMinEngineVolume());
+        editingOrder.setMaxEngineVolume(orderReq.getMaxEngineVolume());
+        editingOrder.setAdditionalInfo(orderReq.getAdditionalInfo());
+        editingOrder.setCostValue(orderReq.getCostValue());
+
+        editingOrder.setDrives(mapToDriveEntity(orderReq.getDrives()));
+        editingOrder.setEngines(mapToEngineEntity(orderReq.getEngines()));
+        editingOrder.setTransmissions(mapToTransmissionEntity(orderReq.getTransmissions()));
+        editingOrder.setBrands(mapToCarBrandEntity(orderReq.getBrands()));
+        editingOrder.setCurrencyType(mapToCurrencyType(orderReq.getCurrencyType()));
+        editingOrder = orderRepository.save(editingOrder);
+        OrderResp resp = orderMapper.toDto(editingOrder);
         return resp;
     }
 
@@ -71,7 +101,7 @@ public class OrderServiceImpl implements OrderService {
         if (Objects.nonNull(searchReq.getMinEngineVolume())) {
             specification = specification.and(findByMinEngineVolume(searchReq.getMinEngineVolume()));
         }
-        if(Objects.nonNull(searchReq.getMaxEngineVolume())){
+        if (Objects.nonNull(searchReq.getMaxEngineVolume())) {
             specification = specification.and(findByMaxEngineVolume(searchReq.getMaxEngineVolume()));
         }
         if (Objects.nonNull(searchReq.getOrderStatus())) {

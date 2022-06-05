@@ -2,6 +2,8 @@ package by.iba.dto.resp;
 
 import by.iba.dto.req.order.CostReq;
 import by.iba.entity.*;
+import by.iba.entity.enam.TypeOfCurrency;
+import by.iba.exception.validation.EnumPattern;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -24,7 +26,9 @@ public class OrderResp extends AbstractResp {
 
     private Double maxEngineVolume;//default in km
 
-    private CostReq cost;
+    private Double costValue;
+
+    private CurrencyType currencyType;
 
     private Set<Drive> drives = new HashSet<>();
 

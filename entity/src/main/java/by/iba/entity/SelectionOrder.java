@@ -19,9 +19,16 @@ public class SelectionOrder extends TrackingAbstractEntity {
     @Column(name = "min_year")
     private Integer minYear = 1900;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    //@PrimaryKeyJoinColumn
-    private Cost cost;
+//    @OneToOne(cascade = CascadeType.ALL)
+//    //@PrimaryKeyJoinColumn
+//    private Cost cost;
+
+    @Column(name = "cost_value")
+    private Double costValue;
+
+    @ManyToOne
+    @JoinColumn(name = "currency_type_id")
+    private CurrencyType currencyType;
 
     @Column(name = "mileage")
     private Integer mileage;//default in km

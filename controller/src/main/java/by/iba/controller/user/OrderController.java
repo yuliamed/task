@@ -5,6 +5,7 @@ import by.iba.dto.req.OrderStatusReq;
 import by.iba.dto.req.UserSearchCriteriaReq;
 import by.iba.dto.req.order.OrderReq;
 import by.iba.dto.req.order.OrderSearchCriteriaReq;
+import by.iba.dto.req.order.OrderUpdateReq;
 import by.iba.dto.resp.OrderResp;
 import by.iba.dto.resp.UserResp;
 import by.iba.exception.ControllerHelper;
@@ -41,6 +42,15 @@ public class OrderController {
                                                        BindingResult result) {
         ControllerHelper.checkBindingResultAndThrowExceptionIfInvalid(result);
         OrderResp order = orderService.changeOrderStatus(id, orderStatusReq);
+        return new ResponseEntity<>(order, HttpStatus.OK);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<OrderResp> updateOrder(@PathVariable("id") Long id,
+                                                       @RequestBody @Valid OrderUpdateReq req,
+                                                       BindingResult result) {
+        ControllerHelper.checkBindingResultAndThrowExceptionIfInvalid(result);
+        OrderResp order = orderService.updateOrder(id, req);
         return new ResponseEntity<>(order, HttpStatus.OK);
     }
 
