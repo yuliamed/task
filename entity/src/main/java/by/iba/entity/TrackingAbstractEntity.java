@@ -31,7 +31,7 @@ public abstract class TrackingAbstractEntity extends AbstractEntity {
     }
 
     @PreUpdate
-    private void abstractEntityPreUpdate() {
+    protected void abstractEntityPreUpdate() {
         if (Objects.nonNull(this.version)){
             this.version++;
         }

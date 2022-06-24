@@ -19,4 +19,5 @@ import javax.persistence.Table;
 public class CurrencyType extends AbstractEntity {
     @Column(name="name", length = 32, unique = true)
     private String name;
+    private Double rateRelativeDollar;
 }

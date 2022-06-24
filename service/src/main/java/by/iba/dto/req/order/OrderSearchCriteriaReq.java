@@ -19,4 +19,7 @@ public class OrderSearchCriteriaReq extends PagingCriteriaReq {
     private List<String> brands;
     private String engine;
     private String body;
+    private Double rangeFrom = 10.0;
+    private Double rangeTo = 1000000.0;
+    private String currencyType = "USD";
 }

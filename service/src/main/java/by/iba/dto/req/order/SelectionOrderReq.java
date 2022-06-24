@@ -23,9 +23,9 @@ public class SelectionOrderReq extends AbstractReq {
 
     @NotNull
     private Integer mileage;//default in km
-
+    @NotNull
     private Double rangeFrom;
-
+    @NotNull
     private Double rangeTo;
 
     private Double minEngineVolume;//default in km

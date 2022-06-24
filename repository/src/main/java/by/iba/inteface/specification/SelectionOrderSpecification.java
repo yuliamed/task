@@ -25,14 +25,14 @@ public class SelectionOrderSpecification {
 
     public static Specification<SelectionOrder> findByMinEngineVolume(Double minEngineVolume) {
         return (root, query, criteriaBuilder) ->
-                criteriaBuilder.greaterThan(root.get("minEngineVolume"),minEngineVolume);
+                criteriaBuilder.greaterThan(root.get("minEngineVolume"), minEngineVolume);
     }
 
     public static Specification<SelectionOrder> findByMaxEngineVolume(Double maxEngineVolume) {
         Specification<SelectionOrder> res = (root, query, criteriaBuilder) ->
-                criteriaBuilder.lessThan(root.get("maxEngineVolume"),maxEngineVolume);
+                criteriaBuilder.lessThan(root.get("maxEngineVolume"), maxEngineVolume);
         res.or((root, query, criteriaBuilder) ->
-                criteriaBuilder.equal(root.get("maxEngineVolume"),maxEngineVolume));
+                criteriaBuilder.equal(root.get("maxEngineVolume"), maxEngineVolume));
         return res;
     }
 
@@ -48,6 +48,22 @@ public class SelectionOrderSpecification {
                     builder.or(predicates.toArray(new Predicate[predicates.size()]));
 
         };
+    }
+
+    public static Specification<SelectionOrder> findAllByRangeFrom(Double rangeFrom) {
+        Specification<SelectionOrder> res = (root, query, criteriaBuilder) ->
+                criteriaBuilder.greaterThan(root.get("currencyRangeFrom"), rangeFrom);
+        res.or((root, query, criteriaBuilder) ->
+                criteriaBuilder.equal(root.get("currencyRangeFrom"), rangeFrom));
+        return res;
+    }
+
+    public static Specification<SelectionOrder> findAllByRangeTo(Double rangeTo) {
+        Specification<SelectionOrder> res = (root, query, criteriaBuilder) ->
+                criteriaBuilder.lessThan(root.get("currencyRangeTo"), rangeTo);
+        res.or((root, query, criteriaBuilder) ->
+                criteriaBuilder.equal(root.get("currencyRangeTo"), rangeTo));
+        return res;
     }
 
     public static Specification<SelectionOrder> findAllByEngine(Engine engine) {

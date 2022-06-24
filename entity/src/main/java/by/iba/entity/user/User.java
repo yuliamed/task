@@ -42,7 +42,7 @@ public class User extends TrackingAbstractEntity {
     private LocalDateTime tokenCreationDate;
     @Column(name = "last_visit_date", nullable = false)
     private LocalDateTime lastVisitDate = LocalDateTime.now();
-    //todo ADD PHONE_NUMBER
+    // todo ADD PHONE_NUMBER
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles",
             joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")},

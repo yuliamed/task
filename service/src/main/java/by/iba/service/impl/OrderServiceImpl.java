@@ -60,7 +60,7 @@ public class OrderServiceImpl implements OrderService {
         newOrder.setTransmissions(mapToTransmissionEntity(orderReq.getTransmissions()));
         newOrder.setBrands(mapToCarBrandEntity(orderReq.getBrands()));
         newOrder.setCreator(getUserById(getUserFromAuth().getId()));
-        newOrder.setCurrencyType(mapToCurrencyType(orderReq.getCurrencyType()));
+        newOrder.setCurrencyType(getCurrencyTypeByName(orderReq.getCurrencyType()));
         newOrder.setOrderStatus(orderStatusRepository.getByName(OrderStatusEnum.CREATED.name()));
         newOrder.setBodies(mapToBodyEntity(orderReq.getBodies()));
         if (Objects.nonNull(orderReq.getAutoPickerId())) {
@@ -101,7 +101,7 @@ public class OrderServiceImpl implements OrderService {
         editingOrder.setTransmissions(mapToTransmissionEntity(orderReq.getTransmissions()));
         editingOrder.setBodies(mapToBodyEntity(orderReq.getBodies()));
         editingOrder.setBrands(mapToCarBrandEntity(orderReq.getBrands()));
-        editingOrder.setCurrencyType(mapToCurrencyType(orderReq.getCurrencyType()));
+        editingOrder.setCurrencyType(getCurrencyTypeByName(orderReq.getCurrencyType()));
         editingOrder = orderRepository.save(editingOrder);
         OrderResp resp = selectionOrderMapper.toDto(editingOrder);
         return resp;
@@ -210,6 +210,16 @@ public class OrderServiceImpl implements OrderService {
             List<CarBrand> brands = resolveBrands(searchReq.getBrands());
             specification = specification.and(findAllByBrands(brands));
         }
+
+        CurrencyType currencyType = getCurrencyTypeByName(searchReq.getCurrencyType());
+        // range from
+        Double currencyRangeFrom = searchReq.getRangeFrom() / currencyType.getRateRelativeDollar();
+        specification = specification.and(findAllByRangeFrom(currencyRangeFrom));
+
+        // range to
+        Double currencyRangeTo = searchReq.getRangeTo() / currencyType.getRateRelativeDollar();
+        specification = specification.and(findAllByRangeTo(currencyRangeTo));
+
         return specification;
     }
 
@@ -322,7 +332,7 @@ public class OrderServiceImpl implements OrderService {
                         + engine));
     }
 
-    private CurrencyType mapToCurrencyType(String currencyType) {
+    private CurrencyType getCurrencyTypeByName(String currencyType) {
         CurrencyType type = currencyTypeRepository.findByName(currencyType)
                 .orElseThrow(() -> new ServiceException("There is no currency type with name " + currencyType));
         return type;

@@ -25,6 +25,18 @@ public class SelectionOrder extends Order {
     @Column(name = "range_to")
     private Double rangeTo;
 
+    @Column(name = "currency_range_from")
+    private Double currencyRangeFrom;
+
+    @Column(name = "currency_range_to")
+    private Double currencyRangeTo;
+
+    public void abstractEntityPreUpdate() {
+        super.abstractEntityPreUpdate();
+        currencyRangeTo = rangeTo / currencyType.getRateRelativeDollar();
+        currencyRangeFrom = rangeFrom / currencyType.getRateRelativeDollar();
+    }
+
     @ManyToOne
     @JoinColumn(name = "currency_type_id")
     private CurrencyType currencyType;

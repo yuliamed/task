@@ -30,11 +30,12 @@ public class SelectionOrderUpdateReq extends AbstractReq {
 
     @Pattern(regexp = ".{0,512}", message = "Additional Info can`t be bigger then 512 symbols")
     private String additionalInfo;
-
+    @NotNull
     private Double rangeFrom;
-
+    @NotNull
     private Double rangeTo;
 
+    @NotBlank
     @EnumPattern(enumClass = CurrencyEnum.class, message = "Input correct name of currency type")
     private String currencyType;
 
