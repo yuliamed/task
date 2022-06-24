@@ -1,7 +1,9 @@
 package by.iba.service.impl;
 
 import by.iba.dto.page.PageWrapper;
+import by.iba.dto.req.InspectionOrderReq;
 import by.iba.dto.req.order.*;
+import by.iba.dto.resp.InspectionOrderResp;
 import by.iba.dto.resp.OrderResp;
 import by.iba.entity.enam.OrderStatusEnum;
 import by.iba.entity.enam.RoleEnum;
@@ -11,6 +13,7 @@ import by.iba.entity.user.User;
 import by.iba.exception.ResourceNotFoundException;
 import by.iba.exception.ServiceException;
 import by.iba.inteface.*;
+import by.iba.mapper.InspectionOrderMapper;
 import by.iba.mapper.SelectionOrderMapper;
 import by.iba.security.service.JwtUser;
 import by.iba.service.OrderService;
@@ -40,6 +43,7 @@ public class OrderServiceImpl implements OrderService {
     private final TransmissionRepository transmissionRepository;
     private final CarBrandRepository carBrandRepository;
     private final SelectionOrderMapper selectionOrderMapper;
+    private final InspectionOrderMapper inspectionOrderMapper;
     private final DriveRepository driveRepository;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
@@ -47,11 +51,10 @@ public class OrderServiceImpl implements OrderService {
     private final CurrencyTypeRepository currencyTypeRepository;
     private final BodyRepository bodyRepository;
 
-    // todo - переделать согласно тому, что есть 2 типа заказа
     @Transactional
     @Override
     public OrderResp createSelectionOrder(SelectionOrderReq orderReq) {
-        SelectionOrder newOrder = (SelectionOrder) selectionOrderMapper.toEntityFromReq(orderReq);
+        SelectionOrder newOrder = selectionOrderMapper.toEntityFromReq(orderReq);
         newOrder.setDrives(mapToDriveEntity(orderReq.getDrives()));
         newOrder.setEngines(mapToEngineEntity(orderReq.getEngines()));
         newOrder.setTransmissions(mapToTransmissionEntity(orderReq.getTransmissions()));
@@ -69,25 +72,15 @@ public class OrderServiceImpl implements OrderService {
         return resp;
     }
 
-//    @Transactional
-//    @Override
-//    public OrderResp createInspectionOrder(InspectionOrderReq orderReq) {
-//        InspectionOrder newOrder = orderMapper.toEntityFromReq(orderReq);
-//        newOrder.setDrives(mapToDriveEntity(orderReq.getDrives()));
-//        newOrder.setEngines(mapToEngineEntity(orderReq.getEngines()));
-//        newOrder.setTransmissions(mapToTransmissionEntity(orderReq.getTransmissions()));
-//        newOrder.setBrands(mapToCarBrandEntity(orderReq.getBrands()));
-//        newOrder.setCreator(getUserById(getUserFromAuth().getId()));
-//        newOrder.setCurrencyType(mapToCurrencyType(orderReq.getCurrencyType()));
-//        newOrder.setOrderStatus(orderStatusRepository.getByName(OrderStatusEnum.CREATED.name()));
-//        if (Objects.nonNull(orderReq.getAutoPickerId())) {
-//            newOrder.setAutoPicker(getAutoPickerById(orderReq.getAutoPickerId()));
-//        }
-//        newOrder = selectionOrderRepository.save(newOrder);
-//        OrderResp resp = orderMapper.toDto(newOrder);
-//        Order order = orderRepository.getById(newOrder.getId());
-//        return resp;
-//    }
+    // todo заполнить сущности inspection order
+    @Transactional
+    @Override
+    public InspectionOrderResp createInspectionOrder(InspectionOrderReq orderReq) {
+        InspectionOrder newOrder = inspectionOrderMapper.toEntityFromReq(orderReq);
+        newOrder = orderRepository.save(newOrder);
+        InspectionOrderResp resp = inspectionOrderMapper.toDto(newOrder);
+        return resp;
+    }
 
     // todo - переделать согласно тому, что есть 2 типа заказа
     @Transactional
@@ -119,7 +112,7 @@ public class OrderServiceImpl implements OrderService {
         Pageable pageable = PageRequest.of(searchReq.getPageNumber(), searchReq.getPageSize());
 
         Specification<SelectionOrder> specification = buildSelectionOrderSpecification(searchReq);
-// поиск по заказам подбора
+        // поиск по заказам подбора
         Page<SelectionOrder> orders = selectionOrderRepository.findAll(specification, pageable);
         List<OrderResp> resp = selectionOrderMapper.toDtoList(orders.toList());
         return PageWrapper.of(resp,
@@ -139,7 +132,7 @@ public class OrderServiceImpl implements OrderService {
             throw new ServiceException("User with id = " + autoPickerReq.getAutoPickerId() +
                     " is not auto-picker!");
         editingOrder.setAutoPicker(user);
-        //todo - mapper for selection order and simple order
+        // todo - mapper for selection order and simple order
         editingOrder = orderRepository.save(editingOrder);
         //return orderMapper.toDto(editingOrder);
         return null;

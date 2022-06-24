@@ -1,11 +1,13 @@
 package by.iba.service;
 
 import by.iba.dto.page.PageWrapper;
+import by.iba.dto.req.InspectionOrderReq;
 import by.iba.dto.req.order.OrderAutoPickerReq;
 import by.iba.dto.req.order.OrderStatusReq;
 import by.iba.dto.req.order.SelectionOrderReq;
 import by.iba.dto.req.order.OrderSearchCriteriaReq;
 import by.iba.dto.req.order.SelectionOrderUpdateReq;
+import by.iba.dto.resp.InspectionOrderResp;
 import by.iba.dto.resp.OrderResp;
 
 import javax.transaction.Transactional;
@@ -13,6 +15,9 @@ import java.util.List;
 
 public interface OrderService {
     OrderResp createSelectionOrder(SelectionOrderReq orderReq);
+
+    @Transactional
+    InspectionOrderResp createInspectionOrder(InspectionOrderReq orderReq);
 
     @Transactional
     OrderResp updateSelectionOrder(Long Id, SelectionOrderUpdateReq orderReq);
