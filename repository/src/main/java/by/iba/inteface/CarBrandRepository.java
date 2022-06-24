@@ -1,6 +1,6 @@
 package by.iba.inteface;
 
-import by.iba.entity.CarBrand;
+import by.iba.entity.order.CarBrand;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

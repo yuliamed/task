@@ -1,6 +1,6 @@
 package by.iba.inteface;
 
-import by.iba.entity.User;
+import by.iba.entity.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;

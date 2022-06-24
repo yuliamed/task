@@ -1,6 +1,6 @@
 package by.iba.security.service;
 
-import by.iba.entity.User;
+import by.iba.entity.user.User;
 import by.iba.inteface.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetailsService;

@@ -1,9 +1,6 @@
 package by.iba.dto.resp;
 
-import by.iba.dto.req.order.CostReq;
-import by.iba.entity.*;
-import by.iba.entity.enam.TypeOfCurrency;
-import by.iba.exception.validation.EnumPattern;
+import by.iba.entity.order.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -16,8 +13,20 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 public class OrderResp extends AbstractResp {
+    // Common info
     private Long id;
 
+    private LocalDateTime lastUpdateDate;
+
+    private LocalDateTime createdDate;
+
+    private UserResp autoPicker;
+
+    private UserResp creator;
+
+    private OrderStatus status;
+
+    // Selection info
     private Integer minYear;
 
     private Integer mileage;//default in km
@@ -27,6 +36,10 @@ public class OrderResp extends AbstractResp {
     private Double maxEngineVolume;//default in km
 
     private Double costValue;
+
+    private Double rangeFrom;
+
+    private Double rangeTo;
 
     private CurrencyType currencyType;
 
@@ -38,16 +51,10 @@ public class OrderResp extends AbstractResp {
 
     private Set<CarBrand> brands = new HashSet<>();
 
+    private Set<Body> bodies = new HashSet<>();
+
     private String additionalInfo;
 
-    private LocalDateTime lastUpdateDate;
-
-    private LocalDateTime createdDate;
-
-    private UserResp autoPicker;
-
-    private UserResp creator;
-
-    private OrderStatus status;
+    // Inspection Info
 
 }

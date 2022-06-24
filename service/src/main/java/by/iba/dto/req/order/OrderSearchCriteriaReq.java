@@ -17,4 +17,6 @@ public class OrderSearchCriteriaReq extends PagingCriteriaReq {
     private Double maxEngineVolume;
     private String orderStatus;
     private List<String> brands;
+    private String engine;
+    private String body;
 }

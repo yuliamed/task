@@ -3,7 +3,10 @@ package by.iba.controller;
 import by.iba.dto.req.SignInReq;
 import by.iba.dto.req.SignUpReq;
 import by.iba.dto.resp.UserResp;
+import by.iba.entity.enam.BodyTypeEnum;
+import by.iba.entity.order.Body;
 import by.iba.exception.ControllerHelper;
+import by.iba.inteface.BodyRepository;
 import by.iba.security.dto.JwtResp;
 import by.iba.service.UserService;
 import lombok.AllArgsConstructor;
@@ -22,6 +25,7 @@ import javax.validation.Valid;
 public class AuthenticationController {
 
     private final UserService userService;
+    private final BodyRepository repository;
 
     @PostMapping("/sign-in")
     public ResponseEntity<JwtResp> signIn(@RequestBody @Valid SignInReq request, BindingResult result) {

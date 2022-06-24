@@ -1,6 +1,6 @@
 package by.iba.security.conf;
 
-import by.iba.entity.enam.TypeOfRole;
+import by.iba.entity.enam.RoleEnum;
 import by.iba.security.jwt.EntryPointJwt;
 import by.iba.security.jwt.JwtTokenFilter;
 import by.iba.security.service.JwtUserDetailsService;
@@ -15,8 +15,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableWebSecurity
@@ -63,7 +61,7 @@ public class JwtConfigurer extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/v1/auth/**").permitAll()
                 .antMatchers("/api/v1/mail/**").permitAll()
                 .antMatchers("/api/v1/orders/**")
-                    .hasAnyAuthority(TypeOfRole.USER.name(), TypeOfRole.AUTO_PICKER.name())
+                    .hasAnyAuthority(RoleEnum.USER.name(), RoleEnum.AUTO_PICKER.name(), RoleEnum.ADMIN.name())
                 .antMatchers("/api/v1/admin/**").hasAnyAuthority("ADMIN")
                 .antMatchers("/api/v1/users/**").permitAll()//hasAnyAuthority("USER")
                 .anyRequest()

@@ -1,8 +1,7 @@
 package by.iba.dto.req.order;
 
 import by.iba.dto.req.AbstractReq;
-import by.iba.entity.enam.TypeOfDrive;
-import by.iba.entity.enam.TypeOfTransmission;
+import by.iba.entity.enam.TransmissionEnum;
 import by.iba.exception.validation.EnumPattern;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,6 +11,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class TransmissionReq extends AbstractReq {
-    @EnumPattern(enumClass = TypeOfTransmission.class)
+    @EnumPattern(enumClass = TransmissionEnum.class)
     private String name;
 }

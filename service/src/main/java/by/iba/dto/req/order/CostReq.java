@@ -1,7 +1,6 @@
 package by.iba.dto.req.order;
 
-import by.iba.entity.CurrencyType;
-import by.iba.entity.enam.TypeOfCurrency;
+import by.iba.entity.enam.CurrencyEnum;
 import by.iba.exception.validation.EnumPattern;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,6 +16,6 @@ public class CostReq {
     private Double value;
 
     @NotNull
-    @EnumPattern(enumClass = TypeOfCurrency.class, message = "Input correct name of currency type")
+    @EnumPattern(enumClass = CurrencyEnum.class, message = "Input correct name of currency type")
     private String type;
 }

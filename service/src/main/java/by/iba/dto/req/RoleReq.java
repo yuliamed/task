@@ -1,7 +1,7 @@
 package by.iba.dto.req;
 
 import by.iba.dto.AbstractDTO;
-import by.iba.entity.enam.TypeOfRole;
+import by.iba.entity.enam.RoleEnum;
 import by.iba.exception.validation.EnumPattern;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,7 +13,7 @@ import javax.validation.constraints.NotNull;
 @Setter
 @NoArgsConstructor
 public class RoleReq extends AbstractDTO {
-    @EnumPattern(enumClass = TypeOfRole.class)
+    @EnumPattern(enumClass = RoleEnum.class)
     @NotNull(message = "type of role can`t be empty")
     private String typeOfRole;
 }

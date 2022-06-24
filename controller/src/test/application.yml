@@ -1,0 +1,24 @@
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://db:5432/spring-security
+    username: root
+    password: 1243
+  #sql.init.mode: always
+  jpa:
+   defer-datasource-initialization: true
+    show-sql: true
+    generate-ddl: false
+    hibernate:
+      ddl-auto: none
+  mail:
+    protocol: smtps
+    host: smtp.mail.ru
+    port: 465
+    username: test_my_sender
+    password: 'VpWXD3mxgBSb2VaGDPmT'
+
+jwt:
+  token:
+    secret: jwtapp
+    expired: 3600000

@@ -1,8 +1,7 @@
 package by.iba.inteface.specification;
 
-import by.iba.entity.Role;
-import by.iba.entity.User;
-import lombok.NoArgsConstructor;
+import by.iba.entity.user.Role;
+import by.iba.entity.user.User;
 import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.criteria.Predicate;

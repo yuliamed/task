@@ -1,7 +1,6 @@
 package by.iba.inteface;
 
-import by.iba.entity.CurrencyType;
-import jdk.nashorn.internal.runtime.options.Option;
+import by.iba.entity.order.CurrencyType;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

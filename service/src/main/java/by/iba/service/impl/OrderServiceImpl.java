@@ -1,16 +1,17 @@
 package by.iba.service.impl;
 
 import by.iba.dto.page.PageWrapper;
-import by.iba.dto.req.OrderStatusReq;
 import by.iba.dto.req.order.*;
 import by.iba.dto.resp.OrderResp;
-import by.iba.entity.*;
 import by.iba.entity.enam.OrderStatusEnum;
-import by.iba.entity.enam.TypeOfRole;
+import by.iba.entity.enam.RoleEnum;
+import by.iba.entity.order.*;
+import by.iba.entity.user.Role;
+import by.iba.entity.user.User;
 import by.iba.exception.ResourceNotFoundException;
 import by.iba.exception.ServiceException;
 import by.iba.inteface.*;
-import by.iba.mapper.OrderMapper;
+import by.iba.mapper.SelectionOrderMapper;
 import by.iba.security.service.JwtUser;
 import by.iba.service.OrderService;
 import lombok.AllArgsConstructor;
@@ -26,26 +27,31 @@ import javax.transaction.Transactional;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static by.iba.inteface.specification.OrderSpecification.*;
+import static by.iba.inteface.specification.OrderSpecification.findByAutoPickerIDLike;
+import static by.iba.inteface.specification.OrderSpecification.findByCreatorIDLike;
+import static by.iba.inteface.specification.SelectionOrderSpecification.*;
 
 @Service
 @AllArgsConstructor
 public class OrderServiceImpl implements OrderService {
-    private final SelectionOrderRepository orderRepository;
+    private final SelectionOrderRepository selectionOrderRepository;
+    private final OrderRepository orderRepository;
     private final EngineRepository engineRepository;
     private final TransmissionRepository transmissionRepository;
     private final CarBrandRepository carBrandRepository;
-    private final OrderMapper orderMapper;
+    private final SelectionOrderMapper selectionOrderMapper;
     private final DriveRepository driveRepository;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final OrderStatusRepository orderStatusRepository;
     private final CurrencyTypeRepository currencyTypeRepository;
+    private final BodyRepository bodyRepository;
 
+    // todo - переделать согласно тому, что есть 2 типа заказа
     @Transactional
     @Override
-    public OrderResp createOrder(OrderReq orderReq) {
-        SelectionOrder newOrder = orderMapper.toEntityFromReq(orderReq);
+    public OrderResp createSelectionOrder(SelectionOrderReq orderReq) {
+        SelectionOrder newOrder = (SelectionOrder) selectionOrderMapper.toEntityFromReq(orderReq);
         newOrder.setDrives(mapToDriveEntity(orderReq.getDrives()));
         newOrder.setEngines(mapToEngineEntity(orderReq.getEngines()));
         newOrder.setTransmissions(mapToTransmissionEntity(orderReq.getTransmissions()));
@@ -53,39 +59,58 @@ public class OrderServiceImpl implements OrderService {
         newOrder.setCreator(getUserById(getUserFromAuth().getId()));
         newOrder.setCurrencyType(mapToCurrencyType(orderReq.getCurrencyType()));
         newOrder.setOrderStatus(orderStatusRepository.getByName(OrderStatusEnum.CREATED.name()));
+        newOrder.setBodies(mapToBodyEntity(orderReq.getBodies()));
         if (Objects.nonNull(orderReq.getAutoPickerId())) {
             newOrder.setAutoPicker(getAutoPickerById(orderReq.getAutoPickerId()));
         }
-        newOrder = orderRepository.save(newOrder);
-        OrderResp resp = orderMapper.toDto(newOrder);
+        newOrder = selectionOrderRepository.save(newOrder);
+        OrderResp resp = selectionOrderMapper.toDto(newOrder);
+        Order order = orderRepository.getById(newOrder.getId());
         return resp;
     }
 
-    private CurrencyType mapToCurrencyType(String currencyType) {
-        CurrencyType type = currencyTypeRepository.findByName(currencyType)
-                .orElseThrow(()->new ServiceException("There is no currency type with name " + currencyType));
-        return type;
-    }
+//    @Transactional
+//    @Override
+//    public OrderResp createInspectionOrder(InspectionOrderReq orderReq) {
+//        InspectionOrder newOrder = orderMapper.toEntityFromReq(orderReq);
+//        newOrder.setDrives(mapToDriveEntity(orderReq.getDrives()));
+//        newOrder.setEngines(mapToEngineEntity(orderReq.getEngines()));
+//        newOrder.setTransmissions(mapToTransmissionEntity(orderReq.getTransmissions()));
+//        newOrder.setBrands(mapToCarBrandEntity(orderReq.getBrands()));
+//        newOrder.setCreator(getUserById(getUserFromAuth().getId()));
+//        newOrder.setCurrencyType(mapToCurrencyType(orderReq.getCurrencyType()));
+//        newOrder.setOrderStatus(orderStatusRepository.getByName(OrderStatusEnum.CREATED.name()));
+//        if (Objects.nonNull(orderReq.getAutoPickerId())) {
+//            newOrder.setAutoPicker(getAutoPickerById(orderReq.getAutoPickerId()));
+//        }
+//        newOrder = selectionOrderRepository.save(newOrder);
+//        OrderResp resp = orderMapper.toDto(newOrder);
+//        Order order = orderRepository.getById(newOrder.getId());
+//        return resp;
+//    }
 
+    // todo - переделать согласно тому, что есть 2 типа заказа
     @Transactional
     @Override
-    public OrderResp updateOrder(Long id, OrderUpdateReq orderReq) {
-        SelectionOrder editingOrder = getOrderById(id);
+    public OrderResp updateSelectionOrder(Long id, SelectionOrderUpdateReq orderReq) {
+        SelectionOrder editingOrder = (SelectionOrder) getOrderById(id);
 
         editingOrder.setMinYear(orderReq.getMinYear());
         editingOrder.setMileage(orderReq.getMileage());
         editingOrder.setMinEngineVolume(orderReq.getMinEngineVolume());
         editingOrder.setMaxEngineVolume(orderReq.getMaxEngineVolume());
         editingOrder.setAdditionalInfo(orderReq.getAdditionalInfo());
-        editingOrder.setCostValue(orderReq.getCostValue());
+        editingOrder.setRangeFrom(orderReq.getRangeFrom());
+        editingOrder.setRangeTo(orderReq.getRangeTo());
 
         editingOrder.setDrives(mapToDriveEntity(orderReq.getDrives()));
         editingOrder.setEngines(mapToEngineEntity(orderReq.getEngines()));
         editingOrder.setTransmissions(mapToTransmissionEntity(orderReq.getTransmissions()));
+        editingOrder.setBodies(mapToBodyEntity(orderReq.getBodies()));
         editingOrder.setBrands(mapToCarBrandEntity(orderReq.getBrands()));
         editingOrder.setCurrencyType(mapToCurrencyType(orderReq.getCurrencyType()));
         editingOrder = orderRepository.save(editingOrder);
-        OrderResp resp = orderMapper.toDto(editingOrder);
+        OrderResp resp = selectionOrderMapper.toDto(editingOrder);
         return resp;
     }
 
@@ -93,28 +118,10 @@ public class OrderServiceImpl implements OrderService {
     public PageWrapper<OrderResp> findAll(OrderSearchCriteriaReq searchReq) {
         Pageable pageable = PageRequest.of(searchReq.getPageNumber(), searchReq.getPageSize());
 
-        Specification<SelectionOrder> specification = Specification
-                .where(findByMinYear(searchReq.getMinYear()));
-        if (Objects.nonNull(searchReq.getMileage())) {
-            specification = specification.and(findByMaxMileage(searchReq.getMileage()));
-        }
-        if (Objects.nonNull(searchReq.getMinEngineVolume())) {
-            specification = specification.and(findByMinEngineVolume(searchReq.getMinEngineVolume()));
-        }
-        if (Objects.nonNull(searchReq.getMaxEngineVolume())) {
-            specification = specification.and(findByMaxEngineVolume(searchReq.getMaxEngineVolume()));
-        }
-        if (Objects.nonNull(searchReq.getOrderStatus())) {
-            OrderStatus status = getOrderStatusByName(searchReq.getOrderStatus());
-            specification = specification.and((findByOrderStatus(status)));
-        }
-        if (Objects.nonNull(searchReq.getBrands())) {
-            List<CarBrand> brands = resolveBrands(searchReq.getBrands());
-            specification = specification.and(findAllByBrands(brands));
-        }
-
-        Page<SelectionOrder> orders = orderRepository.findAll(specification, pageable);
-        List<OrderResp> resp = orderMapper.toDtoList(orders.toList());
+        Specification<SelectionOrder> specification = buildSelectionOrderSpecification(searchReq);
+// поиск по заказам подбора
+        Page<SelectionOrder> orders = selectionOrderRepository.findAll(specification, pageable);
+        List<OrderResp> resp = selectionOrderMapper.toDtoList(orders.toList());
         return PageWrapper.of(resp,
                 orders.getTotalPages(),
                 orders.getTotalElements(),
@@ -124,28 +131,47 @@ public class OrderServiceImpl implements OrderService {
 
     @Transactional
     @Override
+    public OrderResp setAutoPicker(Long id, OrderAutoPickerReq autoPickerReq) {
+        Order editingOrder = getOrderById(id);
+        User user = getUserById(autoPickerReq.getAutoPickerId());
+        Set<Role> roles = user.getRoles();
+        if (!roles.contains(roleRepository.getByName(RoleEnum.AUTO_PICKER.name())))
+            throw new ServiceException("User with id = " + autoPickerReq.getAutoPickerId() +
+                    " is not auto-picker!");
+        editingOrder.setAutoPicker(user);
+        //todo - mapper for selection order and simple order
+        editingOrder = orderRepository.save(editingOrder);
+        //return orderMapper.toDto(editingOrder);
+        return null;
+    }
+
+    @Transactional
+    @Override
     public OrderResp changeOrderStatus(Long id, OrderStatusReq orderStatusReq) {
-        SelectionOrder editingOrder = getOrderById(id);
+        Order editingOrder = getOrderById(id);
         if (isChangingOrderStatusAllowed(orderStatusReq.getNewOrderStatus())) {
             editingOrder.setOrderStatus(orderStatusRepository.getByName(
                     orderStatusReq.getNewOrderStatus()));
         }
         editingOrder = orderRepository.save(editingOrder);
-        return orderMapper.toDto(editingOrder);
+        //return orderMapper.toDto(editingOrder);
+        return null;
     }
 
     @Override
-    public List<OrderResp> getUsersOrders(Long id) {
-        Specification<SelectionOrder> specification = Specification.where(findByCreatorIDLike(id));
-        List<SelectionOrder> orders = orderRepository.findAll(specification);
-        return orderMapper.toDtoList(orders);
+    public List<OrderResp> getOrdersByUserId(Long id) {
+        Specification<Order> specification = Specification.where(findByCreatorIDLike(id));
+        List<Order> orders = orderRepository.findAll(specification);
+        // return orderMapper.toDtoList(orders);
+        return null;
     }
 
     @Override
-    public List<OrderResp> getAutoPickersOrders(Long id) {
-        Specification<SelectionOrder> specification = Specification.where(findByAutoPickerIDLike(id));
-        List<SelectionOrder> orders = orderRepository.findAll(specification);
-        return orderMapper.toDtoList(orders);
+    public List<OrderResp> getOrdersByAutoPickerId(Long id) {
+        Specification<Order> specification = Specification.where(findByAutoPickerIDLike(id));
+        List<Order> orders = orderRepository.findAll(specification);
+        //return orderMapper.toDtoList(orders);
+        return null;
     }
 
     private List<CarBrand> resolveBrands(List<String> brands) {
@@ -157,15 +183,52 @@ public class OrderServiceImpl implements OrderService {
                         .collect(Collectors.toList());
     }
 
+    private Specification<SelectionOrder> buildSelectionOrderSpecification(OrderSearchCriteriaReq searchReq) {
+        Specification<SelectionOrder> specification = Specification
+                .where(findByMinYear(searchReq.getMinYear()));
+        // Mileage
+        if (Objects.nonNull(searchReq.getMileage())) {
+            specification = specification.and(findByMaxMileage(searchReq.getMileage()));
+        }
+        // Engine volume
+        if (Objects.nonNull(searchReq.getMinEngineVolume())) {
+            specification = specification.and(findByMinEngineVolume(searchReq.getMinEngineVolume()));
+        }
+        if (Objects.nonNull(searchReq.getMaxEngineVolume())) {
+            specification = specification.and(findByMaxEngineVolume(searchReq.getMaxEngineVolume()));
+        }
+        // Order status
+        if (Objects.nonNull(searchReq.getOrderStatus())) {
+            OrderStatus status = getOrderStatusByName(searchReq.getOrderStatus());
+            specification = specification.and((findByOrderStatus(status)));
+        }
+        // Body
+        if (Objects.nonNull(searchReq.getBody())) {
+            Body body = getBodyByName(searchReq.getBody());
+            specification = specification.and((findAllByBody(body)));
+        }
+        // Type engine
+        if (Objects.nonNull(searchReq.getEngine())) {
+            Engine engine = getEngineByName(searchReq.getEngine());
+            specification = specification.and((findAllByEngine(engine)));
+        }
+        // Brands
+        if (Objects.nonNull(searchReq.getBrands())) {
+            List<CarBrand> brands = resolveBrands(searchReq.getBrands());
+            specification = specification.and(findAllByBrands(brands));
+        }
+        return specification;
+    }
+
     private boolean isChangingOrderStatusAllowed(String newOrderStatus) {
         Set<Role> roles = getUserById(getUserFromAuth().getId()).getRoles();
 
         if (newOrderStatus.equals(OrderStatusEnum.CANCELED.name())) {
-            if (!roles.contains(roleRepository.getByName(TypeOfRole.USER.name())))
+            if (!roles.contains(roleRepository.getByName(RoleEnum.USER.name())))
                 return false;
             else throw new ServiceException("You are not allowed to change status of order");
         } else if (newOrderStatus.equals(OrderStatusEnum.IN_PROCESS.name())) {
-            if (roles.contains(roleRepository.getByName(TypeOfRole.USER.name())))
+            if (roles.contains(roleRepository.getByName(RoleEnum.USER.name())))
                 return false;
             else throw new ServiceException("You are not allowed to change status of order");
         }
@@ -182,24 +245,34 @@ public class OrderServiceImpl implements OrderService {
         return drives;
     }
 
-    private Set<Engine> mapToEngineEntity(Set<EngineReq> engines) {
-        Set<Engine> drives = new HashSet<>();
-        drives = engines.stream().map((dto) -> {
+    private Set<Body> mapToBodyEntity(Set<BodyReq> bodies) {
+        Set<Body> bodySet = new HashSet<>();
+        bodySet = bodies.stream().map((dto) -> {
                     if (Objects.isNull(dto)) return null;
-                    return engineRepository.findByName(dto.getName());
+                    return getBodyByName(dto.getName());
                 })
                 .collect(Collectors.toSet());
-        return drives;
+        return bodySet;
+    }
+
+    private Set<Engine> mapToEngineEntity(Set<EngineReq> engines) {
+        Set<Engine> engineSet = new HashSet<>();
+        engineSet = engines.stream().map((dto) -> {
+                    if (Objects.isNull(dto)) return null;
+                    return getEngineByName(dto.getName());
+                })
+                .collect(Collectors.toSet());
+        return engineSet;
     }
 
     private Set<Transmission> mapToTransmissionEntity(Set<TransmissionReq> transmissions) {
-        Set<Transmission> drives = new HashSet<>();
-        drives = transmissions.stream().map((dto) -> {
+        Set<Transmission> transmissionSet = new HashSet<>();
+        transmissionSet = transmissions.stream().map((dto) -> {
                     if (Objects.isNull(dto)) return null;
                     return transmissionRepository.findByName(dto.getName());
                 })
                 .collect(Collectors.toSet());
-        return drives;
+        return transmissionSet;
     }
 
     private User getUserById(Long id) {
@@ -207,7 +280,7 @@ public class OrderServiceImpl implements OrderService {
                 .orElseThrow(() -> new ResourceNotFoundException("There is no user with id = " + id));
     }
 
-    private SelectionOrder getOrderById(Long id) {
+    private Order getOrderById(Long id) {
         return orderRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("There is no order with id = " + id));
     }
@@ -221,27 +294,44 @@ public class OrderServiceImpl implements OrderService {
 
     private User getAutoPickerById(Long id) {
         User user = getUserById(id);
-        boolean isAllowed = user.getRoles().contains(roleRepository.getByName(TypeOfRole.AUTO_PICKER.name()));
+        boolean isAllowed = user.getRoles().contains(roleRepository.getByName(RoleEnum.AUTO_PICKER.name()));
         if (!isAllowed) throw new ServiceException("User with id = " + id + " can't be auto-picker");
         return user;
 
     }
 
     private Set<CarBrand> mapToCarBrandEntity(Set<CarBrandReq> brands) {
-        Set<CarBrand> drives = new HashSet<>();
-        drives = brands.stream().map((dto) -> {
+        Set<CarBrand> carBrandSet = new HashSet<>();
+        carBrandSet = brands.stream().map((dto) -> {
                     if (Objects.isNull(dto)) return null;
                     return carBrandRepository.findByName(dto.getName())
                             .orElseThrow(() -> new ServiceException("There is no car brand with name = " + dto.getName()));
                 })
                 .collect(Collectors.toSet());
-        return drives;
+        return carBrandSet;
     }
 
     private OrderStatus getOrderStatusByName(String status) {
         return orderStatusRepository.findByName(status)
-                .orElseThrow(() -> new ResourceNotFoundException("There is no role order status with name = "
+                .orElseThrow(() -> new ResourceNotFoundException("There is no order status with name = "
                         + status));
     }
 
+    private Body getBodyByName(String body) {
+        return bodyRepository.findByName(body)
+                .orElseThrow(() -> new ResourceNotFoundException("There is no body with name = "
+                        + body));
+    }
+
+    private Engine getEngineByName(String engine) {
+        return engineRepository.findByName(engine)
+                .orElseThrow(() -> new ResourceNotFoundException("There is no engine with name = "
+                        + engine));
+    }
+
+    private CurrencyType mapToCurrencyType(String currencyType) {
+        CurrencyType type = currencyTypeRepository.findByName(currencyType)
+                .orElseThrow(() -> new ServiceException("There is no currency type with name " + currencyType));
+        return type;
+    }
 }

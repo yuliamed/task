@@ -1,13 +1,12 @@
 package by.iba.controller.user;
 
 import by.iba.dto.page.PageWrapper;
-import by.iba.dto.req.OrderStatusReq;
-import by.iba.dto.req.UserSearchCriteriaReq;
-import by.iba.dto.req.order.OrderReq;
+import by.iba.dto.req.order.OrderAutoPickerReq;
+import by.iba.dto.req.order.OrderStatusReq;
+import by.iba.dto.req.order.SelectionOrderReq;
 import by.iba.dto.req.order.OrderSearchCriteriaReq;
-import by.iba.dto.req.order.OrderUpdateReq;
+import by.iba.dto.req.order.SelectionOrderUpdateReq;
 import by.iba.dto.resp.OrderResp;
-import by.iba.dto.resp.UserResp;
 import by.iba.exception.ControllerHelper;
 import by.iba.service.OrderService;
 import lombok.AllArgsConstructor;
@@ -30,9 +29,9 @@ public class OrderController {
     private final OrderService orderService;
 
     @PostMapping("/create")
-    public ResponseEntity<OrderResp> signUp(@RequestBody @Valid OrderReq orderReq, BindingResult result) {
+    public ResponseEntity<OrderResp> createSelectionOrder(@RequestBody @Valid SelectionOrderReq orderReq, BindingResult result) {
         ControllerHelper.checkBindingResultAndThrowExceptionIfInvalid(result);
-        OrderResp orderResp = orderService.createOrder(orderReq);
+        OrderResp orderResp = orderService.createSelectionOrder(orderReq);
         return new ResponseEntity<>(orderResp, HttpStatus.CREATED);
     }
 
@@ -47,27 +46,23 @@ public class OrderController {
 
     @PutMapping("/{id}")
     public ResponseEntity<OrderResp> updateOrder(@PathVariable("id") Long id,
-                                                       @RequestBody @Valid OrderUpdateReq req,
+                                                       @RequestBody @Valid SelectionOrderUpdateReq req,
                                                        BindingResult result) {
         ControllerHelper.checkBindingResultAndThrowExceptionIfInvalid(result);
-        OrderResp order = orderService.updateOrder(id, req);
+        OrderResp order = orderService.updateSelectionOrder(id, req);
         return new ResponseEntity<>(order, HttpStatus.OK);
     }
 
-    //    public ResponseEntity<List<OrderResp>> findAllOrders(@Valid OrderSearchCriteriaReq orderSearchCriteriaReq,
-//                                                         BindingResult result) {
-//
-//    }
     @GetMapping("/{id}")
     public ResponseEntity<List<OrderResp>> findUsersOrders(@PathVariable("id") Long id){
-        List<OrderResp> orders= orderService.getUsersOrders(id);
+        List<OrderResp> orders= orderService.getOrdersByUserId(id);
         return new ResponseEntity<>(orders, HttpStatus.OK);
     }
 
     @GetMapping("/auto_picker/{id}")
     @PreAuthorize("hasAnyAuthority('AUTO_PICKER')")
     public ResponseEntity<List<OrderResp>> findAutoPickersOrders(@PathVariable("id") Long id){
-        List<OrderResp> orders= orderService.getAutoPickersOrders(id);
+        List<OrderResp> orders= orderService.getOrdersByAutoPickerId(id);
         return new ResponseEntity<>(orders, HttpStatus.OK);
     }
 
@@ -76,6 +71,14 @@ public class OrderController {
                                                          BindingResult result){
         ControllerHelper.checkBindingResultAndThrowExceptionIfInvalid(result);
         PageWrapper<OrderResp> resp = orderService.findAll(searchCriteriaReq);
+        return ResponseEntity.ok().body(resp);
+    }
+
+    @PatchMapping("/admin/{id}")
+    public ResponseEntity<OrderResp> setAutoPicker(@PathVariable("id") Long id, @Valid @RequestBody OrderAutoPickerReq autoPickerReq,
+                                                                BindingResult result){
+        ControllerHelper.checkBindingResultAndThrowExceptionIfInvalid(result);
+        OrderResp resp = orderService.setAutoPicker(id, autoPickerReq);
         return ResponseEntity.ok().body(resp);
     }
 }

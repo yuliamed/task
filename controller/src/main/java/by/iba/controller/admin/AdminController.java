@@ -49,4 +49,6 @@ public class AdminController {
         UserResp user = service.approveUser(id);
         return ResponseEntity.ok(user);
     }
+
+
 }

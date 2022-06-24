@@ -3,9 +3,9 @@ package by.iba.service.impl;
 import by.iba.dto.req.*;
 import by.iba.dto.resp.ApiResp;
 import by.iba.dto.resp.UserResp;
-import by.iba.entity.Role;
-import by.iba.entity.enam.TypeOfRole;
-import by.iba.entity.User;
+import by.iba.entity.user.Role;
+import by.iba.entity.enam.RoleEnum;
+import by.iba.entity.user.User;
 import by.iba.exception.ResourceNotFoundException;
 import by.iba.exception.ServiceException;
 import by.iba.inteface.RoleRepository;
@@ -60,9 +60,9 @@ public class UserServiceImpl implements UserService {
         userToSave.setImageUrl(Base64.getEncoder().encodeToString(("picture").getBytes()));
         Role roleUser;
         if (userReq.getIsAutoPicker()) {
-            roleUser = roleRepository.getByName(TypeOfRole.AUTO_PICKER.name());
+            roleUser = roleRepository.getByName(RoleEnum.AUTO_PICKER.name());
         } else {
-            roleUser = roleRepository.getByName(TypeOfRole.USER.name());
+            roleUser = roleRepository.getByName(RoleEnum.USER.name());
         }
         userToSave.getRoles().add(roleUser);
         User savedUser = userRepository.save(userToSave);
@@ -186,7 +186,7 @@ public class UserServiceImpl implements UserService {
     boolean isChangeAllowed(Long id) {
         JwtUser userFromToken = getUserFromAuth();
         if (userFromToken.getAuthorities().contains(
-                new SimpleGrantedAuthority(TypeOfRole.ADMIN.name())) || userFromToken.getId().equals(id))
+                new SimpleGrantedAuthority(RoleEnum.ADMIN.name())) || userFromToken.getId().equals(id))
             return true;
         return false;
     }

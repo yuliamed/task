@@ -1,0 +1,5 @@
+package by.iba.entity.enam;
+
+public enum BodyTypeEnum {
+    SEDAN, STATION_WAGON, HATCHBACK, MINIVAN, OFF_ROAD_VEHICLE, COMPARTMENT, MINIBUS, VAN, PICKUP_TRUCK
+}
