@@ -42,7 +42,7 @@ public class SelectionOrderSpecification {
     }
 
     public static Specification<SelectionOrder> findAllByBrands(List<CarBrand> brands) {
-        return (Specification<SelectionOrder>) (root, query, builder) -> {
+        return (root, query, builder) -> {
             List<Predicate> predicates = buildPredicates(root, builder, brands);
             return
                     builder.or(predicates.toArray(new Predicate[predicates.size()]));

@@ -1,14 +1,16 @@
 package by.iba.controller.user;
 
 import by.iba.dto.page.PageWrapper;
+import by.iba.dto.req.OrderSearchCriteriaReq;
 import by.iba.dto.req.order.OrderAutoPickerReq;
 import by.iba.dto.req.order.OrderStatusReq;
 import by.iba.dto.req.order.SelectionOrderReq;
-import by.iba.dto.req.order.OrderSearchCriteriaReq;
+import by.iba.dto.req.order.SelectionOrderSearchCriteriaReq;
 import by.iba.dto.req.order.SelectionOrderUpdateReq;
 import by.iba.dto.resp.OrderResp;
 import by.iba.exception.ControllerHelper;
 import by.iba.service.OrderService;
+import by.iba.service.SelectionOrderService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,12 +28,13 @@ import java.util.List;
 @RequestMapping(value = "/api/v1/orders/")
 public class OrderController {
 
+    private final SelectionOrderService selectionOrderService;
     private final OrderService orderService;
 
     @PostMapping("/create")
     public ResponseEntity<OrderResp> createSelectionOrder(@RequestBody @Valid SelectionOrderReq orderReq, BindingResult result) {
         ControllerHelper.checkBindingResultAndThrowExceptionIfInvalid(result);
-        OrderResp orderResp = orderService.createSelectionOrder(orderReq);
+        OrderResp orderResp = selectionOrderService.createOrder(orderReq);
         return new ResponseEntity<>(orderResp, HttpStatus.CREATED);
     }
 
@@ -49,7 +52,7 @@ public class OrderController {
                                                        @RequestBody @Valid SelectionOrderUpdateReq req,
                                                        BindingResult result) {
         ControllerHelper.checkBindingResultAndThrowExceptionIfInvalid(result);
-        OrderResp order = orderService.updateSelectionOrder(id, req);
+        OrderResp order = selectionOrderService.updateOrder(id, req);
         return new ResponseEntity<>(order, HttpStatus.OK);
     }
 
@@ -67,10 +70,16 @@ public class OrderController {
     }
 
     @GetMapping("/")
-    public ResponseEntity<PageWrapper<OrderResp>> findAllOrders(@Valid OrderSearchCriteriaReq searchCriteriaReq,
+    public ResponseEntity<PageWrapper<OrderResp>> findAllSelectionOrders(@Valid SelectionOrderSearchCriteriaReq searchCriteriaReq,
                                                          BindingResult result){
         ControllerHelper.checkBindingResultAndThrowExceptionIfInvalid(result);
-        PageWrapper<OrderResp> resp = orderService.findAll(searchCriteriaReq);
+        PageWrapper<OrderResp> resp = selectionOrderService.findAllOrder(searchCriteriaReq);
+        return ResponseEntity.ok().body(resp);
+    }
+
+    @GetMapping("/findAll")
+    public ResponseEntity<PageWrapper<OrderResp>> findAllOrders(OrderSearchCriteriaReq param){
+        PageWrapper<OrderResp> resp = orderService.findAll(param);
         return ResponseEntity.ok().body(resp);
     }
 

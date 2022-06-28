@@ -10,7 +10,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class OrderSearchCriteriaReq extends PagingCriteriaReq {
+public class SelectionOrderSearchCriteriaReq extends PagingCriteriaReq {
     private Integer mileage;
     private Integer minYear = 1900;
     private Double minEngineVolume;
@@ -22,4 +22,5 @@ public class OrderSearchCriteriaReq extends PagingCriteriaReq {
     private Double rangeFrom = 10.0;
     private Double rangeTo = 1000000.0;
     private String currencyType = "USD";
+    private String creatorName;
 }

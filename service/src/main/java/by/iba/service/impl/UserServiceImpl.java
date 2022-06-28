@@ -191,13 +191,13 @@ public class UserServiceImpl implements UserService {
         return false;
     }
 
-    private JwtUser getUserFromAuth() {
+    protected JwtUser getUserFromAuth() {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         JwtUser jwtUser = (JwtUser) auth.getPrincipal();
         return jwtUser;
     }
 
-    private User getUserById(Long id) {
+    protected User getUserById(Long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("There is no user with id = " + id));
     }
