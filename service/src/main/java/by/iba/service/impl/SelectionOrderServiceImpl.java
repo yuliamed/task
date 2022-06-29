@@ -103,6 +103,11 @@ public class SelectionOrderServiceImpl implements SelectionOrderService {
                 pageable.getPageSize());
     }
 
+    @Override
+    public SelectionOrderResp getOrder(Long id) {
+        return selectionOrderMapper.toDto(getOrderById(id));
+    }
+
     private List<CarBrand> resolveBrands(List<String> brands) {
         return Objects.isNull(brands) ?
                 Collections.emptyList() :
@@ -165,8 +170,7 @@ public class SelectionOrderServiceImpl implements SelectionOrderService {
     }
 
     private Set<Drive> mapToDriveEntity(Set<DriveReq> drivesReq) {
-        Set<Drive> drives = new HashSet<>();
-        drives = drivesReq.stream().map((dto) -> {
+        Set<Drive> drives = drivesReq.stream().map((dto) -> {
                     if (Objects.isNull(dto)) return null;
                     return driveRepository.findByName(dto.getName());
                 })
@@ -175,8 +179,7 @@ public class SelectionOrderServiceImpl implements SelectionOrderService {
     }
 
     private Set<Body> mapToBodyEntity(Set<BodyReq> bodies) {
-        Set<Body> bodySet = new HashSet<>();
-        bodySet = bodies.stream().map((dto) -> {
+        Set<Body> bodySet = bodies.stream().map((dto) -> {
                     if (Objects.isNull(dto)) return null;
                     return getBodyByName(dto.getName());
                 })
@@ -185,8 +188,7 @@ public class SelectionOrderServiceImpl implements SelectionOrderService {
     }
 
     private Set<Engine> mapToEngineEntity(Set<EngineReq> engines) {
-        Set<Engine> engineSet = new HashSet<>();
-        engineSet = engines.stream().map((dto) -> {
+        Set<Engine> engineSet = engines.stream().map((dto) -> {
                     if (Objects.isNull(dto)) return null;
                     return getEngineByName(dto.getName());
                 })
@@ -195,8 +197,7 @@ public class SelectionOrderServiceImpl implements SelectionOrderService {
     }
 
     private Set<Transmission> mapToTransmissionEntity(Set<TransmissionReq> transmissions) {
-        Set<Transmission> transmissionSet = new HashSet<>();
-        transmissionSet = transmissions.stream().map((dto) -> {
+        Set<Transmission> transmissionSet = transmissions.stream().map((dto) -> {
                     if (Objects.isNull(dto)) return null;
                     return transmissionRepository.findByName(dto.getName());
                 })
@@ -230,8 +231,7 @@ public class SelectionOrderServiceImpl implements SelectionOrderService {
     }
 
     private Set<CarBrand> mapToCarBrandEntity(Set<CarBrandReq> brands) {
-        Set<CarBrand> carBrandSet = new HashSet<>();
-        carBrandSet = brands.stream().map((dto) -> {
+        Set<CarBrand> carBrandSet = brands.stream().map((dto) -> {
                     if (Objects.isNull(dto)) return null;
                     return carBrandRepository.findByName(dto.getName())
                             .orElseThrow(() -> new ServiceException("There is no car brand with name = " + dto.getName()));

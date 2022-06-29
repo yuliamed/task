@@ -24,15 +24,14 @@ import java.util.List;
 @RequestMapping(value = "/api/v1/orders/")
 public class OrderController {
 
-    private final SelectionOrderService selectionOrderService;
     private final OrderService orderService;
 
-    @PostMapping("/create")
-    public ResponseEntity<SelectionOrderResp> createSelectionOrder(@RequestBody @Valid SelectionOrderReq orderReq, BindingResult result) {
-        ControllerHelper.checkBindingResultAndThrowExceptionIfInvalid(result);
-        SelectionOrderResp selectionOrderResp = selectionOrderService.createOrder(orderReq);
-        return new ResponseEntity<>(selectionOrderResp, HttpStatus.CREATED);
-    }
+//    @PostMapping("/create")
+//    public ResponseEntity<SelectionOrderResp> createSelectionOrder(@RequestBody @Valid SelectionOrderReq orderReq, BindingResult result) {
+//        ControllerHelper.checkBindingResultAndThrowExceptionIfInvalid(result);
+//        SelectionOrderResp selectionOrderResp = selectionOrderService.createOrder(orderReq);
+//        return new ResponseEntity<>(selectionOrderResp, HttpStatus.CREATED);
+//    }
 
     @PatchMapping("/{id}")
     public ResponseEntity<OrderResp> changeOrderStatus(@PathVariable("id") Long id,
@@ -43,14 +42,14 @@ public class OrderController {
         return new ResponseEntity<>(order, HttpStatus.OK);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<SelectionOrderResp> updateOrder(@PathVariable("id") Long id,
-                                                          @RequestBody @Valid SelectionOrderUpdateReq req,
-                                                          BindingResult result) {
-        ControllerHelper.checkBindingResultAndThrowExceptionIfInvalid(result);
-        SelectionOrderResp order = selectionOrderService.updateOrder(id, req);
-        return new ResponseEntity<>(order, HttpStatus.OK);
-    }
+//    @PutMapping("/{id}")
+//    public ResponseEntity<SelectionOrderResp> updateOrder(@PathVariable("id") Long id,
+//                                                          @RequestBody @Valid SelectionOrderUpdateReq req,
+//                                                          BindingResult result) {
+//        ControllerHelper.checkBindingResultAndThrowExceptionIfInvalid(result);
+//        SelectionOrderResp order = selectionOrderService.updateOrder(id, req);
+//        return new ResponseEntity<>(order, HttpStatus.OK);
+//    }
 
     @GetMapping("/{id}")
     public ResponseEntity<List<OrderResp>> findUsersOrders(@PathVariable("id") Long id) {
@@ -63,14 +62,6 @@ public class OrderController {
     public ResponseEntity<List<OrderResp>> findAutoPickersOrders(@PathVariable("id") Long id) {
         List<OrderResp> orders = orderService.getOrdersByAutoPickerId(id);
         return new ResponseEntity<>(orders, HttpStatus.OK);
-    }
-
-    @GetMapping("/")
-    public ResponseEntity<PageWrapper<SelectionOrderResp>> findAllSelectionOrders(@Valid SelectionOrderSearchCriteriaReq searchCriteriaReq,
-                                                                                  BindingResult result) {
-        ControllerHelper.checkBindingResultAndThrowExceptionIfInvalid(result);
-        PageWrapper<SelectionOrderResp> resp = selectionOrderService.findAllOrder(searchCriteriaReq);
-        return ResponseEntity.ok().body(resp);
     }
 
     @GetMapping("/findAll")

@@ -13,4 +13,5 @@ public interface SelectionOrderService {
 
     PageWrapper<SelectionOrderResp> findAllOrder(SelectionOrderSearchCriteriaReq searchReq);
 
+    SelectionOrderResp getOrder(Long id);
 }

@@ -8,4 +8,6 @@ public interface InspectionOrderService {
     InspectionOrderResp createInspectionOrder(InspectionOrderReq orderReq);
 
     InspectionOrderResp updateInspectionOrder(Long id, InspectionOrderUpdateReq orderReq);
+
+    InspectionOrderResp getOrder(Long id);
 }
