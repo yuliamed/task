@@ -37,8 +37,8 @@ public class OrderSpecification {
             );
             Predicate predicateNonNull = criteriaBuilder.or(
                     criteriaBuilder.isNull(root.get("autoPicker")),
-                    criteriaBuilder.like(root.join("autoPicker").get("name"), "%" + param + "%"),
-                    criteriaBuilder.like(root.join("autoPicker").get("surname"), "%" + param + "%"));
+                    criteriaBuilder.like(root.join("autoPicker").get("name").as(String.class), "%" + param + "%"),
+                    criteriaBuilder.like(root.join("autoPicker").get("surname").as(String.class), "%" + param + "%"));
             Predicate predicateForAutoPicker = criteriaBuilder.or(predicateNonNull
             );
 

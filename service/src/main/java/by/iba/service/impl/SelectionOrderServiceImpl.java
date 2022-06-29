@@ -2,7 +2,7 @@ package by.iba.service.impl;
 
 import by.iba.dto.page.PageWrapper;
 import by.iba.dto.req.order.*;
-import by.iba.dto.resp.OrderResp;
+import by.iba.dto.resp.SelectionOrderResp;
 import by.iba.entity.enam.OrderStatusEnum;
 import by.iba.entity.enam.RoleEnum;
 import by.iba.entity.order.*;
@@ -47,7 +47,7 @@ public class SelectionOrderServiceImpl implements SelectionOrderService {
 
     @Transactional
     @Override
-    public OrderResp createOrder(SelectionOrderReq orderReq) {
+    public SelectionOrderResp createOrder(SelectionOrderReq orderReq) {
         List<Order> orders = orderRepository.findAll();
         SelectionOrder newOrder = selectionOrderMapper.toEntityFromReq(orderReq);
         newOrder.setDrives(mapToDriveEntity(orderReq.getDrives()));
@@ -62,7 +62,7 @@ public class SelectionOrderServiceImpl implements SelectionOrderService {
             newOrder.setAutoPicker(getAutoPickerById(orderReq.getAutoPickerId()));
         }
         newOrder = selectionOrderRepository.save(newOrder);
-        OrderResp resp = selectionOrderMapper.toDto(newOrder);
+        SelectionOrderResp resp = selectionOrderMapper.toDto(newOrder);
         Order order = orderRepository.getById(newOrder.getId());
         return resp;
     }
@@ -70,7 +70,7 @@ public class SelectionOrderServiceImpl implements SelectionOrderService {
     // todo - переделать согласно тому, что есть 2 типа заказа
     @Transactional
     @Override
-    public OrderResp updateOrder(Long id, SelectionOrderUpdateReq orderReq) {
+    public SelectionOrderResp updateOrder(Long id, SelectionOrderUpdateReq orderReq) {
         SelectionOrder editingOrder = (SelectionOrder) getOrderById(id);
 
         editingOrder.setMinYear(orderReq.getMinYear());
@@ -88,18 +88,18 @@ public class SelectionOrderServiceImpl implements SelectionOrderService {
         editingOrder.setBrands(mapToCarBrandEntity(orderReq.getBrands()));
         editingOrder.setCurrencyType(getCurrencyTypeByName(orderReq.getCurrencyType()));
         editingOrder = orderRepository.save(editingOrder);
-        OrderResp resp = selectionOrderMapper.toDto(editingOrder);
+        SelectionOrderResp resp = selectionOrderMapper.toDto(editingOrder);
         return resp;
     }
 
     @Override
-    public PageWrapper<OrderResp> findAllOrder(SelectionOrderSearchCriteriaReq searchReq) {
+    public PageWrapper<SelectionOrderResp> findAllOrder(SelectionOrderSearchCriteriaReq searchReq) {
         Pageable pageable = PageRequest.of(searchReq.getPageNumber(), searchReq.getPageSize());
 
         Specification<SelectionOrder> specification = buildSelectionOrderSpecification(searchReq);
         // поиск по заказам подбора
         Page<SelectionOrder> orders = selectionOrderRepository.findAll(specification, pageable);
-        List<OrderResp> resp = selectionOrderMapper.toDtoList(orders.toList());
+        List<SelectionOrderResp> resp = selectionOrderMapper.toDtoList(orders.toList());
         return PageWrapper.of(resp,
                 orders.getTotalPages(),
                 orders.getTotalElements(),

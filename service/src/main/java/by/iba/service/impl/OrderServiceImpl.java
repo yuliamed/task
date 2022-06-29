@@ -1,8 +1,8 @@
 package by.iba.service.impl;
 
 import by.iba.dto.page.PageWrapper;
-import by.iba.dto.req.OrderSearchCriteriaReq;
 import by.iba.dto.req.order.OrderAutoPickerReq;
+import by.iba.dto.req.order.OrderSearchCriteriaReq;
 import by.iba.dto.req.order.OrderStatusReq;
 import by.iba.dto.resp.OrderResp;
 import by.iba.entity.enam.OrderStatusEnum;
@@ -16,6 +16,7 @@ import by.iba.exception.ServiceException;
 import by.iba.inteface.OrderRepository;
 import by.iba.inteface.OrderStatusRepository;
 import by.iba.inteface.RoleRepository;
+import by.iba.mapper.OrderMapper;
 import by.iba.service.OrderService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -38,70 +39,73 @@ public class OrderServiceImpl implements OrderService {
     private final OrderStatusRepository orderStatusRepository;
     private final RoleRepository roleRepository;
     private final UserServiceImpl userService;
+    private final OrderMapper orderMapper;
 
     @Override
     public PageWrapper<OrderResp> findAll(OrderSearchCriteriaReq searchReq) {
         Pageable pageable = PageRequest.of(0, 100);
         Specification<Order> spec = null;
-        if (Objects.nonNull(searchReq)) spec = getSpecification(searchReq.getParam());
+        if (Objects.nonNull(searchReq)) {
+            spec = getSpecification(searchReq.getParam());
+        }
+
         Page<Order> orders = orderRepository.findAll(spec, pageable);
+
         System.out.println(orders);
-        // TODO надо думать как отправлять данные по заказам всем)
-//        List<OrderResp> resp = order.toDtoList(orders.toList());
-//        return PageWrapper.of(resp,
-//                orders.getTotalPages(),
-//                orders.getTotalElements(),
-//                pageable.getPageNumber(),
-//                pageable.getPageSize());
-        return null;
+
+        List<OrderResp> resp = orderMapper.toDtoList(orders.toList());
+        return PageWrapper.of(resp,
+                orders.getTotalPages(),
+                orders.getTotalElements(),
+                pageable.getPageNumber(),
+                pageable.getPageSize());
     }
 
     @Transactional
     @Override
     public OrderResp setAutoPicker(Long id, OrderAutoPickerReq autoPickerReq) {
         Order editingOrder = getOrderById(id);
+
         User user = userService.getUserById(autoPickerReq.getAutoPickerId());
         Set<Role> roles = user.getRoles();
         if (!roles.contains(roleRepository.getByName(RoleEnum.AUTO_PICKER.name())))
             throw new ServiceException("User with id = " + autoPickerReq.getAutoPickerId() +
                     " is not auto-picker!");
         editingOrder.setAutoPicker(user);
-        // todo - mapper for selection order and simple order
+
         editingOrder = orderRepository.save(editingOrder);
-        //return orderMapper.toDto(editingOrder);
-        return null;
+
+        return orderMapper.toDto(editingOrder);
     }
 
     @Transactional
     @Override
     public OrderResp changeOrderStatus(Long id, OrderStatusReq orderStatusReq) {
         Order editingOrder = getOrderById(id);
+
         if (isChangingOrderStatusAllowed(orderStatusReq.getNewOrderStatus())) {
             editingOrder.setOrderStatus(orderStatusRepository.getByName(
                     orderStatusReq.getNewOrderStatus()));
         }
         editingOrder = orderRepository.save(editingOrder);
-        // TODO
-        //return orderMapper.toDto(editingOrder);
-        return null;
+
+        return orderMapper.toDto(editingOrder);
     }
 
     @Override
     public List<OrderResp> getOrdersByUserId(Long id) {
         Specification<Order> specification = Specification.where(findByCreatorIDLike(id));
         List<Order> orders = orderRepository.findAll(specification);
-        // TODO
-        // return orderMapper.toDtoList(orders);
-        return null;
+
+        return orderMapper.toDtoList(orders);
     }
 
     @Override
     public List<OrderResp> getOrdersByAutoPickerId(Long id) {
         Specification<Order> specification = Specification.where(findByAutoPickerIDLike(id));
         List<Order> orders = orderRepository.findAll(specification);
-        // TODO
-        //return orderMapper.toDtoList(orders);
-        return null;
+
+        return orderMapper.toDtoList(orders);
     }
 
 

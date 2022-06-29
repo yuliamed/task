@@ -1,6 +1,6 @@
 package by.iba.service.impl;
 
-import by.iba.dto.req.InspectionOrderReq;
+import by.iba.dto.req.order.InspectionOrderReq;
 import by.iba.dto.resp.InspectionOrderResp;
 import by.iba.entity.order.InspectionOrder;
 import by.iba.inteface.InspectionOrderRepository;

@@ -47,7 +47,6 @@ public class SelectionOrderReq extends AbstractReq {
 
     private Set<@Valid EngineReq> engines = new HashSet<>();
 
-    //TODO validation
     private Set<@Valid CarBrandReq> brands = new HashSet<>();
 
     private Long autoPickerId;

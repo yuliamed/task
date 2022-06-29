@@ -1,6 +1,6 @@
 package by.iba.mapper;
 
-import by.iba.dto.req.InspectionOrderReq;
+import by.iba.dto.req.order.InspectionOrderReq;
 import by.iba.dto.resp.InspectionOrderResp;
 import by.iba.entity.order.InspectionOrder;
 import by.iba.mapper.common.FullAbstractMapper;
