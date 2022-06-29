@@ -26,14 +26,13 @@ import javax.transaction.Transactional;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static by.iba.inteface.specification.OrderSpecification.*;
+import static by.iba.inteface.specification.OrderSpecification.findByCreatorNameLike;
 import static by.iba.inteface.specification.SelectionOrderSpecification.*;
 
 @Service
 @AllArgsConstructor
 public class SelectionOrderServiceImpl implements SelectionOrderService {
     private final SelectionOrderRepository selectionOrderRepository;
-    private final OrderRepository orderRepository;
     private final EngineRepository engineRepository;
     private final TransmissionRepository transmissionRepository;
     private final CarBrandRepository carBrandRepository;
@@ -48,7 +47,6 @@ public class SelectionOrderServiceImpl implements SelectionOrderService {
     @Transactional
     @Override
     public SelectionOrderResp createOrder(SelectionOrderReq orderReq) {
-        List<Order> orders = orderRepository.findAll();
         SelectionOrder newOrder = selectionOrderMapper.toEntityFromReq(orderReq);
         newOrder.setDrives(mapToDriveEntity(orderReq.getDrives()));
         newOrder.setEngines(mapToEngineEntity(orderReq.getEngines()));
@@ -63,15 +61,13 @@ public class SelectionOrderServiceImpl implements SelectionOrderService {
         }
         newOrder = selectionOrderRepository.save(newOrder);
         SelectionOrderResp resp = selectionOrderMapper.toDto(newOrder);
-        Order order = orderRepository.getById(newOrder.getId());
         return resp;
     }
 
-    // todo - переделать согласно тому, что есть 2 типа заказа
     @Transactional
     @Override
     public SelectionOrderResp updateOrder(Long id, SelectionOrderUpdateReq orderReq) {
-        SelectionOrder editingOrder = (SelectionOrder) getOrderById(id);
+        SelectionOrder editingOrder = getOrderById(id);
 
         editingOrder.setMinYear(orderReq.getMinYear());
         editingOrder.setMileage(orderReq.getMileage());
@@ -87,7 +83,7 @@ public class SelectionOrderServiceImpl implements SelectionOrderService {
         editingOrder.setBodies(mapToBodyEntity(orderReq.getBodies()));
         editingOrder.setBrands(mapToCarBrandEntity(orderReq.getBrands()));
         editingOrder.setCurrencyType(getCurrencyTypeByName(orderReq.getCurrencyType()));
-        editingOrder = orderRepository.save(editingOrder);
+        editingOrder = selectionOrderRepository.save(editingOrder);
         SelectionOrderResp resp = selectionOrderMapper.toDto(editingOrder);
         return resp;
     }
@@ -213,8 +209,8 @@ public class SelectionOrderServiceImpl implements SelectionOrderService {
                 .orElseThrow(() -> new ResourceNotFoundException("There is no user with id = " + id));
     }
 
-    private Order getOrderById(Long id) {
-        return orderRepository.findById(id)
+    private SelectionOrder getOrderById(Long id) {
+        return selectionOrderRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("There is no order with id = " + id));
     }
 
