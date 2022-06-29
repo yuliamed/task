@@ -40,6 +40,4 @@ public class SelectionOrderResp extends OrderResp {
 
     private Set<Body> bodies = new HashSet<>();
 
-    private String additionalInfo;
-
 }

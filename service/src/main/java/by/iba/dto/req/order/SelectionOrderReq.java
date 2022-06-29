@@ -15,7 +15,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Getter
 @Setter
-public class SelectionOrderReq extends AbstractReq {
+public class SelectionOrderReq extends OrderReq {
     @NotNull
     @Min(value = 1900)
     @Max(value = 2022)
@@ -32,9 +32,6 @@ public class SelectionOrderReq extends AbstractReq {
 
     private Double maxEngineVolume;//default in km
 
-    @Pattern(regexp = ".{0,512}", message = "AdditionalInfo can`t be bigger then 512 symbols")
-    private String additionalInfo;
-
     @NotBlank
     @EnumPattern(enumClass = CurrencyEnum.class, message = "Input correct name of currency type")
     private String currencyType;
@@ -48,7 +45,5 @@ public class SelectionOrderReq extends AbstractReq {
     private Set<@Valid EngineReq> engines = new HashSet<>();
 
     private Set<@Valid CarBrandReq> brands = new HashSet<>();
-
-    private Long autoPickerId;
 
 }

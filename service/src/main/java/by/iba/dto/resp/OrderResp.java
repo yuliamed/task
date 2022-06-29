@@ -26,4 +26,5 @@ public class OrderResp extends AbstractResp {
 
     private OrderStatus status;
 
+    private String additionalInfo;
 }

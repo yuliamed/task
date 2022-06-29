@@ -7,10 +7,10 @@ import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
 
+@NoArgsConstructor
 @Getter
 @Setter
-@NoArgsConstructor
-public class InspectionOrderReq extends OrderReq {
+public class InspectionOrderUpdateReq extends AbstractReq {
     @NotBlank
     private String autoUrl;
 }
