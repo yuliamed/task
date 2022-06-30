@@ -21,4 +21,7 @@ public class InspectionOrder extends Order {
     @OneToOne
     @JoinColumn(name = "inspection_report_id")
     private InspectionReport inspectionReport;
+
+    @Column(name = "additional_info", length = 512)
+    private String additionalInfo;
 }

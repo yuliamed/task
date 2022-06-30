@@ -54,7 +54,7 @@ public class SelectionOrderServiceImpl implements SelectionOrderService {
         newOrder.setBrands(mapToCarBrandEntity(orderReq.getBrands()));
         newOrder.setCreator(getUserById(getUserFromAuth().getId()));
         newOrder.setCurrencyType(getCurrencyTypeByName(orderReq.getCurrencyType()));
-        newOrder.setOrderStatus(orderStatusRepository.getByName(OrderStatusEnum.CREATED.name()));
+        newOrder.setStatus(orderStatusRepository.getByName(OrderStatusEnum.CREATED.name()));
         newOrder.setBodies(mapToBodyEntity(orderReq.getBodies()));
         if (Objects.nonNull(orderReq.getAutoPickerId())) {
             newOrder.setAutoPicker(getAutoPickerById(orderReq.getAutoPickerId()));

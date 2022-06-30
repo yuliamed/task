@@ -84,7 +84,7 @@ public class OrderServiceImpl implements OrderService {
         Order editingOrder = getOrderById(id);
 
         if (isChangingOrderStatusAllowed(orderStatusReq.getNewOrderStatus())) {
-            editingOrder.setOrderStatus(orderStatusRepository.getByName(
+            editingOrder.setStatus(orderStatusRepository.getByName(
                     orderStatusReq.getNewOrderStatus()));
         }
         editingOrder = orderRepository.save(editingOrder);

@@ -18,7 +18,7 @@ public class OrderResp extends AbstractResp {
 
     private LocalDateTime lastUpdateDate;
 
-    private LocalDateTime createdDate;
+    private LocalDateTime creationDate;
 
     private UserResp autoPicker;
 

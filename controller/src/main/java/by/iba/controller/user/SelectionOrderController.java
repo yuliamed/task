@@ -17,14 +17,14 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @AllArgsConstructor
-@RestController
 @CrossOrigin
+@RestController
 @PreAuthorize("hasAnyAuthority('USER')")
 @RequestMapping(value = "/api/v1/orders/selection/")
-public class SelectionOrder {
+public class SelectionOrderController {
     private final SelectionOrderService selectionOrderService;
 
-    @PostMapping("/")
+    @PostMapping("/new")
     public ResponseEntity<SelectionOrderResp> createSelectionOrder(@RequestBody @Valid SelectionOrderReq orderReq, BindingResult result) {
         ControllerHelper.checkBindingResultAndThrowExceptionIfInvalid(result);
         SelectionOrderResp selectionOrderResp = selectionOrderService.createOrder(orderReq);
@@ -45,7 +45,7 @@ public class SelectionOrder {
         SelectionOrderResp order = selectionOrderService.getOrder(id);
         return new ResponseEntity<>(order, HttpStatus.OK);
     }
-
+// TODO ну здесь надо пользователя выводить заказы
     @GetMapping("/")
     public ResponseEntity<PageWrapper<SelectionOrderResp>> findAllSelectionOrders(@Valid SelectionOrderSearchCriteriaReq searchCriteriaReq,
                                                                                   BindingResult result) {

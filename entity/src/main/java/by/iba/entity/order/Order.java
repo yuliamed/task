@@ -19,7 +19,7 @@ import javax.persistence.*;
 public abstract class Order extends TrackingAbstractEntity {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "order_status")
-    private OrderStatus orderStatus;
+    private OrderStatus status;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "auto_picker")

@@ -21,7 +21,7 @@ import javax.validation.Valid;
 public class InspectionOrderController {
     private final InspectionOrderService inspectionOrderService;
 
-    @PostMapping("/")
+    @PostMapping("/new")
     public ResponseEntity<InspectionOrderResp> createInspectionOrder(@RequestBody @Valid InspectionOrderReq orderReq, BindingResult result) {
         ControllerHelper.checkBindingResultAndThrowExceptionIfInvalid(result);
         InspectionOrderResp inspectionOrder = inspectionOrderService.createInspectionOrder(orderReq);
