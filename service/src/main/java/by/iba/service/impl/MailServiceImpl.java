@@ -8,8 +8,6 @@ import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Service;
 
-import javax.mail.AuthenticationFailedException;
-
 @Service
 @AllArgsConstructor
 public class MailServiceImpl implements MailService {
