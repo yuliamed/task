@@ -45,7 +45,7 @@ public class OrderServiceImpl implements OrderService {
     public PageWrapper<OrderResp> findAll(OrderSearchCriteriaReq searchReq) {
         Pageable pageable = PageRequest.of(0, 100);
         Specification<Order> spec = null;
-        if (Objects.nonNull(searchReq)) {
+        if (Objects.nonNull(searchReq.getParam())) {
             spec = getSpecification(searchReq.getParam());
         }
 
@@ -111,15 +111,13 @@ public class OrderServiceImpl implements OrderService {
 
     private boolean isChangingOrderStatusAllowed(String newOrderStatus) {
         Set<Role> roles = userService.getUserById(userService.getUserFromAuth().getId()).getRoles();
-
+        //пользователю можно отменить заказ, а админу и подборщику поменять на в процессе
         if (newOrderStatus.equals(OrderStatusEnum.CANCELED.name())) {
             if (!roles.contains(roleRepository.getByName(RoleEnum.USER.name())))
-                return false;
-            else throw new ServiceException("You are not allowed to change status of order");
+                throw new ServiceException("You are not allowed to change status of order = " + newOrderStatus);
         } else if (newOrderStatus.equals(OrderStatusEnum.IN_PROCESS.name())) {
             if (roles.contains(roleRepository.getByName(RoleEnum.USER.name())))
-                return false;
-            else throw new ServiceException("You are not allowed to change status of order");
+                throw new ServiceException("You are not allowed to change status of order = " + newOrderStatus);
         }
         return true;
     }

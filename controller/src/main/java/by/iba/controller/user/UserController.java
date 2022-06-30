@@ -17,7 +17,7 @@ import javax.validation.Valid;
 @RestController
 @CrossOrigin
 @PreAuthorize("hasAnyAuthority('USER')")
-@RequestMapping(value="/api/v1/users/")
+@RequestMapping(value = "/api/v1/users/")
 public class UserController {
     private final UserService userService;
 

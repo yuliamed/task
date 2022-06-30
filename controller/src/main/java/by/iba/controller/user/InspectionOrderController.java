@@ -43,12 +43,4 @@ public class InspectionOrderController {
         return new ResponseEntity<>(order, HttpStatus.OK);
     }
 
-
-//    @GetMapping("/")
-//    public ResponseEntity<PageWrapper<InspectionOrderResp>> findAllSelectionOrders(@Valid SelectionOrderSearchCriteriaReq searchCriteriaReq,
-//                                                                                  BindingResult result) {
-//        ControllerHelper.checkBindingResultAndThrowExceptionIfInvalid(result);
-//        PageWrapper<SelectionOrderResp> resp = selectionOrderService.findAllOrder(searchCriteriaReq);
-//        return ResponseEntity.ok().body(resp);
-//    }
 }

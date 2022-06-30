@@ -1,30 +1,44 @@
 package by.iba.dto.resp;
 
-import by.iba.dto.resp.AbstractResp;
-import by.iba.dto.resp.UserResp;
-import by.iba.entity.order.OrderStatus;
+import by.iba.entity.order.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @NoArgsConstructor
 @Getter
 @Setter
-public class OrderResp extends AbstractResp {
-    // Common info
-    private Long id;
+public class OrderResp extends AbstractOrderResp {
+    //InspectionOrder
+    private String autoUrl;
 
-    private LocalDateTime lastUpdateDate;
+    // Selection info
+    private Integer minYear;
 
-    private LocalDateTime creationDate;
+    private Integer mileage;//default in km
 
-    private UserResp autoPicker;
+    private Double minEngineVolume;//default in km
 
-    private UserResp creator;
+    private Double maxEngineVolume;//default in km
 
-    private OrderStatus status;
+    private Double costValue;
 
-    private String additionalInfo;
+    private Double rangeFrom;
+
+    private Double rangeTo;
+
+    private CurrencyType currencyType;
+
+    private Set<Drive> drives = new HashSet<>();
+
+    private Set<Transmission> transmissions = new HashSet<>();
+
+    private Set<Engine> engines = new HashSet<>();
+
+    private Set<CarBrand> brands = new HashSet<>();
+
+    private Set<Body> bodies = new HashSet<>();
 }

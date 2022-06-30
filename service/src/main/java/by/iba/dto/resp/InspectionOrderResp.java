@@ -7,6 +7,6 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class InspectionOrderResp extends OrderResp {
+public class InspectionOrderResp extends AbstractOrderResp {
     private String autoUrl;
 }

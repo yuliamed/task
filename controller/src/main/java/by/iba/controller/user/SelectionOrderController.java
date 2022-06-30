@@ -45,12 +45,13 @@ public class SelectionOrderController {
         SelectionOrderResp order = selectionOrderService.getOrder(id);
         return new ResponseEntity<>(order, HttpStatus.OK);
     }
-// TODO ну здесь надо пользователя выводить заказы
-    @GetMapping("/")
-    public ResponseEntity<PageWrapper<SelectionOrderResp>> findAllSelectionOrders(@Valid SelectionOrderSearchCriteriaReq searchCriteriaReq,
-                                                                                  BindingResult result) {
-        ControllerHelper.checkBindingResultAndThrowExceptionIfInvalid(result);
-        PageWrapper<SelectionOrderResp> resp = selectionOrderService.findAllOrder(searchCriteriaReq);
-        return ResponseEntity.ok().body(resp);
-    }
+
+//    // TODO ну здесь надо пользователя выводить заказы
+//    @GetMapping("/")
+//    public ResponseEntity<PageWrapper<SelectionOrderResp>> findAllSelectionOrders(@Valid SelectionOrderSearchCriteriaReq searchCriteriaReq,
+//                                                                                  BindingResult result) {
+//        ControllerHelper.checkBindingResultAndThrowExceptionIfInvalid(result);
+//        PageWrapper<SelectionOrderResp> resp = selectionOrderService.findAllOrder(searchCriteriaReq);
+//        return ResponseEntity.ok().body(resp);
+//    }
 }

@@ -3,8 +3,6 @@ package by.iba.controller;
 import by.iba.dto.req.SignInReq;
 import by.iba.dto.req.SignUpReq;
 import by.iba.dto.resp.UserResp;
-import by.iba.entity.enam.BodyTypeEnum;
-import by.iba.entity.order.Body;
 import by.iba.exception.ControllerHelper;
 import by.iba.inteface.BodyRepository;
 import by.iba.security.dto.JwtResp;

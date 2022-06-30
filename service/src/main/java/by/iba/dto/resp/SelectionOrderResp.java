@@ -11,8 +11,7 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
-public class SelectionOrderResp extends OrderResp {
-    // TODO may be it`s a big mistake
+public class SelectionOrderResp extends AbstractOrderResp {
     // Selection info
     private Integer minYear;
 

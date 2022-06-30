@@ -1,12 +1,12 @@
 package by.iba.controller.user;
 
 import by.iba.dto.page.PageWrapper;
-import by.iba.dto.req.order.*;
+import by.iba.dto.req.order.OrderAutoPickerReq;
+import by.iba.dto.req.order.OrderSearchCriteriaReq;
+import by.iba.dto.req.order.OrderStatusReq;
 import by.iba.dto.resp.OrderResp;
-import by.iba.dto.resp.SelectionOrderResp;
 import by.iba.exception.ControllerHelper;
 import by.iba.service.OrderService;
-import by.iba.service.SelectionOrderService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,20 +20,13 @@ import java.util.List;
 @AllArgsConstructor
 @RestController
 @CrossOrigin
-@PreAuthorize("hasAnyAuthority('USER')")
 @RequestMapping(value = "/api/v1/orders/")
 public class OrderController {
 
     private final OrderService orderService;
 
-//    @PostMapping("/create")
-//    public ResponseEntity<SelectionOrderResp> createSelectionOrder(@RequestBody @Valid SelectionOrderReq orderReq, BindingResult result) {
-//        ControllerHelper.checkBindingResultAndThrowExceptionIfInvalid(result);
-//        SelectionOrderResp selectionOrderResp = selectionOrderService.createOrder(orderReq);
-//        return new ResponseEntity<>(selectionOrderResp, HttpStatus.CREATED);
-//    }
-
     @PatchMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('AUTO_PICKER', 'ADMIN','USER')")
     public ResponseEntity<OrderResp> changeOrderStatus(@PathVariable("id") Long id,
                                                        @RequestBody @Valid OrderStatusReq orderStatusReq,
                                                        BindingResult result) {
@@ -42,35 +35,29 @@ public class OrderController {
         return new ResponseEntity<>(order, HttpStatus.OK);
     }
 
-//    @PutMapping("/{id}")
-//    public ResponseEntity<SelectionOrderResp> updateOrder(@PathVariable("id") Long id,
-//                                                          @RequestBody @Valid SelectionOrderUpdateReq req,
-//                                                          BindingResult result) {
-//        ControllerHelper.checkBindingResultAndThrowExceptionIfInvalid(result);
-//        SelectionOrderResp order = selectionOrderService.updateOrder(id, req);
-//        return new ResponseEntity<>(order, HttpStatus.OK);
-//    }
-
     @GetMapping("/{id}")
+    @PreAuthorize("hasAnyAuthority('AUTO_PICKER', 'ADMIN','USER')")
     public ResponseEntity<List<OrderResp>> findUsersOrders(@PathVariable("id") Long id) {
         List<OrderResp> orders = orderService.getOrdersByUserId(id);
         return new ResponseEntity<>(orders, HttpStatus.OK);
     }
 
     @GetMapping("/auto_picker/{id}")
-    @PreAuthorize("hasAnyAuthority('AUTO_PICKER')")
+    @PreAuthorize("hasAnyAuthority('AUTO_PICKER', 'ADMIN')")
     public ResponseEntity<List<OrderResp>> findAutoPickersOrders(@PathVariable("id") Long id) {
         List<OrderResp> orders = orderService.getOrdersByAutoPickerId(id);
         return new ResponseEntity<>(orders, HttpStatus.OK);
     }
 
     @GetMapping("/findAll")
+    @PreAuthorize("hasAnyAuthority('AUTO_PICKER', 'ADMIN')")
     public ResponseEntity<PageWrapper<OrderResp>> findAllOrders(OrderSearchCriteriaReq param) {
         PageWrapper<OrderResp> resp = orderService.findAll(param);
         return ResponseEntity.ok().body(resp);
     }
 
     @PatchMapping("/admin/{id}")
+    @PreAuthorize("hasAnyAuthority('AUTO_PICKER', 'ADMIN')")
     public ResponseEntity<OrderResp> setAutoPicker(@PathVariable("id") Long id, @Valid @RequestBody OrderAutoPickerReq autoPickerReq,
                                                    BindingResult result) {
         ControllerHelper.checkBindingResultAndThrowExceptionIfInvalid(result);
