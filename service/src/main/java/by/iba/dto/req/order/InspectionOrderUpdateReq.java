@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Pattern;
 
 @NoArgsConstructor
 @Getter
@@ -13,4 +14,7 @@ import javax.validation.constraints.NotBlank;
 public class InspectionOrderUpdateReq extends AbstractReq {
     @NotBlank
     private String autoUrl;
+
+    @Pattern(regexp = ".{0,512}", message = "AdditionalInfo can`t be bigger then 512 symbols")
+    private String additionalInfo;
 }

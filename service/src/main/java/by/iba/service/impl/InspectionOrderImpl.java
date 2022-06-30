@@ -44,6 +44,7 @@ public class InspectionOrderImpl implements InspectionOrderService {
     public InspectionOrderResp updateInspectionOrder(Long id, InspectionOrderUpdateReq orderReq) {
         InspectionOrder order = findOrderById(id);
         order.setAutoUrl(orderReq.getAutoUrl());
+        order.setAdditionalInfo(orderReq.getAdditionalInfo());
         order = inspectionOrderRepository.save(order);
         InspectionOrderResp resp = inspectionOrderMapper.toDto(order);
         return resp;
