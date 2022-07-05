@@ -20,11 +20,11 @@ import javax.validation.Valid;
 @CrossOrigin
 @RestController
 @PreAuthorize("hasAnyAuthority('USER')")
-@RequestMapping(value = "/api/v1/orders/selection/")
+@RequestMapping(value = "/api/v1/selection-orders")
 public class SelectionOrderController {
     private final SelectionOrderService selectionOrderService;
 
-    @PostMapping("/new")
+    @PostMapping()
     public ResponseEntity<SelectionOrderResp> createSelectionOrder(@RequestBody @Valid SelectionOrderReq orderReq, BindingResult result) {
         ControllerHelper.checkBindingResultAndThrowExceptionIfInvalid(result);
         SelectionOrderResp selectionOrderResp = selectionOrderService.createOrder(orderReq);
@@ -46,12 +46,4 @@ public class SelectionOrderController {
         return new ResponseEntity<>(order, HttpStatus.OK);
     }
 
-//    // TODO ну здесь надо пользователя выводить заказы
-//    @GetMapping("/")
-//    public ResponseEntity<PageWrapper<SelectionOrderResp>> findAllSelectionOrders(@Valid SelectionOrderSearchCriteriaReq searchCriteriaReq,
-//                                                                                  BindingResult result) {
-//        ControllerHelper.checkBindingResultAndThrowExceptionIfInvalid(result);
-//        PageWrapper<SelectionOrderResp> resp = selectionOrderService.findAllOrder(searchCriteriaReq);
-//        return ResponseEntity.ok().body(resp);
-//    }
 }

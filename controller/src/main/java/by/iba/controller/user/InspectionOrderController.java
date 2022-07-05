@@ -17,11 +17,12 @@ import javax.validation.Valid;
 @RestController
 @CrossOrigin
 @PreAuthorize("hasAnyAuthority('USER')")
-@RequestMapping(value = "/api/v1/orders/inspection/")
+@RequestMapping(value = "/api/v1/inspection-orders")
 public class InspectionOrderController {
+
     private final InspectionOrderService inspectionOrderService;
 
-    @PostMapping("/new")
+    @PostMapping()
     public ResponseEntity<InspectionOrderResp> createInspectionOrder(@RequestBody @Valid InspectionOrderReq orderReq, BindingResult result) {
         ControllerHelper.checkBindingResultAndThrowExceptionIfInvalid(result);
         InspectionOrderResp inspectionOrder = inspectionOrderService.createInspectionOrder(orderReq);
