@@ -9,5 +9,5 @@ import lombok.Setter;
 @Getter
 @Setter
 public class OrderSearchCriteriaReq extends PagingCriteriaReq {
-    String param;
+    private String param;
 }

@@ -22,5 +22,4 @@ public class SelectionOrderSearchCriteriaReq extends PagingCriteriaReq {
     private Double rangeFrom = 10.0;
     private Double rangeTo = 1000000.0;
     private String currencyType = "USD";
-    private String creatorName;
 }

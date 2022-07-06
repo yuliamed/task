@@ -23,10 +23,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
-import static by.iba.inteface.specification.OrderSpecification.findByCreatorNameLike;
 import static by.iba.inteface.specification.SelectionOrderSpecification.*;
 
 @Service
@@ -150,11 +152,6 @@ public class SelectionOrderServiceImpl implements SelectionOrderService {
         if (Objects.nonNull(searchReq.getBrands())) {
             List<CarBrand> brands = resolveBrands(searchReq.getBrands());
             specification = specification.and(findAllByBrands(brands));
-        }
-
-        if (Objects.nonNull(searchReq.getCreatorName())) {
-
-            specification = specification.and(findByCreatorNameLike(searchReq.getCreatorName(), searchReq.getCreatorName()));
         }
 
         CurrencyType currencyType = getCurrencyTypeByName(searchReq.getCurrencyType());

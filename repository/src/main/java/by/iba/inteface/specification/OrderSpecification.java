@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 
 import javax.persistence.criteria.Predicate;
+import java.util.Locale;
 
 @NoArgsConstructor
 public class OrderSpecification {
@@ -28,12 +29,14 @@ public class OrderSpecification {
         return (root, criteriaQuery, criteriaBuilder) ->
         {
             criteriaQuery.distinct(true);
-
+            String searchParam = param.toLowerCase(Locale.ROOT);
             Predicate predicateForData = criteriaBuilder.or(
-                    criteriaBuilder.like(root.join("creator").get("name"), "%" + param + "%"),
-                    criteriaBuilder.like(root.join("creator").get("surname"), "%" + param + "%"),
-                    criteriaBuilder.like(root.get("creationDate").as(String.class), "%" + param + "%"),
-                    criteriaBuilder.like(root.get("lastUpdateDate").as(String.class), "%" + param + "%")
+                    criteriaBuilder.like(
+                            criteriaBuilder.lower(root.join("creator").get("name")), "%" + searchParam + "%"),
+                    criteriaBuilder.like(
+                            criteriaBuilder.lower(root.join("creator").get("surname")), "%" + searchParam + "%"),
+                    criteriaBuilder.like(root.get("creationDate").as(String.class), "%" + searchParam + "%"),
+                    criteriaBuilder.like(root.get("lastUpdateDate").as(String.class), "%" + searchParam + "%")
             );
             Predicate predicateNonNull = criteriaBuilder.or(
                     criteriaBuilder.isNull(root.get("autoPicker")),
