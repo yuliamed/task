@@ -1,6 +1,6 @@
 package by.iba.entity.order;
 
-import by.iba.entity.InspectionReport;
+import by.iba.entity.report.InspectionReport;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,7 +15,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class InspectionOrder extends Order {
-    @Column(name = "auto_url", nullable = false, length = 255)
+    @Column(name = "auto_url", nullable = false)
     private String autoUrl;
 
     @OneToOne
