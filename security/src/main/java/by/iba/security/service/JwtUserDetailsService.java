@@ -1,7 +1,7 @@
 package by.iba.security.service;
 
 import by.iba.entity.user.User;
-import by.iba.inteface.UserRepository;
+import by.iba.inteface.user.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;

@@ -4,7 +4,7 @@ import by.iba.dto.req.SignInReq;
 import by.iba.dto.req.SignUpReq;
 import by.iba.dto.resp.UserResp;
 import by.iba.exception.ControllerHelper;
-import by.iba.inteface.BodyRepository;
+import by.iba.inteface.car_description.BodyRepository;
 import by.iba.security.dto.JwtResp;
 import by.iba.service.UserService;
 import lombok.AllArgsConstructor;

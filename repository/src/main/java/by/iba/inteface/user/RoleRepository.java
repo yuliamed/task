@@ -1,4 +1,4 @@
-package by.iba.inteface;
+package by.iba.inteface.user;
 
 import by.iba.entity.user.Role;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -1,4 +1,4 @@
-package by.iba.inteface;
+package by.iba.inteface.order;
 
 import by.iba.entity.order.InspectionOrder;
 import org.springframework.data.jpa.repository.JpaRepository;

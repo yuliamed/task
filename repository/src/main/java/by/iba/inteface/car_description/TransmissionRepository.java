@@ -1,4 +1,4 @@
-package by.iba.inteface;
+package by.iba.inteface.car_description;
 
 import by.iba.entity.order.Transmission;
 import org.springframework.data.jpa.repository.JpaRepository;
