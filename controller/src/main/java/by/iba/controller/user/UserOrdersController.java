@@ -28,9 +28,9 @@ public class UserOrdersController {
         return new ResponseEntity<>(orders, HttpStatus.OK);
     }
 
-    @PatchMapping("/{id}")
+    @PatchMapping("/{orderId}")
     @PreAuthorize("hasAnyAuthority('AUTO_PICKER', 'ADMIN','USER')")
-    public ResponseEntity<OrderResp> changeOrderStatus(@PathVariable("id") Long id,
+    public ResponseEntity<OrderResp> changeOrderStatus(@PathVariable("orderId") Long id,
                                                        @RequestBody @Valid OrderStatusReq orderStatusReq,
                                                        BindingResult result) {
         ControllerHelper.checkBindingResultAndThrowExceptionIfInvalid(result);
