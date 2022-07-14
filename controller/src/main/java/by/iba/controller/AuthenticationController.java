@@ -1,8 +1,8 @@
 package by.iba.controller;
 
-import by.iba.dto.req.SignInReq;
-import by.iba.dto.req.SignUpReq;
-import by.iba.dto.resp.UserResp;
+import by.iba.dto.req.user.SignInReq;
+import by.iba.dto.req.user.SignUpReq;
+import by.iba.dto.resp.user.UserResp;
 import by.iba.exception.ControllerHelper;
 import by.iba.inteface.car_description.BodyRepository;
 import by.iba.security.dto.JwtResp;

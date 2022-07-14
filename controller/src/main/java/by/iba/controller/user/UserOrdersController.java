@@ -1,7 +1,7 @@
 package by.iba.controller.user;
 
 import by.iba.dto.req.order.OrderStatusReq;
-import by.iba.dto.resp.OrderResp;
+import by.iba.dto.resp.order.OrderResp;
 import by.iba.exception.ControllerHelper;
 import by.iba.service.OrderService;
 import lombok.AllArgsConstructor;

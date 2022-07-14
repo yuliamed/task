@@ -1,8 +1,9 @@
 package by.iba.service;
 
 import by.iba.dto.req.*;
+import by.iba.dto.req.user.*;
 import by.iba.dto.resp.ApiResp;
-import by.iba.dto.resp.UserResp;
+import by.iba.dto.resp.user.UserResp;
 import by.iba.security.dto.JwtResp;
 
 public interface UserService {

@@ -1,4 +1,4 @@
-package by.iba.dto.req;
+package by.iba.dto.req.user;
 
 import by.iba.dto.AbstractDTO;
 import lombok.Getter;

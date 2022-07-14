@@ -4,7 +4,7 @@ import by.iba.dto.page.PageWrapper;
 import by.iba.dto.req.order.OrderAutoPickerReq;
 import by.iba.dto.req.order.OrderSearchCriteriaReq;
 import by.iba.dto.req.order.OrderStatusReq;
-import by.iba.dto.resp.OrderResp;
+import by.iba.dto.resp.order.OrderResp;
 
 import java.util.List;
 

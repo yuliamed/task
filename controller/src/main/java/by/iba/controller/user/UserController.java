@@ -1,8 +1,8 @@
 package by.iba.controller.user;
 
 import by.iba.dto.req.ImageReq;
-import by.iba.dto.req.UserUpdateReq;
-import by.iba.dto.resp.UserResp;
+import by.iba.dto.req.user.UserUpdateReq;
+import by.iba.dto.resp.user.UserResp;
 import by.iba.exception.ControllerHelper;
 import by.iba.service.UserService;
 import lombok.AllArgsConstructor;

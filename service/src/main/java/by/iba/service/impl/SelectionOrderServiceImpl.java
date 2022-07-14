@@ -2,7 +2,7 @@ package by.iba.service.impl;
 
 import by.iba.dto.page.PageWrapper;
 import by.iba.dto.req.order.*;
-import by.iba.dto.resp.SelectionOrderResp;
+import by.iba.dto.resp.order.SelectionOrderResp;
 import by.iba.entity.enam.OrderStatusEnum;
 import by.iba.entity.enam.RoleEnum;
 import by.iba.entity.order.*;

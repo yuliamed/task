@@ -1,10 +1,8 @@
 package by.iba.controller.user;
 
-import by.iba.dto.page.PageWrapper;
 import by.iba.dto.req.order.SelectionOrderReq;
-import by.iba.dto.req.order.SelectionOrderSearchCriteriaReq;
 import by.iba.dto.req.order.SelectionOrderUpdateReq;
-import by.iba.dto.resp.SelectionOrderResp;
+import by.iba.dto.resp.order.SelectionOrderResp;
 import by.iba.exception.ControllerHelper;
 import by.iba.service.SelectionOrderService;
 import lombok.AllArgsConstructor;

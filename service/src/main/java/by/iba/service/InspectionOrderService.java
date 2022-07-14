@@ -2,7 +2,7 @@ package by.iba.service;
 
 import by.iba.dto.req.order.InspectionOrderReq;
 import by.iba.dto.req.order.InspectionOrderUpdateReq;
-import by.iba.dto.resp.InspectionOrderResp;
+import by.iba.dto.resp.order.InspectionOrderResp;
 
 public interface InspectionOrderService {
     InspectionOrderResp createInspectionOrder(InspectionOrderReq orderReq);

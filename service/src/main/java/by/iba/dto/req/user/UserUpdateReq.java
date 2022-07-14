@@ -1,6 +1,6 @@
-package by.iba.dto.req;
+package by.iba.dto.req.user;
 
-import lombok.AllArgsConstructor;
+import by.iba.dto.req.AbstractReq;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -10,9 +10,8 @@ import javax.validation.constraints.Pattern;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
-public class SignInReq {
+public class UserUpdateReq extends AbstractReq {
     @NotBlank(message = "Email can`t be empty")
     @Pattern(regexp = "^[a-z](\\.?\\w)*@[a-z]+(\\.[a-z]+)+", message = "The email must start with a letter," +
             " all letters are small," +
@@ -20,7 +19,8 @@ public class SignInReq {
             " but not 2 in a row." +
             " The @ must be present and the domain after it")
     private String email;
-
-    @NotBlank(message = "Pass can`t be empty")
-    private String pass;
+    @NotBlank(message = "User name can`t be empty")
+    private String name;
+    @NotBlank(message = "User surname can`t be empty")
+    private String surname;
 }

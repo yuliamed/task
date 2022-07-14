@@ -1,8 +1,9 @@
 package by.iba.service.impl;
 
 import by.iba.dto.req.*;
+import by.iba.dto.req.user.*;
 import by.iba.dto.resp.ApiResp;
-import by.iba.dto.resp.UserResp;
+import by.iba.dto.resp.user.UserResp;
 import by.iba.entity.user.Role;
 import by.iba.entity.enam.RoleEnum;
 import by.iba.entity.user.User;

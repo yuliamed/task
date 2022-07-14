@@ -1,6 +1,6 @@
 package by.iba.controller.auto_picker;
 
-import by.iba.dto.resp.OrderResp;
+import by.iba.dto.resp.order.OrderResp;
 import by.iba.service.OrderService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;

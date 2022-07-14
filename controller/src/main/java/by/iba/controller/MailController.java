@@ -1,9 +1,9 @@
 package by.iba.controller;
 
-import by.iba.dto.req.EmailReq;
-import by.iba.dto.req.ResetPassReq;
+import by.iba.dto.req.user.EmailReq;
+import by.iba.dto.req.user.ResetPassReq;
 import by.iba.dto.resp.ApiResp;
-import by.iba.dto.resp.UserResp;
+import by.iba.dto.resp.user.UserResp;
 import by.iba.exception.ControllerHelper;
 import by.iba.service.UserService;
 import lombok.AllArgsConstructor;

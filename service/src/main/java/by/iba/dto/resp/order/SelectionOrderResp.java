@@ -1,5 +1,6 @@
-package by.iba.dto.resp;
+package by.iba.dto.resp.order;
 
+import by.iba.dto.resp.order.AbstractOrderResp;
 import by.iba.entity.order.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,13 +9,10 @@ import lombok.Setter;
 import java.util.HashSet;
 import java.util.Set;
 
-@NoArgsConstructor
 @Getter
 @Setter
-public class OrderResp extends AbstractOrderResp {
-    //InspectionOrder
-    private String autoUrl;
-
+@NoArgsConstructor
+public class SelectionOrderResp extends AbstractOrderResp {
     // Selection info
     private Integer minYear;
 
@@ -41,4 +39,5 @@ public class OrderResp extends AbstractOrderResp {
     private Set<CarBrand> brands = new HashSet<>();
 
     private Set<Body> bodies = new HashSet<>();
+
 }

@@ -2,7 +2,7 @@ package by.iba.service.impl;
 
 import by.iba.dto.req.order.InspectionOrderReq;
 import by.iba.dto.req.order.InspectionOrderUpdateReq;
-import by.iba.dto.resp.InspectionOrderResp;
+import by.iba.dto.resp.order.InspectionOrderResp;
 import by.iba.entity.enam.OrderStatusEnum;
 import by.iba.entity.order.InspectionOrder;
 import by.iba.entity.user.User;

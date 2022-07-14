@@ -1,5 +1,7 @@
-package by.iba.dto.resp;
+package by.iba.dto.resp.order;
 
+import by.iba.dto.resp.AbstractResp;
+import by.iba.dto.resp.user.UserResp;
 import by.iba.entity.order.OrderStatus;
 import lombok.Getter;
 import lombok.Setter;

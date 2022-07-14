@@ -1,4 +1,4 @@
-package by.iba.dto.resp;
+package by.iba.dto.resp.user;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
