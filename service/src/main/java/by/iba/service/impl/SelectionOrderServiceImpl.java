@@ -9,7 +9,7 @@ import by.iba.entity.order.*;
 import by.iba.entity.user.User;
 import by.iba.exception.ResourceNotFoundException;
 import by.iba.exception.ServiceException;
-import by.iba.inteface.*;
+import by.iba.inteface.CurrencyTypeRepository;
 import by.iba.inteface.car_description.*;
 import by.iba.inteface.order.OrderStatusRepository;
 import by.iba.inteface.order.SelectionOrderRepository;
@@ -43,13 +43,13 @@ public class SelectionOrderServiceImpl implements SelectionOrderService {
     private final EngineRepository engineRepository;
     private final TransmissionRepository transmissionRepository;
     private final CarBrandRepository carBrandRepository;
-    private final SelectionOrderMapper selectionOrderMapper;
     private final DriveRepository driveRepository;
+    private final CurrencyTypeRepository currencyTypeRepository;
+    private final BodyRepository bodyRepository;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final OrderStatusRepository orderStatusRepository;
-    private final CurrencyTypeRepository currencyTypeRepository;
-    private final BodyRepository bodyRepository;
+    private final SelectionOrderMapper selectionOrderMapper;
 
     @Transactional
     @Override
@@ -174,7 +174,8 @@ public class SelectionOrderServiceImpl implements SelectionOrderService {
     private Set<Drive> mapToDriveEntity(Set<DriveReq> drivesReq) {
         Set<Drive> drives = drivesReq.stream().map((dto) -> {
                     if (Objects.isNull(dto)) return null;
-                    return driveRepository.findByName(dto.getName());
+                    return driveRepository.findByName(dto.getName())
+                            .orElseThrow(() -> new ResourceNotFoundException("There is no Drive with name = " + dto.getName()));
                 })
                 .collect(Collectors.toSet());
         return drives;
@@ -201,7 +202,8 @@ public class SelectionOrderServiceImpl implements SelectionOrderService {
     private Set<Transmission> mapToTransmissionEntity(Set<TransmissionReq> transmissions) {
         Set<Transmission> transmissionSet = transmissions.stream().map((dto) -> {
                     if (Objects.isNull(dto)) return null;
-                    return transmissionRepository.findByName(dto.getName());
+                    return transmissionRepository.findByName(dto.getName())
+                            .orElseThrow(() -> new ResourceNotFoundException("There is no Transmission with name = " + dto.getName()));
                 })
                 .collect(Collectors.toSet());
         return transmissionSet;

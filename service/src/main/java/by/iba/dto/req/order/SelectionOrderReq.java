@@ -1,6 +1,5 @@
 package by.iba.dto.req.order;
 
-import by.iba.dto.req.AbstractReq;
 import by.iba.entity.enam.CurrencyEnum;
 import by.iba.exception.validation.EnumPattern;
 import lombok.Getter;
@@ -8,7 +7,10 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.Valid;
-import javax.validation.constraints.*;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.HashSet;
 import java.util.Set;
 

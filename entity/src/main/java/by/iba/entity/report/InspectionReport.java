@@ -73,33 +73,33 @@ public class InspectionReport extends TrackingAbstractEntity {
     @JoinColumn(name = "body")
     private Body body;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable(name = "inspect_report_car_errors",
             joinColumns = {@JoinColumn(name = "report_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "error_id", referencedColumnName = "id")})
     private Set<CarComputerError> carComputerErrors = new HashSet<>();
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "body_report_id")
     private BodyReport bodyReport;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "salon_report_id")
     private SalonReport salonReport;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "engine_report_id")
     private EngineReport engineReport;
 
-    @OneToOne
-    @JoinColumn(name = "transmission_report_ID")
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "transmission_report_id")
     private TransmissionReport transmissionReport;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "electrical_equipment_report_id")
     private ElectricalEquipmentReport electricalEquipmentReport;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "pendant_report_id")
     private PendantReport pendantReport;
 }

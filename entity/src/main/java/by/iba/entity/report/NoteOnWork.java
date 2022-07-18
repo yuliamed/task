@@ -17,9 +17,9 @@ import javax.persistence.Table;
 @AllArgsConstructor
 @NoArgsConstructor
 public class NoteOnWork extends AbstractEntity {
-    @Column(name = "name")
+    @Column(name = "name", length = 64)
     private String name;
 
-    @Column(name = "description")
+    @Column(name = "description", length = 512)
     private String description;
 }

@@ -55,7 +55,7 @@ public class InspectionOrderImpl implements InspectionOrderService {
         return inspectionOrderMapper.toDto(findOrderById(id));
     }
 
-    protected InspectionOrder findOrderById(Long id) {
+    private InspectionOrder findOrderById(Long id) {
         return inspectionOrderRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("There is no order with id = " + id));
     }
