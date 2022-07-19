@@ -1,6 +1,7 @@
 package by.iba.controller.user;
 
-import by.iba.dto.req.order.*;
+import by.iba.dto.req.order.InspectionOrderReq;
+import by.iba.dto.req.order.InspectionOrderUpdateReq;
 import by.iba.dto.resp.order.InspectionOrderResp;
 import by.iba.exception.ControllerHelper;
 import by.iba.service.InspectionOrderService;
@@ -17,30 +18,31 @@ import javax.validation.Valid;
 @RestController
 @CrossOrigin
 @PreAuthorize("hasAnyAuthority('USER')")
-@RequestMapping(value = "/api/v1/inspection-orders")
+@RequestMapping(value = "/api/v1/users/{id}/inspection-orders")
 public class InspectionOrderController {
 
     private final InspectionOrderService inspectionOrderService;
 
     @PostMapping()
-    public ResponseEntity<InspectionOrderResp> createInspectionOrder(@RequestBody @Valid InspectionOrderReq orderReq, BindingResult result) {
+    public ResponseEntity<InspectionOrderResp> createInspectionOrder(@RequestBody @Valid InspectionOrderReq orderReq,
+                                                                     BindingResult result) {
         ControllerHelper.checkBindingResultAndThrowExceptionIfInvalid(result);
         InspectionOrderResp inspectionOrder = inspectionOrderService.createInspectionOrder(orderReq);
         return new ResponseEntity<>(inspectionOrder, HttpStatus.CREATED);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<InspectionOrderResp> updateOrder(@PathVariable("id") Long id,
-                                                          @RequestBody @Valid InspectionOrderUpdateReq req,
-                                                          BindingResult result) {
+    @PutMapping("/{orderId}")
+    public ResponseEntity<InspectionOrderResp> updateOrder(@PathVariable("orderId") Long orderId,
+                                                           @RequestBody @Valid InspectionOrderUpdateReq req,
+                                                           BindingResult result) {
         ControllerHelper.checkBindingResultAndThrowExceptionIfInvalid(result);
-        InspectionOrderResp order = inspectionOrderService.updateInspectionOrder(id, req);
+        InspectionOrderResp order = inspectionOrderService.updateInspectionOrder(orderId, req);
         return new ResponseEntity<>(order, HttpStatus.OK);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<InspectionOrderResp> getOrder(@PathVariable("id") Long id) {
-        InspectionOrderResp order = inspectionOrderService.getOrder(id);
+    @GetMapping("/{orderId}")
+    public ResponseEntity<InspectionOrderResp> getOrders(@PathVariable("orderId") Long orderId) {
+        InspectionOrderResp order = inspectionOrderService.getOrder(orderId);
         return new ResponseEntity<>(order, HttpStatus.OK);
     }
 

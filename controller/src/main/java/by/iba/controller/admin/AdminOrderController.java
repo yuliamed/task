@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping(value = "api/v1/admin/{adminId}/orders")
+@RequestMapping(value = "api/v1/admin/{id}/orders")
 @AllArgsConstructor
 @PreAuthorize("hasAnyAuthority('ADMIN')")
 public class AdminOrderController {
@@ -26,8 +26,9 @@ public class AdminOrderController {
     private final OrderService orderService;
     private final SelectionOrderService selectionOrderService;
 
-    @PatchMapping("/{id}")
-    public ResponseEntity<OrderResp> setAutoPicker(@PathVariable("id") Long id, @Valid @RequestBody OrderAutoPickerReq autoPickerReq,
+    @PatchMapping("/{orderId}")
+    public ResponseEntity<OrderResp> setAutoPicker(@PathVariable("orderId") Long id,
+                                                   @Valid @RequestBody OrderAutoPickerReq autoPickerReq,
                                                    BindingResult result) {
         ControllerHelper.checkBindingResultAndThrowExceptionIfInvalid(result);
         OrderResp resp = orderService.setAutoPicker(id, autoPickerReq);

@@ -1,6 +1,7 @@
 package by.iba.controller.auto_picker;
 
 import by.iba.dto.req.report.InspectionReportReq;
+import by.iba.dto.req.report.InspectionReportUpdateReq;
 import by.iba.dto.resp.report.InspectionReportResp;
 import by.iba.entity.report.InspectionReport;
 import by.iba.exception.ControllerHelper;
@@ -24,7 +25,7 @@ public class ReportController {
     private final InspectionReportService inspectionReportService;
 
     @GetMapping()
-    public ResponseEntity<List<InspectionReport>> findAutoPickersOrders() {
+    public ResponseEntity<List<InspectionReport>> findAutoPickersReports() {
         // todo - убери ради бога
         List<InspectionReport> list = inspectionReportService.findAll();
         return  new ResponseEntity<>(list, HttpStatus.OK);

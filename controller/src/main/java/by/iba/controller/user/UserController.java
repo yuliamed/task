@@ -17,30 +17,30 @@ import javax.validation.Valid;
 @RestController
 @CrossOrigin
 @PreAuthorize("hasAnyAuthority('USER')")
-@RequestMapping(value = "/api/v1/users/")
+@RequestMapping(value = "/api/v1/users/{id}")
 public class UserController {
     private final UserService userService;
 
-    @GetMapping(value = "/{id}")
+    @GetMapping()
     public ResponseEntity<UserResp> getProfile(@PathVariable("id") Long id) {
         UserResp user = userService.getProfile(id);
         return ResponseEntity.ok(user);
     }
 
-    @PutMapping(value = "/{id}")
+    @PutMapping()
     public ResponseEntity<UserResp> updateProfile(@PathVariable("id") Long id, @Valid @RequestBody UserUpdateReq userUpdateReq, BindingResult result) {
         ControllerHelper.checkBindingResultAndThrowExceptionIfInvalid(result);
         UserResp user = userService.updateInfo(id, userUpdateReq);
         return ResponseEntity.ok(user);
     }
 
-    @PatchMapping(value = "/{id}/add-image")
+    @PatchMapping(value = "/add-image")
     public ResponseEntity<UserResp> saveImage(@PathVariable("id") Long id, @RequestBody ImageReq imageUrl) {
         UserResp resp = userService.saveImage(id, imageUrl);
         return ResponseEntity.ok(resp);
     }
 
-    @DeleteMapping(value = "/{id}/delete-image")
+    @DeleteMapping(value = "/delete-image")
     public ResponseEntity<UserResp> deleteImage(@PathVariable("id") Long id) {
         UserResp resp = userService.deleteImage(id);
         return ResponseEntity.ok(resp);

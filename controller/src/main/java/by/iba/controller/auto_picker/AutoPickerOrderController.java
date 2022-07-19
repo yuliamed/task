@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "api/v1/auto-picker/{id}")
+@RequestMapping(value = "api/v1/auto-picker/{id}/orders")
 @AllArgsConstructor
 @PreAuthorize("hasAnyAuthority('AUTO_PICKER')")
 public class AutoPickerOrderController {

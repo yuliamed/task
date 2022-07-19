@@ -18,7 +18,7 @@ import javax.validation.Valid;
 @CrossOrigin
 @RestController
 @PreAuthorize("hasAnyAuthority('USER')")
-@RequestMapping(value = "/api/v1/selection-orders")
+@RequestMapping(value = "/api/v1/users/{id}/selection-orders")
 public class SelectionOrderController {
     private final SelectionOrderService selectionOrderService;
 
@@ -29,18 +29,18 @@ public class SelectionOrderController {
         return new ResponseEntity<>(selectionOrderResp, HttpStatus.CREATED);
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<SelectionOrderResp> updateOrder(@PathVariable("id") Long id,
+    @PutMapping("/{orderID}")
+    public ResponseEntity<SelectionOrderResp> updateOrder(@PathVariable("orderID") Long orderId,
                                                           @RequestBody @Valid SelectionOrderUpdateReq req,
                                                           BindingResult result) {
         ControllerHelper.checkBindingResultAndThrowExceptionIfInvalid(result);
-        SelectionOrderResp order = selectionOrderService.updateOrder(id, req);
+        SelectionOrderResp order = selectionOrderService.updateOrder(orderId, req);
         return new ResponseEntity<>(order, HttpStatus.OK);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<SelectionOrderResp> getOrderById(@PathVariable("id") Long id) {
-        SelectionOrderResp order = selectionOrderService.getOrder(id);
+    @GetMapping("/{orderId}")
+    public ResponseEntity<SelectionOrderResp> getOrderById(@PathVariable("orderId") Long orderId) {
+        SelectionOrderResp order = selectionOrderService.getOrder(orderId);
         return new ResponseEntity<>(order, HttpStatus.OK);
     }
 

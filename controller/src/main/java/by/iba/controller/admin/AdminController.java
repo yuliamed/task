@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping(value = "api/v1/admin/")
+@RequestMapping(value = "api/v1/admin")
 @AllArgsConstructor
 @PreAuthorize("hasAnyAuthority('ADMIN')")
 public class AdminController {
