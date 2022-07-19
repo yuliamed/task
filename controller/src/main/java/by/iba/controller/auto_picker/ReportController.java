@@ -39,6 +39,15 @@ public class ReportController {
         InspectionReportResp resp = inspectionReportService.createReport(orderId, req);
         return new ResponseEntity<>(resp, HttpStatus.OK);
     }
+    // todo ???
+    @PutMapping("/{reportId}")
+    public ResponseEntity<InspectionReportResp> editReportData(@PathVariable("reportId") Long reportId,
+                                                             @RequestBody @Valid InspectionReportUpdateReq reqData,
+                                                             BindingResult result) {
+        ControllerHelper.checkBindingResultAndThrowExceptionIfInvalid(result);
+        InspectionReportResp resp = inspectionReportService.editReportData(reportId, reqData);
+        return new ResponseEntity<>(resp, HttpStatus.OK);
+    }
 
 
 }

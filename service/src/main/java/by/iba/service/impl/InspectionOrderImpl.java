@@ -52,7 +52,8 @@ public class InspectionOrderImpl implements InspectionOrderService {
 
     @Override
     public InspectionOrderResp getOrder(Long id) {
-        return inspectionOrderMapper.toDto(findOrderById(id));
+        InspectionOrder order = findOrderById(id);
+        return inspectionOrderMapper.toDto(order);
     }
 
     private InspectionOrder findOrderById(Long id) {

@@ -1,7 +1,7 @@
 package by.iba.dto.resp.order;
 
 import by.iba.dto.resp.AbstractResp;
-import by.iba.dto.resp.user.UserResp;
+import by.iba.dto.resp.user.UserOrderResp;
 import by.iba.entity.order.OrderStatus;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,9 +18,9 @@ public abstract class AbstractOrderResp extends AbstractResp {
 
     private LocalDateTime creationDate;
 
-    private UserResp autoPicker;
+    private UserOrderResp autoPicker;
 
-    private UserResp creator;
+    private UserOrderResp creator;
 
     private OrderStatus status;
 

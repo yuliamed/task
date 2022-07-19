@@ -1,6 +1,7 @@
 package by.iba.service;
 
 import by.iba.dto.req.report.InspectionReportReq;
+import by.iba.dto.req.report.InspectionReportUpdateReq;
 import by.iba.dto.resp.report.InspectionReportResp;
 import by.iba.entity.report.InspectionReport;
 
@@ -16,5 +17,7 @@ public interface InspectionReportService {
     InspectionReportResp getReportById(Long reportId);
 
     InspectionReportResp getReportByOrderId(Long reportId);
+
+    InspectionReportResp editReportData(Long reportId, InspectionReportUpdateReq reqData);
 }
 

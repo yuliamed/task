@@ -58,17 +58,44 @@ public class InspectionReportImpl implements InspectionReportService {
 
     @Override
     public InspectionReportResp editReport(Long reportId, InspectionReportReq req) {
-        InspectionReport report = findReportById(reportId);
-//        report.setCurrencyType(getCurrencyTypeByName(req.getCurrencyType()));
-//        report.setDrive(getDriveByName(req.getDrive().getName()));
-//        report.setTransmission(getTransmissionByName(req.getTransmission().getName()));
-//        report.setEngine(getEngineByName(req.getEngine().getName()));
-//        report.setBrand(getBrandByName(req.getBrand().getName()));
-//        report.setBody(getBodyByName(req.getBody().getName()));
-//
-//        report.setBodyReport();
-
+        //report.setBodyReport();
         return null;
+    }
+
+    @Override
+    public InspectionReportResp getReportById(Long reportId) {
+        return inspectionReportMapper.toDto(findReportById(reportId));
+
+    }
+
+    @Override
+    public InspectionReportResp getReportByOrderId(Long orderId) {
+        return inspectionReportMapper.toDto(findOrderById(orderId).getInspectionReport());
+    }
+
+    @Override
+    public InspectionReportResp editReportData(Long reportId, InspectionReportUpdateReq reqData) {
+        InspectionReport report = findReportById(reportId);
+        report.setModel(reqData.getModel());
+        report.setYear(report.getYear());
+        report.setEngineVolume(reqData.getEngineVolume());
+        report.setInspectionDate(reqData.getInspectionDate());
+        report.setMileage(report.getMileage());
+        report.setIsMileageReal(reqData.getIsMileageReal());
+        report.setVinNumber(reqData.getVinNumber());
+        report.setIsVinNumberReal(reqData.getIsVinNumberReal());
+        report.setCostValue(reqData.getCostValue());
+        report.setAuctionValue(report.getAuctionValue());
+
+        report.setCurrencyType(getCurrencyTypeByName(reqData.getCurrencyType()));
+        report.setDrive(getDriveByName(reqData.getDrive().getName()));
+        report.setTransmission(getTransmissionByName(reqData.getTransmission().getName()));
+        report.setEngine(getEngineByName(reqData.getEngine().getName()));
+        report.setBrand(getBrandByName(reqData.getBrand().getName()));
+        report.setBody(getBodyByName(reqData.getBody().getName()));
+
+        reportRepository.save(report);
+        return inspectionReportMapper.toDto(report);
     }
 
     private CarBrand getBrandByName(String name) {
