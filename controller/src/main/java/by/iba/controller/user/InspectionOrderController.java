@@ -41,7 +41,7 @@ public class InspectionOrderController {
     }
 
     @GetMapping("/{orderId}")
-    public ResponseEntity<InspectionOrderResp> getOrders(@PathVariable("orderId") Long orderId) {
+    public ResponseEntity<InspectionOrderResp> getOrderById(@PathVariable("orderId") Long orderId) {
         InspectionOrderResp order = inspectionOrderService.getOrder(orderId);
         return new ResponseEntity<>(order, HttpStatus.OK);
     }

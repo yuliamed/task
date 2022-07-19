@@ -10,4 +10,11 @@ public interface InspectionReportService {
     InspectionReportResp createReport(Long orderId, InspectionReportReq reportReq);
 
     List<InspectionReport> findAll();
+
+    InspectionReportResp editReport(Long reportId, InspectionReportReq req);
+
+    InspectionReportResp getReportById(Long reportId);
+
+    InspectionReportResp getReportByOrderId(Long reportId);
 }
+

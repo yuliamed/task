@@ -16,6 +16,8 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 public class InspectionReportResp extends AbstractResp {
+    private Long id;
+
     private String model;
 
     private Integer year;

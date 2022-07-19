@@ -1,6 +1,7 @@
 package by.iba.service.impl;
 
 import by.iba.dto.req.report.InspectionReportReq;
+import by.iba.dto.req.report.InspectionReportUpdateReq;
 import by.iba.dto.resp.report.InspectionReportResp;
 import by.iba.entity.order.*;
 import by.iba.entity.report.InspectionReport;
@@ -55,6 +56,21 @@ public class InspectionReportImpl implements InspectionReportService {
         return reportRepository.findAll();
     }
 
+    @Override
+    public InspectionReportResp editReport(Long reportId, InspectionReportReq req) {
+        InspectionReport report = findReportById(reportId);
+//        report.setCurrencyType(getCurrencyTypeByName(req.getCurrencyType()));
+//        report.setDrive(getDriveByName(req.getDrive().getName()));
+//        report.setTransmission(getTransmissionByName(req.getTransmission().getName()));
+//        report.setEngine(getEngineByName(req.getEngine().getName()));
+//        report.setBrand(getBrandByName(req.getBrand().getName()));
+//        report.setBody(getBodyByName(req.getBody().getName()));
+//
+//        report.setBodyReport();
+
+        return null;
+    }
+
     private CarBrand getBrandByName(String name) {
         return carBrandRepository.findByName(name)
                 .orElseThrow(() -> new ResourceNotFoundException("There is no brand with name = "
@@ -94,5 +110,10 @@ public class InspectionReportImpl implements InspectionReportService {
     protected InspectionOrder findOrderById(Long id) {
         return inspectionOrderRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("There is no order with id = " + id));
+    }
+
+    protected InspectionReport findReportById(Long id) {
+        return reportRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("There is no report with id = " + id));
     }
 }

@@ -7,5 +7,5 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class BodyReportReq extends AbstractPartReportReq{
+public class BodyReportReq extends AbstractPartReportReq {
 }
