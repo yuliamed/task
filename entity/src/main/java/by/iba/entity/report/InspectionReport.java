@@ -1,6 +1,5 @@
 package by.iba.entity.report;
 
-import by.iba.entity.TrackingAbstractEntity;
 import by.iba.entity.order.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,7 +17,7 @@ import java.util.Set;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class InspectionReport extends TrackingAbstractEntity {
+public class InspectionReport extends Report {
     @Column(name = "model")
     private String model;
 
