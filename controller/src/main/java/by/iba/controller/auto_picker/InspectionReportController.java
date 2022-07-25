@@ -17,10 +17,10 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "api/v1/auto-picker/{id}/reports")
+@RequestMapping(value = "/api/v1/auto-picker/{id}/inspection-orders/{orderId}/report")
 @AllArgsConstructor
 @PreAuthorize("hasAnyAuthority('AUTO_PICKER')")
-public class ReportController {
+public class InspectionReportController {
 
     private final InspectionReportService inspectionReportService;
 
@@ -28,10 +28,10 @@ public class ReportController {
     public ResponseEntity<List<InspectionReport>> findAutoPickersReports() {
         // todo - убери ради бога
         List<InspectionReport> list = inspectionReportService.findAll();
-        return  new ResponseEntity<>(list, HttpStatus.OK);
+        return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
-    @PostMapping("/{orderId}")
+    @PostMapping()
     public ResponseEntity<InspectionReportResp> createReport(@PathVariable("orderId") Long orderId,
                                                              @RequestBody @Valid InspectionReportReq req,
                                                              BindingResult result) {
@@ -39,11 +39,12 @@ public class ReportController {
         InspectionReportResp resp = inspectionReportService.createReport(orderId, req);
         return new ResponseEntity<>(resp, HttpStatus.OK);
     }
+
     // todo ???
     @PutMapping("/{reportId}")
     public ResponseEntity<InspectionReportResp> editReportData(@PathVariable("reportId") Long reportId,
-                                                             @RequestBody @Valid InspectionReportUpdateReq reqData,
-                                                             BindingResult result) {
+                                                               @RequestBody @Valid InspectionReportUpdateReq reqData,
+                                                               BindingResult result) {
         ControllerHelper.checkBindingResultAndThrowExceptionIfInvalid(result);
         InspectionReportResp resp = inspectionReportService.editReportData(reportId, reqData);
         return new ResponseEntity<>(resp, HttpStatus.OK);

@@ -103,7 +103,6 @@ public class OrderServiceImpl implements OrderService {
     public List<OrderResp> getOrdersByAutoPickerId(Long id) {
         Specification<Order> specification = Specification.where(findByAutoPickerIDLike(id));
         List<Order> orders = orderRepository.findAll(specification);
-
         return orderMapper.toDtoList(orders);
     }
 

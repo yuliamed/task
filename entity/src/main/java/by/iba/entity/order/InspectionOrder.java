@@ -18,10 +18,6 @@ public class InspectionOrder extends Order {
     @Column(name = "auto_url", nullable = false)
     private String autoUrl;
 
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "inspection_report_id")
-    private InspectionReport inspectionReport;
-
     @Column(name = "additional_info", length = 512)
     private String additionalInfo;
 }

@@ -1,5 +1,6 @@
 package by.iba.entity.order;
 
+import by.iba.entity.report.SelectionReport;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -82,5 +83,4 @@ public class SelectionOrder extends Order {
             joinColumns = {@JoinColumn(name = "order_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "body_id", referencedColumnName = "id")})
     private Set<Body> bodies = new HashSet<>();
-
 }

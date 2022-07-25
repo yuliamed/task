@@ -44,7 +44,7 @@ public class InspectionReportImpl implements InspectionReportService {
         report = reportRepository.save(report);
         // join report and order
         InspectionOrder editingOrder = findOrderById(orderId);
-        editingOrder.setInspectionReport(report);
+        //editingOrder.setReport(report);
         inspectionOrderRepository.save(editingOrder);
 
         InspectionReportResp resp = inspectionReportMapper.toDto(report);
@@ -70,7 +70,8 @@ public class InspectionReportImpl implements InspectionReportService {
 
     @Override
     public InspectionReportResp getReportByOrderId(Long orderId) {
-        return inspectionReportMapper.toDto(findOrderById(orderId).getInspectionReport());
+        return null;
+        // return inspectionReportMapper.toDto(findOrderById(orderId).getReport());
     }
 
     @Override

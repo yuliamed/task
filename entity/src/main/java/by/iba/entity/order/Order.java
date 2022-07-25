@@ -1,6 +1,7 @@
 package by.iba.entity.order;
 
 import by.iba.entity.TrackingAbstractEntity;
+import by.iba.entity.report.Report;
 import by.iba.entity.user.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -28,4 +29,8 @@ public abstract class Order extends TrackingAbstractEntity {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "creator")
     private User creator;
+
+//    @OneToOne
+//    @JoinColumn(name = "report_id")
+//    private Report report;
 }
