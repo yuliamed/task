@@ -12,6 +12,7 @@ import by.iba.exception.ServiceException;
 import by.iba.inteface.order.SelectionOrderRepository;
 import by.iba.inteface.report.SelectedCarRepository;
 import by.iba.inteface.report.SelectionReportRepository;
+import by.iba.mapper.SelectedCarMapper;
 import by.iba.mapper.SelectionReportMapper;
 import by.iba.service.SelectionReportService;
 import lombok.AllArgsConstructor;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @AllArgsConstructor
 @Service
@@ -29,6 +31,7 @@ public class SelectionReportServiceImpl implements SelectionReportService {
     private final SelectionReportMapper reportMapper;
     private final SelectedCarRepository selectedCarRepository;
     private final SelectionOrderRepository selectionOrderRepository;
+    private final SelectedCarMapper selectedCarMapper;
 
     @Transactional
     @Override
@@ -52,7 +55,11 @@ public class SelectionReportServiceImpl implements SelectionReportService {
 
     @Override
     public SelectionReportResp editReport(Long reportId, SelectionReportUpdateReq req) {
-        return null;
+        SelectionReport report = findReportById(reportId);
+        Set<SelectedCar> selectedCarSet = selectedCarMapper.toEntitySet(req.getSelectedCarSet());
+        report.setSelectedCarSet(selectedCarSet);
+        report = reportRepository.save(report);
+        return reportMapper.toDto(report);
     }
 
     @Override
@@ -92,5 +99,11 @@ public class SelectionReportServiceImpl implements SelectionReportService {
         return selectionOrderRepository.findById(orderID)
                 .orElseThrow(() -> new ResourceNotFoundException("There is no selection order with id = "
                         + orderID));
+    }
+
+    private SelectionReport findReportById(Long reportID) {
+        return reportRepository.findById(reportID)
+                .orElseThrow(() -> new ResourceNotFoundException("There is no selection report with id = "
+                        + reportID));
     }
 }

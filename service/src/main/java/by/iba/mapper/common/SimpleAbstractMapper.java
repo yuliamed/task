@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -38,5 +39,13 @@ public abstract class SimpleAbstractMapper<E extends AbstractEntity, D extends A
                 entities.stream()
                         .map(this::toDto)
                         .collect(Collectors.toList());
+    }
+
+    @Override
+    public Set<E> toEntitySet(Set<D> entities) {
+        return
+                entities.stream()
+                        .map(this::toEntity)
+                        .collect(Collectors.toSet());
     }
 }
