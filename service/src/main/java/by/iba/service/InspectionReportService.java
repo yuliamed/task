@@ -18,6 +18,6 @@ public interface InspectionReportService {
 
     InspectionReportResp getReportByOrderId(Long reportId);
 
-    InspectionReportResp editReportMainData(Long reportId, InspectionReportUpdateReq reqData);
+    InspectionReportResp editReportMainData(Long orderId, InspectionReportUpdateReq reqData);
 }
 

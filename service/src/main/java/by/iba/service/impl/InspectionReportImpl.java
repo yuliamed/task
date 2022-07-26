@@ -6,6 +6,7 @@ import by.iba.dto.req.report.InspectionReportUpdateReq;
 import by.iba.dto.resp.report.InspectionReportResp;
 import by.iba.entity.order.*;
 import by.iba.entity.report.InspectionReport;
+import by.iba.entity.report.SelectionReport;
 import by.iba.exception.ResourceNotFoundException;
 import by.iba.exception.ServiceException;
 import by.iba.inteface.CurrencyTypeRepository;
@@ -60,8 +61,8 @@ public class InspectionReportImpl implements InspectionReportService {
 
     @Transactional
     @Override
-    public InspectionReportResp editReportMainData(Long reportId, InspectionReportUpdateReq reqData) {
-        InspectionReport report = findReportById(reportId);
+    public InspectionReportResp editReportMainData(Long orderId, InspectionReportUpdateReq reqData) {
+        InspectionReport report = findReportByOrderId(orderId);
         report.setModel(reqData.getModel());
         report.setYear(report.getYear());
         report.setEngineVolume(reqData.getEngineVolume());
@@ -169,5 +170,16 @@ public class InspectionReportImpl implements InspectionReportService {
     private InspectionReport findReportById(Long id) {
         return reportRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("There is no report with id = " + id));
+    }
+
+    private InspectionReport findReportByOrderId(Long orderId) {
+        Order order = inspectionOrderRepository.findById(orderId)
+                .orElseThrow(() -> new ResourceNotFoundException("Order with id = "
+                        + orderId + " does not exist"));
+        InspectionReport report = (InspectionReport) order.getReport();
+        if (Objects.isNull(order.getReport())) {
+            throw new ServiceException("Order with id = " + orderId + " has not a report!");
+        }
+        return report;
     }
 }
