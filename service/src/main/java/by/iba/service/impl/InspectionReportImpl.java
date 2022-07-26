@@ -1,5 +1,6 @@
 package by.iba.service.impl;
 
+import by.iba.dto.req.order.*;
 import by.iba.dto.req.report.InspectionReportReq;
 import by.iba.dto.req.report.InspectionReportUpdateReq;
 import by.iba.dto.resp.report.InspectionReportResp;
@@ -38,12 +39,8 @@ public class InspectionReportImpl implements InspectionReportService {
         isAutoPickerAllowedToReport(autoPickerId, editingOrder);
 
         InspectionReport report = inspectionReportMapper.toEntityFromReq(req);
-        report.setCurrencyType(getCurrencyTypeByName(req.getCurrencyType()));
-        report.setDrive(getDriveByName(req.getDrive().getName()));
-        report.setTransmission(getTransmissionByName(req.getTransmission().getName()));
-        report.setEngine(getEngineByName(req.getEngine().getName()));
-        report.setBrand(getBrandByName(req.getBrand().getName()));
-        report.setBody(getBodyByName(req.getBody().getName()));
+        setJoinedValues(report, req.getCurrencyType(), req.getDrive(), req.getTransmission(),
+                req.getEngine(), req.getBrand(), req.getBody());
 
         report = reportRepository.save(report);
         // join report and order
@@ -91,15 +88,20 @@ public class InspectionReportImpl implements InspectionReportService {
         report.setCostValue(reqData.getCostValue());
         report.setAuctionValue(report.getAuctionValue());
 
-        report.setCurrencyType(getCurrencyTypeByName(reqData.getCurrencyType()));
-        report.setDrive(getDriveByName(reqData.getDrive().getName()));
-        report.setTransmission(getTransmissionByName(reqData.getTransmission().getName()));
-        report.setEngine(getEngineByName(reqData.getEngine().getName()));
-        report.setBrand(getBrandByName(reqData.getBrand().getName()));
-        report.setBody(getBodyByName(reqData.getBody().getName()));
+        setJoinedValues(report, reqData.getCurrencyType(), reqData.getDrive(), reqData.getTransmission(),
+                reqData.getEngine(), reqData.getBrand(), reqData.getBody());
 
         reportRepository.save(report);
         return inspectionReportMapper.toDto(report);
+    }
+
+    private void setJoinedValues(InspectionReport report, String currencyType, DriveReq drive, TransmissionReq transmission, EngineReq engine, CarBrandReq brand, BodyReq body) {
+        report.setCurrencyType(getCurrencyTypeByName(currencyType));
+        report.setDrive(getDriveByName(drive.getName()));
+        report.setTransmission(getTransmissionByName(transmission.getName()));
+        report.setEngine(getEngineByName(engine.getName()));
+        report.setBrand(getBrandByName(brand.getName()));
+        report.setBody(getBodyByName(body.getName()));
     }
 
     private InspectionOrder getReportingOrder(Long orderId) {
