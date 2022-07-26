@@ -10,7 +10,7 @@ import java.util.List;
 public interface SelectionReportService {
     SelectionReportResp createReport(Long autoPickerId,Long orderId, SelectionReportReq req);
     SelectionReportResp setDate(Long reportID, DateReq date);
-    SelectionReportResp editReport(Long reportId, SelectionReportUpdateReq req);
+    SelectionReportResp editReport(Long orderId, SelectionReportUpdateReq req);
     SelectionReportResp getReportByOrderId(Long orderId);
 
     List<SelectionReportResp> findAll();

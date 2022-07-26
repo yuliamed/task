@@ -1,6 +1,7 @@
 package by.iba.controller.auto_picker;
 
 import by.iba.dto.req.report.SelectionReportReq;
+import by.iba.dto.req.report.SelectionReportUpdateReq;
 import by.iba.dto.resp.report.SelectionReportResp;
 import by.iba.exception.ControllerHelper;
 import by.iba.service.SelectionReportService;
@@ -16,7 +17,7 @@ import java.util.List;
 
 @AllArgsConstructor
 @RestController
-@RequestMapping(value = "/api/v1/auto-picker/{id}/selection-orders/{orderId}")
+@RequestMapping(value = "/api/v1/auto-picker/{id}/selection-orders/{orderId}/report")
 @PreAuthorize("hasAnyAuthority('AUTO_PICKER')")
 public class SelectionReportController {
     private final SelectionReportService selectionReportService;
@@ -28,7 +29,7 @@ public class SelectionReportController {
                                                             BindingResult result) {
         ControllerHelper.checkBindingResultAndThrowExceptionIfInvalid(result);
         SelectionReportResp resp = selectionReportService.createReport(autoPickerId, orderId, req);
-        return new ResponseEntity<>(resp, HttpStatus.OK);
+        return new ResponseEntity<>(resp, HttpStatus.CREATED);
     }
 
     @GetMapping()
@@ -36,5 +37,14 @@ public class SelectionReportController {
         // todo - убери ради бога
         List<SelectionReportResp> list = selectionReportService.findAll();
         return new ResponseEntity<>(list, HttpStatus.OK);
+    }
+
+    @PutMapping()
+    public ResponseEntity<SelectionReportResp> editReport(@PathVariable("orderId") Long orderId,
+                                                          @RequestBody @Valid SelectionReportUpdateReq req,
+                                                          BindingResult result) {
+        ControllerHelper.checkBindingResultAndThrowExceptionIfInvalid(result);
+        SelectionReportResp resp = selectionReportService.editReport(orderId, req);
+        return new ResponseEntity<>(resp, HttpStatus.OK);
     }
 }

@@ -4,6 +4,7 @@ import by.iba.dto.req.report.DateReq;
 import by.iba.dto.req.report.SelectionReportReq;
 import by.iba.dto.req.report.SelectionReportUpdateReq;
 import by.iba.dto.resp.report.SelectionReportResp;
+import by.iba.entity.order.Order;
 import by.iba.entity.order.SelectionOrder;
 import by.iba.entity.report.SelectedCar;
 import by.iba.entity.report.SelectionReport;
@@ -54,8 +55,8 @@ public class SelectionReportServiceImpl implements SelectionReportService {
     }
 
     @Override
-    public SelectionReportResp editReport(Long reportId, SelectionReportUpdateReq req) {
-        SelectionReport report = findReportById(reportId);
+    public SelectionReportResp editReport(Long orderId, SelectionReportUpdateReq req) {
+        SelectionReport report = findReportByOrderId(orderId);
         Set<SelectedCar> selectedCarSet = selectedCarMapper.toEntitySet(req.getSelectedCarSet());
         report.setSelectedCarSet(selectedCarSet);
         report = reportRepository.save(report);
@@ -101,9 +102,14 @@ public class SelectionReportServiceImpl implements SelectionReportService {
                         + orderID));
     }
 
-    private SelectionReport findReportById(Long reportID) {
-        return reportRepository.findById(reportID)
-                .orElseThrow(() -> new ResourceNotFoundException("There is no selection report with id = "
-                        + reportID));
+    private SelectionReport findReportByOrderId(Long orderId) {
+        Order order = selectionOrderRepository.findById(orderId)
+                .orElseThrow(() -> new ResourceNotFoundException("Order with id = "
+                        + orderId + " does not exist"));
+        SelectionReport report = (SelectionReport) order.getReport();
+        if (Objects.isNull(order.getReport())) {
+            throw new ServiceException("Order with id = " + orderId + " has not a report!");
+        }
+        return report;
     }
 }
