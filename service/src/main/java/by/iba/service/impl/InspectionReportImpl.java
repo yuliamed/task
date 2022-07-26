@@ -17,6 +17,7 @@ import by.iba.service.InspectionReportService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Objects;
 
@@ -33,6 +34,7 @@ public class InspectionReportImpl implements InspectionReportService {
     private final InspectionReportMapper inspectionReportMapper;
     private final InspectionOrderRepository inspectionOrderRepository;
 
+    @Transactional
     @Override
     public InspectionReportResp createReport(Long orderId, Long autoPickerId, InspectionReportReq req) {
         InspectionOrder editingOrder = getReportingOrder(orderId);
@@ -56,26 +58,9 @@ public class InspectionReportImpl implements InspectionReportService {
         return reportRepository.findAll();
     }
 
+    @Transactional
     @Override
-    public InspectionReportResp editReport(Long reportId, InspectionReportReq req) {
-        //report.setBodyReport();
-        return null;
-    }
-
-    @Override
-    public InspectionReportResp getReportById(Long reportId) {
-        return inspectionReportMapper.toDto(findReportById(reportId));
-
-    }
-
-    @Override
-    public InspectionReportResp getReportByOrderId(Long orderId) {
-        return null;
-        // return inspectionReportMapper.toDto(findOrderById(orderId).getReport());
-    }
-
-    @Override
-    public InspectionReportResp editReportData(Long reportId, InspectionReportUpdateReq reqData) {
+    public InspectionReportResp editReportMainData(Long reportId, InspectionReportUpdateReq reqData) {
         InspectionReport report = findReportById(reportId);
         report.setModel(reqData.getModel());
         report.setYear(report.getYear());
@@ -93,6 +78,25 @@ public class InspectionReportImpl implements InspectionReportService {
 
         reportRepository.save(report);
         return inspectionReportMapper.toDto(report);
+    }
+
+    @Transactional
+    @Override
+    public InspectionReportResp editReport(Long reportId, InspectionReportReq req) {
+        //report.setBodyReport();
+        return null;
+    }
+
+    @Override
+    public InspectionReportResp getReportById(Long reportId) {
+        return inspectionReportMapper.toDto(findReportById(reportId));
+
+    }
+
+    @Override
+    public InspectionReportResp getReportByOrderId(Long orderId) {
+        return null;
+        // return inspectionReportMapper.toDto(findOrderById(orderId).getReport());
     }
 
     private void setJoinedValues(InspectionReport report, String currencyType, DriveReq drive, TransmissionReq transmission, EngineReq engine, CarBrandReq brand, BodyReq body) {

@@ -17,6 +17,7 @@ import by.iba.service.SelectionReportService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Objects;
 
@@ -29,6 +30,7 @@ public class SelectionReportServiceImpl implements SelectionReportService {
     private final SelectedCarRepository selectedCarRepository;
     private final SelectionOrderRepository selectionOrderRepository;
 
+    @Transactional
     @Override
     public SelectionReportResp createReport(Long autoPickerId, Long orderId, SelectionReportReq req) {
         SelectionOrder order = getReportingOrder(orderId);
