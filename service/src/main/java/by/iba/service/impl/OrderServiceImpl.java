@@ -63,7 +63,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderResp setAutoPicker(Long id, OrderAutoPickerReq autoPickerReq) {
         Order editingOrder = getOrderById(id);
-
+        checkSettingOfAutoPicker(editingOrder);
         User user = userService.getUserById(autoPickerReq.getAutoPickerId());
         Set<Role> roles = user.getRoles();
         if (!roles.contains(roleRepository.getByName(RoleEnum.AUTO_PICKER.name()))) {
@@ -116,6 +116,15 @@ public class OrderServiceImpl implements OrderService {
             throw new ServiceException("You are not allowed to change status of order = " + newOrderStatus);
         }
         return true;
+    }
+
+    private void checkSettingOfAutoPicker(Order editingOrder) {
+        if (editingOrder.getIsAutoPickerSelected()) {
+            throw new ServiceException("You can`t set auto-picker, because customer already selected him");
+        }
+        if (Objects.nonNull(editingOrder.getAutoPicker())) {
+            throw new ServiceException("You can`t set auto-picker, because you already selected him");
+        }
     }
 
     protected Order getOrderById(Long id) {

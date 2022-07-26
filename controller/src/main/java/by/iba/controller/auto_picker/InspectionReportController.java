@@ -47,7 +47,7 @@ public class InspectionReportController {
                                                                @RequestBody @Valid InspectionReportUpdateReq reqData,
                                                                BindingResult result) {
         ControllerHelper.checkBindingResultAndThrowExceptionIfInvalid(result);
-        InspectionReportResp resp = inspectionReportService.editReportData(reportId, reqData);
+        InspectionReportResp resp = inspectionReportService.editReportMainData(reportId, reqData);
         return new ResponseEntity<>(resp, HttpStatus.OK);
     }
 

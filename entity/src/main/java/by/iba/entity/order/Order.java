@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 @Table(name = "orders")
@@ -26,6 +27,9 @@ public abstract class Order extends TrackingAbstractEntity {
     @JoinColumn(name = "auto_picker")
     private User autoPicker;
 
+    @Column(name = "is_autopicker_selected")
+    private Boolean isAutoPickerSelected;
+
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "creator")
     private User creator;
@@ -33,4 +37,10 @@ public abstract class Order extends TrackingAbstractEntity {
     @OneToOne
     @JoinColumn(name = "report_id")
     private Report report;
+
+    @PrePersist
+    protected void abstractEntityPreInit() {
+        super.abstractEntityPreInit();
+        this.isAutoPickerSelected = Objects.nonNull(autoPicker);
+    }
 }

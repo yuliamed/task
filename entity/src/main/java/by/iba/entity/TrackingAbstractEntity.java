@@ -23,7 +23,7 @@ public abstract class TrackingAbstractEntity extends AbstractEntity {
 
 
     @PrePersist
-    private void abstractEntityPreInit() {
+    protected void abstractEntityPreInit() {
         this.version = 1;
         this.creationDate = LocalDateTime.now();
         this.lastUpdateDate = LocalDateTime.now();

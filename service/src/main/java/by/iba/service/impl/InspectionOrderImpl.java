@@ -4,11 +4,14 @@ import by.iba.dto.req.order.InspectionOrderReq;
 import by.iba.dto.req.order.InspectionOrderUpdateReq;
 import by.iba.dto.resp.order.InspectionOrderResp;
 import by.iba.entity.enam.OrderStatusEnum;
+import by.iba.entity.enam.RoleEnum;
 import by.iba.entity.order.InspectionOrder;
 import by.iba.entity.user.User;
 import by.iba.exception.ResourceNotFoundException;
+import by.iba.exception.ServiceException;
 import by.iba.inteface.order.InspectionOrderRepository;
 import by.iba.inteface.order.OrderStatusRepository;
+import by.iba.inteface.user.RoleRepository;
 import by.iba.inteface.user.UserRepository;
 import by.iba.mapper.InspectionOrderMapper;
 import by.iba.security.service.JwtUser;
@@ -19,6 +22,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.Objects;
 
 @AllArgsConstructor
 @Service
@@ -27,11 +31,15 @@ public class InspectionOrderImpl implements InspectionOrderService {
     private final InspectionOrderMapper inspectionOrderMapper;
     private final OrderStatusRepository orderStatusRepository;
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
 
     @Transactional
     @Override
     public InspectionOrderResp createInspectionOrder(InspectionOrderReq orderReq) {
         InspectionOrder newOrder = inspectionOrderMapper.toEntityFromReq(orderReq);
+        if (Objects.nonNull(orderReq.getAutoPickerId())) {
+            newOrder.setAutoPicker(getAutoPickerById(orderReq.getAutoPickerId()));
+        }
         newOrder = inspectionOrderRepository.save(newOrder);
         newOrder.setCreator(getUserById(getUserFromAuth().getId()));
         newOrder.setStatus(orderStatusRepository.getByName(OrderStatusEnum.CREATED.name()));
@@ -54,6 +62,14 @@ public class InspectionOrderImpl implements InspectionOrderService {
     public InspectionOrderResp getOrder(Long id) {
         InspectionOrder order = findOrderById(id);
         return inspectionOrderMapper.toDto(order);
+    }
+
+    private User getAutoPickerById(Long id) {
+        User user = getUserById(id);
+        boolean isAllowed = user.getRoles().contains(roleRepository.getByName(RoleEnum.AUTO_PICKER.name()));
+        if (!isAllowed) throw new ServiceException("User with id = " + id + " can't be auto-picker");
+        return user;
+
     }
 
     private InspectionOrder findOrderById(Long id) {
