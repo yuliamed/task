@@ -22,11 +22,12 @@ public class SelectionReportController {
     private final SelectionReportService selectionReportService;
 
     @PostMapping("")
-    public ResponseEntity<SelectionReportResp> createReport(@PathVariable("orderId") Long orderId,
+    public ResponseEntity<SelectionReportResp> createReport(@PathVariable("id") Long autoPickerId,
+                                                            @PathVariable("orderId") Long orderId,
                                                             @RequestBody @Valid SelectionReportReq req,
                                                             BindingResult result) {
         ControllerHelper.checkBindingResultAndThrowExceptionIfInvalid(result);
-        SelectionReportResp resp = selectionReportService.createReport(orderId, req);
+        SelectionReportResp resp = selectionReportService.createReport(autoPickerId, orderId, req);
         return new ResponseEntity<>(resp, HttpStatus.OK);
     }
 

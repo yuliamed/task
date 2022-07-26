@@ -30,7 +30,7 @@ public abstract class Order extends TrackingAbstractEntity {
     @JoinColumn(name = "creator")
     private User creator;
 
-//    @OneToOne
-//    @JoinColumn(name = "report_id")
-//    private Report report;
+    @OneToOne
+    @JoinColumn(name = "report_id")
+    private Report report;
 }

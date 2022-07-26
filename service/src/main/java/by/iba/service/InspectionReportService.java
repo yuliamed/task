@@ -8,7 +8,7 @@ import by.iba.entity.report.InspectionReport;
 import java.util.List;
 
 public interface InspectionReportService {
-    InspectionReportResp createReport(Long orderId, InspectionReportReq reportReq);
+    InspectionReportResp createReport(Long orderId, Long autoPickerId, InspectionReportReq req);
 
     List<InspectionReport> findAll();
 

@@ -3,6 +3,7 @@ package by.iba.dto.resp.order;
 import by.iba.dto.resp.AbstractResp;
 import by.iba.dto.resp.user.UserOrderResp;
 import by.iba.entity.order.OrderStatus;
+import by.iba.entity.report.Report;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -25,4 +26,6 @@ public abstract class AbstractOrderResp extends AbstractResp {
     private OrderStatus status;
 
     private String additionalInfo;
+
+    private Report report;
 }

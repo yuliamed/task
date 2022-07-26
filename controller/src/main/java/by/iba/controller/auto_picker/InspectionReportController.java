@@ -32,11 +32,12 @@ public class InspectionReportController {
     }
 
     @PostMapping()
-    public ResponseEntity<InspectionReportResp> createReport(@PathVariable("orderId") Long orderId,
+    public ResponseEntity<InspectionReportResp> createReport(@PathVariable("id") Long autoPickerId,
+                                                             @PathVariable("orderId") Long orderId,
                                                              @RequestBody @Valid InspectionReportReq req,
                                                              BindingResult result) {
         ControllerHelper.checkBindingResultAndThrowExceptionIfInvalid(result);
-        InspectionReportResp resp = inspectionReportService.createReport(orderId, req);
+        InspectionReportResp resp = inspectionReportService.createReport(autoPickerId, orderId, req);
         return new ResponseEntity<>(resp, HttpStatus.OK);
     }
 

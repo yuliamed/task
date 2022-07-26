@@ -17,6 +17,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @AllArgsConstructor
 @Service
@@ -32,7 +33,10 @@ public class InspectionReportImpl implements InspectionReportService {
     private final InspectionOrderRepository inspectionOrderRepository;
 
     @Override
-    public InspectionReportResp createReport(Long orderId, InspectionReportReq req) {
+    public InspectionReportResp createReport(Long orderId, Long autoPickerId, InspectionReportReq req) {
+        InspectionOrder editingOrder = getReportingOrder(orderId);
+        isAutoPickerAllowedToReport(autoPickerId, editingOrder);
+
         InspectionReport report = inspectionReportMapper.toEntityFromReq(req);
         report.setCurrencyType(getCurrencyTypeByName(req.getCurrencyType()));
         report.setDrive(getDriveByName(req.getDrive().getName()));
@@ -43,8 +47,7 @@ public class InspectionReportImpl implements InspectionReportService {
 
         report = reportRepository.save(report);
         // join report and order
-        InspectionOrder editingOrder = findOrderById(orderId);
-        //editingOrder.setReport(report);
+        editingOrder.setReport(report);
         inspectionOrderRepository.save(editingOrder);
 
         InspectionReportResp resp = inspectionReportMapper.toDto(report);
@@ -99,6 +102,23 @@ public class InspectionReportImpl implements InspectionReportService {
         return inspectionReportMapper.toDto(report);
     }
 
+    private InspectionOrder getReportingOrder(Long orderId) {
+        InspectionOrder order = findOrderById(orderId);
+        if (Objects.nonNull(order.getReport())) {
+            throw new ServiceException("Order with id = " + orderId + " already has report!");
+        }
+        return order;
+    }
+
+    private void isAutoPickerAllowedToReport(Long autoPickerId, InspectionOrder editingOrder) {
+        if (Objects.isNull(editingOrder.getAutoPicker())) {
+            throw new ServiceException("AutoPicker does not set! Report can`t be created");
+        }
+        if (!editingOrder.getAutoPicker().getId().equals(autoPickerId)) {
+            throw new ServiceException("Your account does not allowed to report to this order");
+        }
+    }
+
     private CarBrand getBrandByName(String name) {
         return carBrandRepository.findByName(name)
                 .orElseThrow(() -> new ResourceNotFoundException("There is no brand with name = "
@@ -135,12 +155,12 @@ public class InspectionReportImpl implements InspectionReportService {
         return type;
     }
 
-    protected InspectionOrder findOrderById(Long id) {
+    private InspectionOrder findOrderById(Long id) {
         return inspectionOrderRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("There is no order with id = " + id));
     }
 
-    protected InspectionReport findReportById(Long id) {
+    private InspectionReport findReportById(Long id) {
         return reportRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("There is no report with id = " + id));
     }
