@@ -33,10 +33,13 @@ public class InspectionReportImpl implements InspectionReportService {
     private final InspectionReportRepository reportRepository;
     private final InspectionOrderRepository inspectionOrderRepository;
     private final InspectionReportMapper inspectionReportMapper;
-    private final PartReportMapper partReportMapper;
+    private final SalonReportMapper salonReportMapper;
     private final CarComputerErrorsMapper carComputerErrorsMapper;
     private final EngineReportMapper engineReportMapper;
     private final TransmissionReportMapper transmissionReportMapper;
+    private final BodyReportMapper bodyReportMapper;
+    private final ElectricalEquipmentReportMapper electricalEquipmentReportMapper;
+    private final PendantReportMapper pendantReportMapper;
 
     @Transactional
     @Override
@@ -90,7 +93,7 @@ public class InspectionReportImpl implements InspectionReportService {
     @Override
     public InspectionReportResp editSalonReport(Long orderId, SalonReportReq reqData) {
         InspectionReport report = findReportByOrderId(orderId);
-        SalonReport salonReport = (SalonReport) partReportMapper.toEntity(reqData);
+        SalonReport salonReport = (SalonReport) salonReportMapper.toEntity(reqData);
         report.setSalonReport(salonReport);
         report = reportRepository.save(report);
 
@@ -101,7 +104,7 @@ public class InspectionReportImpl implements InspectionReportService {
     @Override
     public InspectionReportResp editBodyReport(Long orderId, BodyReportReq reqData) {
         InspectionReport report = findReportByOrderId(orderId);
-        BodyReport bodyReport = (BodyReport) partReportMapper.toEntity(reqData);
+        BodyReport bodyReport = bodyReportMapper.toEntity(reqData);
         report.setBodyReport(bodyReport);
         report = reportRepository.save(report);
 
@@ -112,7 +115,7 @@ public class InspectionReportImpl implements InspectionReportService {
     @Override
     public InspectionReportResp electricalEquipmentReport(Long orderId, ElectricalEquipmentReportReq reqData) {
         InspectionReport report = findReportByOrderId(orderId);
-        ElectricalEquipmentReport electricalEquipmentReport = (ElectricalEquipmentReport) partReportMapper.toEntity(reqData);
+        ElectricalEquipmentReport electricalEquipmentReport = electricalEquipmentReportMapper.toEntity(reqData);
         report.setElectricalEquipmentReport(electricalEquipmentReport);
         report = reportRepository.save(report);
 
@@ -123,7 +126,7 @@ public class InspectionReportImpl implements InspectionReportService {
     @Override
     public InspectionReportResp editPedantReport(Long orderId, PendantReportReq reqData) {
         InspectionReport report = findReportByOrderId(orderId);
-        PendantReport pedantReport = (PendantReport) partReportMapper.toEntity(reqData);
+        PendantReport pedantReport = pendantReportMapper.toEntity(reqData);
         report.setPendantReport(pedantReport);
         report = reportRepository.save(report);
 
