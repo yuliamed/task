@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class EngineReportMapper extends SimpleAbstractMapper<EngineReport, EngineReportReq> {
-    public EngineReportMapper(Class<EngineReport> entity, Class<EngineReportReq> dto) {
-        super(entity, dto);
+    public EngineReportMapper() {
+        super(EngineReport.class, EngineReportReq.class);
     }
 }

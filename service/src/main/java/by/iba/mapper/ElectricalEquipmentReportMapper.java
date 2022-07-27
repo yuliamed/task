@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ElectricalEquipmentReportMapper extends SimpleAbstractMapper<ElectricalEquipmentReport, ElectricalEquipmentReportReq> {
-    public ElectricalEquipmentReportMapper(Class<ElectricalEquipmentReport> entity, Class<ElectricalEquipmentReportReq> dto) {
-        super(entity, dto);
+    public ElectricalEquipmentReportMapper() {
+        super(ElectricalEquipmentReport.class, ElectricalEquipmentReportReq.class);
     }
 }

@@ -72,7 +72,7 @@ public class InspectionReport extends Report {
     @JoinColumn(name = "body")
     private Body body;
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<CarComputerError> carComputerErrors = new HashSet<>();
 
     @OneToOne(cascade = CascadeType.ALL)

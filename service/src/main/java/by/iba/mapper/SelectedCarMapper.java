@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class SelectedCarMapper extends SimpleAbstractMapper<SelectedCar, SelectedCarReq> {
-    public SelectedCarMapper(Class<SelectedCar> entity, Class<SelectedCarReq> dto) {
-        super(entity, dto);
+    public SelectedCarMapper() {
+        super(SelectedCar.class, SelectedCarReq.class);
     }
 }

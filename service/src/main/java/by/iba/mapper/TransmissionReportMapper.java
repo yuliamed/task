@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class TransmissionReportMapper extends SimpleAbstractMapper<TransmissionReport, TransmissionReportReq> {
-    public TransmissionReportMapper(Class<TransmissionReport> entity, Class<TransmissionReportReq> dto) {
-        super(entity, dto);
+    public TransmissionReportMapper() {
+        super(TransmissionReport.class, TransmissionReportReq.class);
     }
 }

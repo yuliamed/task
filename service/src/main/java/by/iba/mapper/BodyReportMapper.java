@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class BodyReportMapper extends SimpleAbstractMapper<BodyReport, BodyReportReq> {
-    public BodyReportMapper(Class<BodyReport> entity, Class<BodyReportReq> dto) {
-        super(entity, dto);
+    public BodyReportMapper() {
+        super(BodyReport.class, BodyReportReq.class);
     }
 }

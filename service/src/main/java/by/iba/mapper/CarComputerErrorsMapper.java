@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class CarComputerErrorsMapper extends SimpleAbstractMapper<CarComputerError, CarComputerErrorReq> {
-    public CarComputerErrorsMapper(Class<CarComputerError> entity, Class<CarComputerErrorReq> dto) {
-        super(entity, dto);
+    public CarComputerErrorsMapper() {
+        super(CarComputerError.class, CarComputerErrorReq.class);
     }
 }

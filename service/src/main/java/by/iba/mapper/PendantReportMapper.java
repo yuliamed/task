@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class PendantReportMapper extends SimpleAbstractMapper<PendantReport, PendantReportReq> {
-    public PendantReportMapper(Class<PendantReport> entity, Class<PendantReportReq> dto) {
-        super(entity, dto);
+    public PendantReportMapper() {
+        super(PendantReport.class, PendantReportReq.class);
     }
 }

@@ -13,6 +13,7 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 public class SelectionReportResp extends AbstractResp {
+    private String id;
     private LocalDateTime creationDate;
     private Set<SelectedCarResp> selectedCarSet = new HashSet<>();
 }
