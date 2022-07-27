@@ -72,10 +72,7 @@ public class InspectionReport extends Report {
     @JoinColumn(name = "body")
     private Body body;
 
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable(name = "inspect_report_car_errors",
-            joinColumns = {@JoinColumn(name = "report_id", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "error_id", referencedColumnName = "id")})
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<CarComputerError> carComputerErrors = new HashSet<>();
 
     @OneToOne(cascade = CascadeType.ALL)

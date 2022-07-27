@@ -76,7 +76,7 @@ public class InspectionReportReq extends AbstractReq {
 
     private @Valid ElectricalEquipmentReportReq electricalEquipmentReport;
 
-    private @Valid PendantReport pendantReport;
+    private @Valid PendantReportReq pendantReport;
 
     private Set<@Valid CarComputerErrorReq> carComputerErrors = new HashSet<>();
 }

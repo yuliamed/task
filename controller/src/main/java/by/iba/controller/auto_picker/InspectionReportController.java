@@ -1,7 +1,6 @@
 package by.iba.controller.auto_picker;
 
-import by.iba.dto.req.report.InspectionReportReq;
-import by.iba.dto.req.report.InspectionReportUpdateReq;
+import by.iba.dto.req.report.*;
 import by.iba.dto.resp.report.InspectionReportResp;
 import by.iba.entity.report.InspectionReport;
 import by.iba.exception.ControllerHelper;
@@ -25,7 +24,7 @@ public class InspectionReportController {
     private final InspectionReportService inspectionReportService;
 
     @GetMapping()
-    public ResponseEntity<List<InspectionReport>> findAutoPickersReports() {
+    public ResponseEntity<List<InspectionReport>> findReports(@PathVariable("id") Long autoPickerId) {
         // todo - убери ради бога
         List<InspectionReport> list = inspectionReportService.findAll();
         return new ResponseEntity<>(list, HttpStatus.OK);
@@ -43,13 +42,65 @@ public class InspectionReportController {
 
     // todo ???
     @PutMapping()
-    public ResponseEntity<InspectionReportResp> editReportData(@PathVariable("orderId") Long orderId,
-                                                               @RequestBody @Valid InspectionReportUpdateReq reqData,
-                                                               BindingResult result) {
+    public ResponseEntity<InspectionReportResp> editMainReportData(@PathVariable("orderId") Long orderId,
+                                                                   @RequestBody @Valid InspectionReportUpdateReq reqData,
+                                                                   BindingResult result) {
         ControllerHelper.checkBindingResultAndThrowExceptionIfInvalid(result);
         InspectionReportResp resp = inspectionReportService.editReportMainData(orderId, reqData);
         return new ResponseEntity<>(resp, HttpStatus.OK);
     }
 
+    @PatchMapping("/salon")
+    public ResponseEntity<InspectionReportResp> editSalonReport(@PathVariable("orderId") Long orderId,
+                                                                @RequestBody @Valid SalonReportReq reqData,
+                                                                BindingResult result) {
+        ControllerHelper.checkBindingResultAndThrowExceptionIfInvalid(result);
+        InspectionReportResp resp = inspectionReportService.editSalonReport(orderId, reqData);
+        return new ResponseEntity<>(resp, HttpStatus.OK);
+    }
 
+    @PatchMapping("/body")
+    public ResponseEntity<InspectionReportResp> editBodyReport(@PathVariable("orderId") Long orderId,
+                                                               @RequestBody @Valid BodyReportReq reqData,
+                                                               BindingResult result) {
+        ControllerHelper.checkBindingResultAndThrowExceptionIfInvalid(result);
+        InspectionReportResp resp = inspectionReportService.editBodyReport(orderId, reqData);
+        return new ResponseEntity<>(resp, HttpStatus.OK);
+    }
+
+    @PatchMapping("/electrical-equipment")
+    public ResponseEntity<InspectionReportResp> editElectricalEquipmentReport(@PathVariable("orderId") Long orderId,
+                                                                              @RequestBody @Valid ElectricalEquipmentReportReq reqData,
+                                                                              BindingResult result) {
+        ControllerHelper.checkBindingResultAndThrowExceptionIfInvalid(result);
+        InspectionReportResp resp = inspectionReportService.electricalEquipmentReport(orderId, reqData);
+        return new ResponseEntity<>(resp, HttpStatus.OK);
+    }
+
+    @PatchMapping("/pendant")
+    public ResponseEntity<InspectionReportResp> editPendantReport(@PathVariable("orderId") Long orderId,
+                                                                  @RequestBody @Valid PendantReportReq reqData,
+                                                                  BindingResult result) {
+        ControllerHelper.checkBindingResultAndThrowExceptionIfInvalid(result);
+        InspectionReportResp resp = inspectionReportService.editPedantReport(orderId, reqData);
+        return new ResponseEntity<>(resp, HttpStatus.OK);
+    }
+
+    @PatchMapping("/engine")
+    public ResponseEntity<InspectionReportResp> editEngineReport(@PathVariable("orderId") Long orderId,
+                                                                 @RequestBody @Valid EngineReportReq reqData,
+                                                                 BindingResult result) {
+        ControllerHelper.checkBindingResultAndThrowExceptionIfInvalid(result);
+        InspectionReportResp resp = inspectionReportService.editEngineReport(orderId, reqData);
+        return new ResponseEntity<>(resp, HttpStatus.OK);
+    }
+
+    @PatchMapping("/transmission")
+    public ResponseEntity<InspectionReportResp> editTransmissionReport(@PathVariable("orderId") Long orderId,
+                                                                       @RequestBody @Valid TransmissionReportReq reqData,
+                                                                       BindingResult result) {
+        ControllerHelper.checkBindingResultAndThrowExceptionIfInvalid(result);
+        InspectionReportResp resp = inspectionReportService.editTransmissionReport(orderId, reqData);
+        return new ResponseEntity<>(resp, HttpStatus.OK);
+    }
 }

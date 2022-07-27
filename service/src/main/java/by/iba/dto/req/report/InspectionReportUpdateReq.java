@@ -14,6 +14,8 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
 
 @NoArgsConstructor
 @Getter
@@ -72,5 +74,5 @@ public class InspectionReportUpdateReq extends AbstractReq {
 //    private @Valid ElectricalEquipmentReportReq electricalEquipmentReport;
 //    private @Valid PendantReport pendantReport;
 //
-//    private Set<@Valid CarComputerErrorReq> carComputerErrors = new HashSet<>();
+    private Set<@Valid CarComputerErrorReq> carComputerErrors = new HashSet<>();
 }

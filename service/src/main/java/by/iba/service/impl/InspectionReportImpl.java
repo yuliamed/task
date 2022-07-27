@@ -1,19 +1,17 @@
 package by.iba.service.impl;
 
 import by.iba.dto.req.order.*;
-import by.iba.dto.req.report.InspectionReportReq;
-import by.iba.dto.req.report.InspectionReportUpdateReq;
+import by.iba.dto.req.report.*;
 import by.iba.dto.resp.report.InspectionReportResp;
 import by.iba.entity.order.*;
-import by.iba.entity.report.InspectionReport;
-import by.iba.entity.report.SelectionReport;
+import by.iba.entity.report.*;
 import by.iba.exception.ResourceNotFoundException;
 import by.iba.exception.ServiceException;
 import by.iba.inteface.CurrencyTypeRepository;
 import by.iba.inteface.car_description.*;
 import by.iba.inteface.order.InspectionOrderRepository;
 import by.iba.inteface.report.InspectionReportRepository;
-import by.iba.mapper.InspectionReportMapper;
+import by.iba.mapper.*;
 import by.iba.service.InspectionReportService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,6 +19,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 @AllArgsConstructor
 @Service
@@ -32,8 +31,12 @@ public class InspectionReportImpl implements InspectionReportService {
     private final CurrencyTypeRepository currencyTypeRepository;
     private final BodyRepository bodyRepository;
     private final InspectionReportRepository reportRepository;
-    private final InspectionReportMapper inspectionReportMapper;
     private final InspectionOrderRepository inspectionOrderRepository;
+    private final InspectionReportMapper inspectionReportMapper;
+    private final PartReportMapper partReportMapper;
+    private final CarComputerErrorsMapper carComputerErrorsMapper;
+    private final EngineReportMapper engineReportMapper;
+    private final TransmissionReportMapper transmissionReportMapper;
 
     @Transactional
     @Override
@@ -73,6 +76,8 @@ public class InspectionReportImpl implements InspectionReportService {
         report.setIsVinNumberReal(reqData.getIsVinNumberReal());
         report.setCostValue(reqData.getCostValue());
         report.setAuctionValue(report.getAuctionValue());
+        Set<CarComputerError> errorSet = carComputerErrorsMapper.toEntitySet(reqData.getCarComputerErrors());
+        report.setCarComputerErrors(errorSet);
 
         setJoinedValues(report, reqData.getCurrencyType(), reqData.getDrive(), reqData.getTransmission(),
                 reqData.getEngine(), reqData.getBrand(), reqData.getBody());
@@ -83,9 +88,68 @@ public class InspectionReportImpl implements InspectionReportService {
 
     @Transactional
     @Override
-    public InspectionReportResp editReport(Long reportId, InspectionReportReq req) {
-        //report.setBodyReport();
-        return null;
+    public InspectionReportResp editSalonReport(Long orderId, SalonReportReq reqData) {
+        InspectionReport report = findReportByOrderId(orderId);
+        SalonReport salonReport = (SalonReport) partReportMapper.toEntity(reqData);
+        report.setSalonReport(salonReport);
+        report = reportRepository.save(report);
+
+        return inspectionReportMapper.toDto(report);
+    }
+
+    @Transactional
+    @Override
+    public InspectionReportResp editBodyReport(Long orderId, BodyReportReq reqData) {
+        InspectionReport report = findReportByOrderId(orderId);
+        BodyReport bodyReport = (BodyReport) partReportMapper.toEntity(reqData);
+        report.setBodyReport(bodyReport);
+        report = reportRepository.save(report);
+
+        return inspectionReportMapper.toDto(report);
+    }
+
+    @Transactional
+    @Override
+    public InspectionReportResp electricalEquipmentReport(Long orderId, ElectricalEquipmentReportReq reqData) {
+        InspectionReport report = findReportByOrderId(orderId);
+        ElectricalEquipmentReport electricalEquipmentReport = (ElectricalEquipmentReport) partReportMapper.toEntity(reqData);
+        report.setElectricalEquipmentReport(electricalEquipmentReport);
+        report = reportRepository.save(report);
+
+        return inspectionReportMapper.toDto(report);
+    }
+
+    @Transactional
+    @Override
+    public InspectionReportResp editPedantReport(Long orderId, PendantReportReq reqData) {
+        InspectionReport report = findReportByOrderId(orderId);
+        PendantReport pedantReport = (PendantReport) partReportMapper.toEntity(reqData);
+        report.setPendantReport(pedantReport);
+        report = reportRepository.save(report);
+
+        return inspectionReportMapper.toDto(report);
+    }
+
+    @Transactional
+    @Override
+    public InspectionReportResp editTransmissionReport(Long orderId, TransmissionReportReq reqData) {
+        InspectionReport report = findReportByOrderId(orderId);
+        TransmissionReport transmissionReport = transmissionReportMapper.toEntity(reqData);
+        report.setTransmissionReport(transmissionReport);
+        report = reportRepository.save(report);
+
+        return inspectionReportMapper.toDto(report);
+    }
+
+    @Transactional
+    @Override
+    public InspectionReportResp editEngineReport(Long orderId, EngineReportReq reqData) {
+        InspectionReport report = findReportByOrderId(orderId);
+        EngineReport engineReport = engineReportMapper.toEntity(reqData);
+        report.setEngineReport(engineReport);
+        report = reportRepository.save(report);
+
+        return inspectionReportMapper.toDto(report);
     }
 
     @Override
