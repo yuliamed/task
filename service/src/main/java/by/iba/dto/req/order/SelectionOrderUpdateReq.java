@@ -35,9 +35,7 @@ public class SelectionOrderUpdateReq extends AbstractReq {
     @NotNull
     private Double rangeTo;
 
-    @NotBlank
-    @EnumPattern(enumClass = CurrencyEnum.class, message = "Input correct name of currency type")
-    private String currencyType;
+    private @Valid CurrencyTypeReq currencyType;
 
     private Set<@Valid DriveReq> drives = new HashSet<>();
 

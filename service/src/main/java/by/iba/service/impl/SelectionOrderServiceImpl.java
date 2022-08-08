@@ -60,7 +60,7 @@ public class SelectionOrderServiceImpl implements SelectionOrderService {
         newOrder.setTransmissions(mapToTransmissionEntity(orderReq.getTransmissions()));
         newOrder.setBrands(mapToCarBrandEntity(orderReq.getBrands()));
         newOrder.setCreator(getUserById(getUserFromAuth().getId()));
-        newOrder.setCurrencyType(getCurrencyTypeByName(orderReq.getCurrencyType()));
+        newOrder.setCurrencyType(getCurrencyTypeByName(orderReq.getCurrencyType().getName()));
         newOrder.setStatus(orderStatusRepository.getByName(OrderStatusEnum.CREATED.name()));
         newOrder.setBodies(mapToBodyEntity(orderReq.getBodies()));
         if (Objects.nonNull(orderReq.getAutoPickerId())) {
@@ -89,7 +89,7 @@ public class SelectionOrderServiceImpl implements SelectionOrderService {
         editingOrder.setTransmissions(mapToTransmissionEntity(orderReq.getTransmissions()));
         editingOrder.setBodies(mapToBodyEntity(orderReq.getBodies()));
         editingOrder.setBrands(mapToCarBrandEntity(orderReq.getBrands()));
-        editingOrder.setCurrencyType(getCurrencyTypeByName(orderReq.getCurrencyType()));
+        editingOrder.setCurrencyType(getCurrencyTypeByName(orderReq.getCurrencyType().getName()));
         editingOrder = selectionOrderRepository.save(editingOrder);
         SelectionOrderResp resp = selectionOrderMapper.toDto(editingOrder);
         return resp;

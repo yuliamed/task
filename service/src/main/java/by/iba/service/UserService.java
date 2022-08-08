@@ -6,12 +6,16 @@ import by.iba.dto.resp.ApiResp;
 import by.iba.dto.resp.user.UserResp;
 import by.iba.security.dto.JwtResp;
 
+import javax.transaction.Transactional;
+
 public interface UserService {
     UserResp signUp(SignUpReq userReq);
 
     UserResp confirmAccount(String token);
 
     JwtResp signIn(SignInReq signInReq);
+
+    //ApiResp changePass(Long id, ChangePassDto dto);
 
     UserResp findByEmail(String email);
 
@@ -23,7 +27,7 @@ public interface UserService {
 
     ApiResp recoveryPass(EmailReq email);
 
-    ApiResp resetPass(String token, ResetPassReq dto);
+    ApiResp resetPass(ResetPassReq dto);
 
     UserResp deleteImage(Long id);
 }

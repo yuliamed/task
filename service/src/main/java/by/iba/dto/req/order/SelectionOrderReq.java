@@ -1,6 +1,7 @@
 package by.iba.dto.req.order;
 
 import by.iba.entity.enam.CurrencyEnum;
+import by.iba.entity.order.CurrencyType;
 import by.iba.exception.validation.EnumPattern;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -34,9 +35,7 @@ public class SelectionOrderReq extends OrderReq {
 
     private Double maxEngineVolume;//default in km
 
-    @NotBlank
-    @EnumPattern(enumClass = CurrencyEnum.class, message = "Input correct name of currency type")
-    private String currencyType;
+    private @Valid CurrencyTypeReq currencyType;
 
     private Set<@Valid DriveReq> drives = new HashSet<>();
 

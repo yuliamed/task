@@ -1,11 +1,11 @@
 package by.iba.service.impl;
 
-import by.iba.dto.req.*;
+import by.iba.dto.req.ImageReq;
 import by.iba.dto.req.user.*;
 import by.iba.dto.resp.ApiResp;
 import by.iba.dto.resp.user.UserResp;
-import by.iba.entity.user.Role;
 import by.iba.entity.enam.RoleEnum;
+import by.iba.entity.user.Role;
 import by.iba.entity.user.User;
 import by.iba.exception.ResourceNotFoundException;
 import by.iba.exception.ServiceException;
@@ -16,8 +16,10 @@ import by.iba.security.dto.JwtResp;
 import by.iba.security.jwt.JwtTokenProvider;
 import by.iba.security.service.JwtUser;
 import by.iba.service.MailService;
+import by.iba.service.MailTrueService;
 import by.iba.service.UserService;
 import lombok.AllArgsConstructor;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -42,7 +44,7 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final JwtTokenProvider jwtTokenProvider;
     private final AuthenticationManager authenticationManager;
-    private final MailService mailService;
+    private final MailTrueService mailTrueService;
 
     private final Duration TOKEN_TIME_VALIDITY = Duration.ofMinutes(5);
 
@@ -68,9 +70,12 @@ public class UserServiceImpl implements UserService {
         userToSave.getRoles().add(roleUser);
         User savedUser = userRepository.save(userToSave);
 
-        String subject = "Confirm your account";
-        String link = "http://localhost:8080/api/v1/mail/activate/" + userToSave.getActivationToken();
-        mailService.sendEmail(userToSave.getEmail(), subject, link);
+//        String subject = "Confirm your account";
+//        // TODO надо менять на что-то динамическое
+//        String link = "http://localhost:8080/api/v1/mail/activate/" + userToSave.getActivationToken();
+//        mailService.sendEmail(userToSave.getEmail(), subject, link);
+        final SimpleMailMessage message = mailTrueService.getSimpleMailMessage(userToSave.getEmail(), "Подтверждение аккаунта", "token + " + userToSave.getActivationToken());
+        mailTrueService.sendSimpleMailMessage(message);
 
         return userMapper.toDto(savedUser);
     }
@@ -111,19 +116,20 @@ public class UserServiceImpl implements UserService {
         user.setTokenCreationDate(LocalDateTime.now());
 
         String subject = "Recovery your pass";
-        String message = "Token to recovery your pass is " + user.getRecoveryToken();
-        mailService.sendEmail(user.getEmail(), subject, message);
-
+        String messageText = "Token to recovery your pass is " + user.getRecoveryToken();
+        //mailService.sendEmail(user.getEmail(), subject, message);
+        final SimpleMailMessage message = mailTrueService.getSimpleMailMessage(user.getEmail(), subject, messageText);
+        mailTrueService.sendSimpleMailMessage(message);
         return new ApiResp("Message with recovered token has been sent to your email");
     }
 
     @Transactional
     @Override
-    public ApiResp resetPass(String token, ResetPassReq dto) {
-        User user = userRepository.findByRecoveryToken(token)
-                .orElseThrow(() -> new ResourceNotFoundException("User with recovery token: " + token
+    public ApiResp resetPass(ResetPassReq dto) {
+        User user = userRepository.findByRecoveryToken(dto.getToken())
+                .orElseThrow(() -> new ResourceNotFoundException("User with recovery token: " + dto.getToken()
                         + " not found"));
-        if (tokenIsActual(user.getTokenCreationDate())) {
+        if (!tokenIsActual(user.getTokenCreationDate())) {
             throw new ServiceException("Token for resetting is not actual");
         }
 
@@ -145,6 +151,19 @@ public class UserServiceImpl implements UserService {
             return userMapper.toDto(user);
         } else throw new ServiceException("Changes are not allowed!");
     }
+
+//    @Transactional
+//    @Override
+//    public ApiResp changePass(Long id, ChangePassDto dto) {
+//        if (isChangeAllowed(id)) {
+//            User user = getUserById(id);
+//            if(isOldPassRight(user.getPass(), dto.getOldPass()) ){
+//                user.setPass(passwordEncoder.encode(dto.getNewPass()));
+//                userRepository.save(user);
+//                return new ApiResp("Your pass was successfully changed");
+//            } else throw new ServiceException("Changes are not allowed!");
+//        } else throw new ServiceException("Changes are not allowed!");
+//    }
 
     @Override
     public UserResp findByEmail(String email) {

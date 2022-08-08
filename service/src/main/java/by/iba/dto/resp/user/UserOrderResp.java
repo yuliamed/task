@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 public class UserOrderResp extends AbstractResp {
+    private Long id;
     private String name;
     private String email;
     private String surname;

@@ -18,4 +18,6 @@ public class ResetPassReq {
                     "Min length of pass is 6, max length is 20")
     @NotBlank(message = "User pass can`t be empty")
     private String pass;
+    @NotBlank(message = "Input your token from email")
+    private String token;
 }
