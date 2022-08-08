@@ -15,6 +15,7 @@ import javax.validation.Valid;
 
 @AllArgsConstructor
 @RestController
+@CrossOrigin
 @RequestMapping("/api/v1/mail")
 public class MailController {
     private final UserService userService;
@@ -33,9 +34,15 @@ public class MailController {
     }
 
     @PutMapping("/reset-password")
-    public ResponseEntity<ApiResp> resetPassword(@RequestParam("token") String token, @RequestBody @Valid ResetPassReq resetDto, BindingResult result) {
+    public ResponseEntity<ApiResp> resetPassword(@RequestBody @Valid ResetPassReq resetDto, BindingResult result) {
         ControllerHelper.checkBindingResultAndThrowExceptionIfInvalid(result);
-        ApiResp resp = userService.resetPass(token, resetDto);
+        ApiResp resp = userService.resetPass(resetDto);
+        return ResponseEntity.ok(resp);
+    }
+
+    @GetMapping("/activate/{token}")
+    public ResponseEntity<UserResp> activateAccountGet(@PathVariable("token") String token) {
+        UserResp resp = userService.confirmAccount(token);
         return ResponseEntity.ok(resp);
     }
 }

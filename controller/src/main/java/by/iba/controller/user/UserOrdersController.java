@@ -17,6 +17,7 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "api/v1/users/{id}/orders")
 @AllArgsConstructor
+@CrossOrigin
 @PreAuthorize("hasAnyAuthority('USER')")
 public class UserOrdersController {
     private final OrderService orderService;

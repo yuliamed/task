@@ -23,7 +23,6 @@ import javax.validation.Valid;
 public class AuthenticationController {
 
     private final UserService userService;
-    private final BodyRepository repository;
 
     @PostMapping("/sign-in")
     public ResponseEntity<JwtResp> signIn(@RequestBody @Valid SignInReq request, BindingResult result) {

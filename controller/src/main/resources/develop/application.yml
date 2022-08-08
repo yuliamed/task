@@ -1,6 +1,7 @@
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
+    #url: jdbc:postgresql://aaaaaaaaaaaaaa.cnov1ap5fy4d.eu-west-2.rds.amazonaws.com/postgres
     url: jdbc:postgresql://localhost:5432/spring-security
     username: root
     password: 1243

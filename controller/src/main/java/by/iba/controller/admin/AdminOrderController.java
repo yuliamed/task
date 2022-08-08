@@ -20,6 +20,7 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping(value = "api/v1/admin/{id}/orders")
 @AllArgsConstructor
+@CrossOrigin
 @PreAuthorize("hasAnyAuthority('ADMIN')")
 public class AdminOrderController {
 

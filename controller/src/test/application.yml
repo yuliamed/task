@@ -17,6 +17,15 @@ spring:
     port: 465
     username: test_my_sender
     password: 'VpWXD3mxgBSb2VaGDPmT'
+  postfix:
+    image: juanluisbaptiste/postfix:latest
+    expose:
+      - "25"
+    env_file:
+      - .env
+    restart: always
+    volumes:
+      - "/etc/localtime:/etc/localtime:ro"
 
 jwt:
   token:

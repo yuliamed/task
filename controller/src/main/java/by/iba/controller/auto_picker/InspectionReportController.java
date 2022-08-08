@@ -18,6 +18,7 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/api/v1/auto-picker/{id}/inspection-orders/{orderId}/report")
 @AllArgsConstructor
+@CrossOrigin
 @PreAuthorize("hasAnyAuthority('AUTO_PICKER')")
 public class InspectionReportController {
 

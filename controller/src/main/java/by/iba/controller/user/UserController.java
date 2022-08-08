@@ -1,7 +1,10 @@
 package by.iba.controller.user;
 
 import by.iba.dto.req.ImageReq;
+import by.iba.dto.req.user.ChangePassDto;
+import by.iba.dto.req.user.ResetPassReq;
 import by.iba.dto.req.user.UserUpdateReq;
+import by.iba.dto.resp.ApiResp;
 import by.iba.dto.resp.user.UserResp;
 import by.iba.exception.ControllerHelper;
 import by.iba.service.UserService;
@@ -45,5 +48,13 @@ public class UserController {
         UserResp resp = userService.deleteImage(id);
         return ResponseEntity.ok(resp);
     }
+
+
+//    @PutMapping("/change-password")
+//    public ResponseEntity<ApiResp> changePassword(@PathVariable("id") Long id, @RequestBody @Valid ChangePassDto resetDto, BindingResult result) {
+//        ControllerHelper.checkBindingResultAndThrowExceptionIfInvalid(result);
+//        ApiResp resp = userService.changePass(id, resetDto);
+//        return ResponseEntity.ok(resp);
+//    }
 
 }

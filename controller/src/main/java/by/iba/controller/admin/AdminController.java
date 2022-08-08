@@ -18,6 +18,7 @@ import javax.validation.Valid;
 @RestController
 @RequestMapping(value = "api/v1/admin")
 @AllArgsConstructor
+@CrossOrigin
 @PreAuthorize("hasAnyAuthority('ADMIN')")
 public class AdminController {
     private final AdminService service;
