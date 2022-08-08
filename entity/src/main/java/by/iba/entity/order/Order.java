@@ -18,7 +18,7 @@ import java.util.Objects;
 @AllArgsConstructor
 @NoArgsConstructor
 @Inheritance(strategy = InheritanceType.JOINED)
-public abstract class Order extends TrackingAbstractEntity {
+public class Order extends TrackingAbstractEntity {
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "order_status")
     private OrderStatus status;
