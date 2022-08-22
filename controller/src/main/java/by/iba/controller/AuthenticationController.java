@@ -24,6 +24,12 @@ public class AuthenticationController {
 
     private final UserService userService;
 
+    @GetMapping("")
+    public ResponseEntity<String> index(){
+        return ResponseEntity.ok("<h1>Hello, my sleepy friend. Your amazing and very cool!<br>" +
+                "Keep doing and success will catch you!</h1>");
+    }
+
     @PostMapping("/sign-in")
     public ResponseEntity<JwtResp> signIn(@RequestBody @Valid SignInReq request, BindingResult result) {
         ControllerHelper.checkBindingResultAndThrowExceptionIfInvalid(result);

@@ -5,6 +5,7 @@ services:
     #restart: always
     build:
       context: .
+    image: ${DOCKER_REGISTRY}/app
     ports:
       - "8080:8080"
     depends_on:
@@ -16,6 +17,7 @@ services:
     build:
       context: ../../react/react-frontend-task
       dockerfile: ../../react/react-frontend-task/Dockerfile
+    image: ${DOCKER_REGISTRY}/react-app
     ports:
       - "3000:80"
     restart: always
@@ -33,8 +35,8 @@ services:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
-#      - ./pg-sqript:/docker-entrypoint-initdb.d
-     - ./db-sqripts:/docker-entrypoint-initdb.d
+      #      - ./pg-sqript:/docker-entrypoint-initdb.d
+      - ./db-sqripts:/docker-entrypoint-initdb.d
     networks:
       - backend
 networks:

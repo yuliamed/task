@@ -1,19 +1,18 @@
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://aaaaaaaaaaaaaa.cnov1ap5fy4d.eu-west-2.rds.amazonaws.com/spring-security
-    #url: jdbc:postgresql://localhost:5432/spring-security
+    #url: jdbc:postgresql://db:5432/spring-security
+    url: jdbc:postgresql://aaaaaaaaaaaaaa.cnov1ap5fy4d.eu-west-2.rds.amazonaws.com/postgres
     username: root
     password: 12431243
-    #initialization-mode: ALWAYS
+    initialization-mode: ALWAYS
   #sql.init.mode: always
-
   jpa:
-    defer-datasource-initialization: true
-    show-sql: true
-    generate-ddl: false
-    hibernate:
-      ddl-auto: update
+   #defer-datasource-initialization: true
+   show-sql: true
+   generate-ddl: false
+   hibernate:
+     ddl-auto: none
   mail:
     protocol: smtps
     host: smtp.mail.ru
