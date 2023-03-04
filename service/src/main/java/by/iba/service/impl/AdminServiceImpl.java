@@ -1,10 +1,14 @@
 package by.iba.service.impl;
 
 import by.iba.dto.page.PageWrapper;
+import by.iba.dto.req.user.RoleListReq;
 import by.iba.dto.req.user.RoleReq;
 import by.iba.dto.req.user.UserBanReq;
 import by.iba.dto.req.user.UserSearchCriteriaReq;
+import by.iba.dto.resp.order.OrderResp;
 import by.iba.dto.resp.user.UserResp;
+import by.iba.entity.enam.OrderStatusEnum;
+import by.iba.entity.enam.RoleEnum;
 import by.iba.entity.user.Role;
 import by.iba.entity.user.User;
 import by.iba.exception.ResourceNotFoundException;
@@ -14,6 +18,7 @@ import by.iba.inteface.user.UserRepository;
 import by.iba.mapper.UserMapper;
 import by.iba.security.service.JwtUser;
 import by.iba.service.AdminService;
+import by.iba.service.OrderService;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -25,8 +30,8 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static by.iba.inteface.specification.UserSpecification.*;
 
@@ -36,6 +41,7 @@ public class AdminServiceImpl implements AdminService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
     private final RoleRepository roleRepository;
+    private final OrderService orderService;
 
     @Override
     public PageWrapper<UserResp> findAll(UserSearchCriteriaReq userSearchCriteriaReq) {
@@ -80,6 +86,35 @@ public class AdminServiceImpl implements AdminService {
         userRepository.save(user);
 
         return userMapper.toDto(user);
+    }
+
+    @Override
+    public UserResp changeRoleList(Long userId, RoleListReq rolesReq) {
+        Set<Role> roles = new HashSet<>();
+        for (RoleReq req : rolesReq.getRoles()) {
+            roles.add(getRoleByName(req.getTypeOfRole()));
+        }
+        User user = getUserById(userId);
+        user.setRoles(roles);
+        userRepository.save(user);
+        return userMapper.toDto(user);
+    }
+
+    @Override
+    public List<UserResp> findAllAutoPickers() {
+        Role role = roleRepository.getByName(RoleEnum.AUTO_PICKER.name());
+        Specification<User> specification = Specification.where(findBySurnameLike(""))
+                .and((findByRole(role)));
+        List<User> autopickers = userRepository.findAll(specification);
+        List<User> needed = autopickers.stream().filter((user)->{
+            List<OrderResp> orders = orderService.getOrdersByAutoPickerId(user.getId());
+            return orders.stream().filter((orderResp -> { return
+                orderResp.getStatus().getName().equals(OrderStatusEnum.CREATED) ||
+                        orderResp.getStatus().getName().equals(OrderStatusEnum.IN_PROCESS);
+                })).collect(Collectors.toList()).size()<=8;
+            //return orders.size()<=8;
+        }).collect(Collectors.toList());
+        return userMapper.toDtoList(needed);
     }
 
     @Transactional

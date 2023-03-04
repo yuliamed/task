@@ -1,18 +1,24 @@
 package by.iba.controller.auto_picker;
 
+import by.iba.dto.req.ImageReq;
 import by.iba.dto.req.report.*;
 import by.iba.dto.resp.report.InspectionReportResp;
+import by.iba.dto.resp.user.UserResp;
 import by.iba.entity.report.InspectionReport;
 import by.iba.exception.ControllerHelper;
 import by.iba.service.InspectionReportService;
+import by.iba.service.StorageService;
 import lombok.AllArgsConstructor;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.util.Base64;
 import java.util.List;
 
 @RestController
@@ -23,6 +29,7 @@ import java.util.List;
 public class InspectionReportController {
 
     private final InspectionReportService inspectionReportService;
+    private final StorageService storageService;
 
     @GetMapping()
     public ResponseEntity<List<InspectionReport>> findReports(@PathVariable("id") Long autoPickerId) {
@@ -39,6 +46,37 @@ public class InspectionReportController {
         ControllerHelper.checkBindingResultAndThrowExceptionIfInvalid(result);
         InspectionReportResp resp = inspectionReportService.createReport(autoPickerId, orderId, req);
         return new ResponseEntity<>(resp, HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/image")
+    public ResponseEntity<String> saveImage(@PathVariable("orderId") Long orderId,
+                                            @RequestParam("file") MultipartFile file) {
+        String path = inspectionReportService.saveImage(orderId, file);
+        return ResponseEntity.ok(path);
+    }
+
+    @GetMapping(value = "/image")
+    public ResponseEntity<byte[]> getImage(@RequestParam("file") String path) {
+//        byte[] data = storageService.downloadFile(path);
+//
+//        ByteArrayResource resource = new ByteArrayResource(data);
+//
+//        return ResponseEntity
+//                .ok()
+//                .contentLength(data.length)
+//                .header("Content-type","application/octet-stream")
+//                .header("content-disposition","attachment; filename=\"" + path + "\"")
+//                .header("Cache-Control", "no-cache")
+//                .body(resource);
+        byte[] resp = storageService.downloadFile(path);
+        //ByteArrayResource resource = new ByteArrayResource(resp);
+
+        return ResponseEntity.ok().contentLength(resp.length)
+                .header("Content-type", "application/octet-stream")
+                .header("Content-disposition", "attachment; filename=\"" + "file.png"  + "\"")
+                .body(
+                        Base64.getEncoder().encode(resp)
+                );
     }
 
     @PutMapping()
@@ -101,6 +139,15 @@ public class InspectionReportController {
                                                                        BindingResult result) {
         ControllerHelper.checkBindingResultAndThrowExceptionIfInvalid(result);
         InspectionReportResp resp = inspectionReportService.editTransmissionReport(orderId, reqData);
+        return new ResponseEntity<>(resp, HttpStatus.OK);
+    }
+
+    @PatchMapping("/car-errors")
+    public ResponseEntity<InspectionReportResp> editCarErrorsReport(@PathVariable("orderId") Long orderId,
+                                                                       @RequestBody @Valid CarErrorsReportReq reqData,
+                                                                       BindingResult result) {
+        ControllerHelper.checkBindingResultAndThrowExceptionIfInvalid(result);
+        InspectionReportResp resp = inspectionReportService.editCarErrorsReport(orderId, reqData);
         return new ResponseEntity<>(resp, HttpStatus.OK);
     }
 }

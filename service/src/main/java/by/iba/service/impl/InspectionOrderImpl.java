@@ -3,9 +3,13 @@ package by.iba.service.impl;
 import by.iba.dto.req.order.InspectionOrderReq;
 import by.iba.dto.req.order.InspectionOrderUpdateReq;
 import by.iba.dto.resp.order.InspectionOrderResp;
+import by.iba.dto.resp.report.InspectionReportResp;
 import by.iba.entity.enam.OrderStatusEnum;
 import by.iba.entity.enam.RoleEnum;
 import by.iba.entity.order.InspectionOrder;
+import by.iba.entity.order.SelectionOrder;
+import by.iba.entity.report.InspectionReport;
+import by.iba.entity.report.SelectionReport;
 import by.iba.entity.user.User;
 import by.iba.exception.ResourceNotFoundException;
 import by.iba.exception.ServiceException;
@@ -14,6 +18,7 @@ import by.iba.inteface.order.OrderStatusRepository;
 import by.iba.inteface.user.RoleRepository;
 import by.iba.inteface.user.UserRepository;
 import by.iba.mapper.InspectionOrderMapper;
+import by.iba.mapper.InspectionReportMapper;
 import by.iba.security.service.JwtUser;
 import by.iba.service.InspectionOrderService;
 import lombok.AllArgsConstructor;
@@ -32,6 +37,7 @@ public class InspectionOrderImpl implements InspectionOrderService {
     private final OrderStatusRepository orderStatusRepository;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final InspectionReportMapper inspectionReportMapper;
 
     @Transactional
     @Override
@@ -62,6 +68,12 @@ public class InspectionOrderImpl implements InspectionOrderService {
     public InspectionOrderResp getOrder(Long id) {
         InspectionOrder order = findOrderById(id);
         return inspectionOrderMapper.toDto(order);
+    }
+
+    @Override
+    public InspectionReportResp getOrderReport(Long id) {
+        InspectionOrder editingOrder = findOrderById(id);
+        return inspectionReportMapper.toDto((InspectionReport) editingOrder.getReport());
     }
 
     private User getAutoPickerById(Long id) {

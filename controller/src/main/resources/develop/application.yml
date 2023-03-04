@@ -1,0 +1,51 @@
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    #url: jdbc:postgresql://aaaaaaaaaaaaaa.cnov1ap5fy4d.eu-west-2.rds.amazonaws.com/spring-security
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: root
+    password: 1243
+    #initialization-mode: ALWAYS
+  #sql.init.mode: always
+#  http:
+#    multipart:
+#      max-file-size: 10MB
+#      max-request-size: 10MB
+  servlet:
+    multipart:
+      max-file-size: 15MB
+      max-request-size: 15MB
+
+  jpa:
+    defer-datasource-initialization: true
+    show-sql: true
+    generate-ddl: false
+    hibernate:
+      ddl-auto: update
+  mail:
+    protocol: smtps
+    host: smtp.mail.ru
+    port: 465
+    username: test_my_sender
+    password: 'VpWXD3mxgBSb2VaGDPmT'
+
+jwt:
+  token:
+    secret: jwtapp
+    expired: 3600000
+server:
+  port: 8080
+
+cloud:
+  aws:
+    credentials:
+      access-key: AKIA5SEBSOS4JUS4JUNP
+      secret-key: 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
+    region:
+      static: eu-west-2
+    stack:
+      auto: false
+
+application:
+  bucket:
+    name: yulinusersphotos

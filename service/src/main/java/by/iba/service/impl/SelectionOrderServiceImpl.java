@@ -3,9 +3,11 @@ package by.iba.service.impl;
 import by.iba.dto.page.PageWrapper;
 import by.iba.dto.req.order.*;
 import by.iba.dto.resp.order.SelectionOrderResp;
+import by.iba.dto.resp.report.SelectionReportResp;
 import by.iba.entity.enam.OrderStatusEnum;
 import by.iba.entity.enam.RoleEnum;
 import by.iba.entity.order.*;
+import by.iba.entity.report.SelectionReport;
 import by.iba.entity.user.User;
 import by.iba.exception.ResourceNotFoundException;
 import by.iba.exception.ServiceException;
@@ -16,6 +18,7 @@ import by.iba.inteface.order.SelectionOrderRepository;
 import by.iba.inteface.user.RoleRepository;
 import by.iba.inteface.user.UserRepository;
 import by.iba.mapper.SelectionOrderMapper;
+import by.iba.mapper.SelectionReportMapper;
 import by.iba.security.service.JwtUser;
 import by.iba.service.SelectionOrderService;
 import lombok.AllArgsConstructor;
@@ -50,6 +53,7 @@ public class SelectionOrderServiceImpl implements SelectionOrderService {
     private final RoleRepository roleRepository;
     private final OrderStatusRepository orderStatusRepository;
     private final SelectionOrderMapper selectionOrderMapper;
+    private final SelectionReportMapper selectionReportMapper;
 
     @Transactional
     @Override
@@ -113,6 +117,12 @@ public class SelectionOrderServiceImpl implements SelectionOrderService {
     @Override
     public SelectionOrderResp getOrder(Long id) {
         return selectionOrderMapper.toDto(getOrderById(id));
+    }
+
+    @Override
+    public SelectionReportResp getOrderReport(Long id) {
+        SelectionOrder editingOrder = getOrderById(id);
+        return selectionReportMapper.toDto((SelectionReport) editingOrder.getReport());
     }
 
     private List<CarBrand> resolveBrands(List<String> brands) {

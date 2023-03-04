@@ -21,6 +21,6 @@ public class UserResp extends AbstractResp {
     private LocalDateTime lastVisitDate;
     private String imageUrl;
     private Boolean isActive;
-    private LocalDateTime banDate;
-    private String activationToken;
+   // private LocalDateTime banDate;
+    // private String activationToken;
 }

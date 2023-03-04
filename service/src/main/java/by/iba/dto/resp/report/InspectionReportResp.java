@@ -43,7 +43,7 @@ public class InspectionReportResp extends AbstractResp {
 
     private Double auctionValue;
 
-    private String currencyType;
+    private CurrencyType currencyType;
 
     private Drive drive;
 

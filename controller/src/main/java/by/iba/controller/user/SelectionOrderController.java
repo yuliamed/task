@@ -3,9 +3,11 @@ package by.iba.controller.user;
 import by.iba.dto.req.order.SelectionOrderReq;
 import by.iba.dto.req.order.SelectionOrderUpdateReq;
 import by.iba.dto.resp.order.SelectionOrderResp;
+import by.iba.dto.resp.report.SelectionReportResp;
 import by.iba.exception.ControllerHelper;
 import by.iba.service.SelectionOrderService;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -24,7 +26,7 @@ public class SelectionOrderController {
 
     @PostMapping()
     public ResponseEntity<SelectionOrderResp> createSelectionOrder(@RequestBody @Valid SelectionOrderReq orderReq, BindingResult result) {
-        ControllerHelper.checkBindingResultAndThrowExceptionIfInvalid(result);
+        //ControllerHelper.checkBindingResultAndThrowExceptionIfInvalid(result);
         SelectionOrderResp selectionOrderResp = selectionOrderService.createOrder(orderReq);
         return new ResponseEntity<>(selectionOrderResp, HttpStatus.CREATED);
     }
@@ -44,4 +46,9 @@ public class SelectionOrderController {
         return new ResponseEntity<>(order, HttpStatus.OK);
     }
 
+    @GetMapping("/{orderId}/report")
+    public ResponseEntity<SelectionReportResp> getOrderReportById(@PathVariable("orderId") Long orderId) {
+        SelectionReportResp report = selectionOrderService.getOrderReport(orderId);
+        return new ResponseEntity<>(report, HttpStatus.OK);
+    }
 }

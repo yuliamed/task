@@ -3,6 +3,8 @@ package by.iba.controller.user;
 import by.iba.dto.req.order.InspectionOrderReq;
 import by.iba.dto.req.order.InspectionOrderUpdateReq;
 import by.iba.dto.resp.order.InspectionOrderResp;
+import by.iba.dto.resp.report.InspectionReportResp;
+import by.iba.dto.resp.report.SelectionReportResp;
 import by.iba.exception.ControllerHelper;
 import by.iba.service.InspectionOrderService;
 import lombok.AllArgsConstructor;
@@ -46,4 +48,9 @@ public class InspectionOrderController {
         return new ResponseEntity<>(order, HttpStatus.OK);
     }
 
+    @GetMapping("/{orderId}/report")
+    public ResponseEntity<InspectionReportResp> getOrderReportById(@PathVariable("orderId") Long orderId) {
+        InspectionReportResp report = inspectionOrderService.getOrderReport(orderId);
+        return new ResponseEntity<>(report, HttpStatus.OK);
+    }
 }

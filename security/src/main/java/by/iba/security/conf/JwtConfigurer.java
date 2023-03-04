@@ -61,9 +61,10 @@ public class JwtConfigurer extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/v1/auth/**").permitAll()
                 .antMatchers("/api/v1/mail/**").permitAll()
                 .antMatchers("/api/v1/orders/**")
-                    .hasAnyAuthority(RoleEnum.USER.name(), RoleEnum.AUTO_PICKER.name(), RoleEnum.ADMIN.name())
-                .antMatchers("/api/v1/admin/**").permitAll()
-                .antMatchers("/api/v1/users/**").permitAll()//hasAnyAuthority("USER")
+                .hasAnyAuthority(RoleEnum.USER.name(), RoleEnum.AUTO_PICKER.name(), RoleEnum.ADMIN.name())
+                .antMatchers("/api/v1/admin/**").hasAnyAuthority(RoleEnum.ADMIN.name())
+                .antMatchers("/api/v1/auto-picker/**").hasAnyAuthority(RoleEnum.AUTO_PICKER.name())
+                .antMatchers("/api/v1/users/**").hasAnyAuthority("USER")
                 .anyRequest()
                 .authenticated();
 

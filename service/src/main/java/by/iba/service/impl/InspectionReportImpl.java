@@ -5,6 +5,7 @@ import by.iba.dto.req.report.*;
 import by.iba.dto.resp.report.InspectionReportResp;
 import by.iba.entity.order.*;
 import by.iba.entity.report.*;
+import by.iba.entity.user.User;
 import by.iba.exception.ResourceNotFoundException;
 import by.iba.exception.ServiceException;
 import by.iba.inteface.CurrencyTypeRepository;
@@ -13,8 +14,10 @@ import by.iba.inteface.order.InspectionOrderRepository;
 import by.iba.inteface.report.InspectionReportRepository;
 import by.iba.mapper.*;
 import by.iba.service.InspectionReportService;
+import by.iba.service.StorageService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
 import java.util.List;
@@ -24,6 +27,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Service
 public class InspectionReportImpl implements InspectionReportService {
+    private final StorageService storageService;
     private final EngineRepository engineRepository;
     private final TransmissionRepository transmissionRepository;
     private final CarBrandRepository carBrandRepository;
@@ -43,12 +47,12 @@ public class InspectionReportImpl implements InspectionReportService {
 
     @Transactional
     @Override
-    public InspectionReportResp createReport(Long orderId, Long autoPickerId, InspectionReportReq req) {
+    public InspectionReportResp createReport(Long autoPickerId,Long orderId,InspectionReportReq req) {
         InspectionOrder editingOrder = getReportingOrder(orderId);
         isAutoPickerAllowedToReport(autoPickerId, editingOrder);
 
         InspectionReport report = inspectionReportMapper.toEntityFromReq(req);
-        setJoinedValues(report, req.getCurrencyType(), req.getDrive(), req.getTransmission(),
+        setJoinedValues(report, req.getCurrencyType().getName(), req.getDrive(), req.getTransmission(),
                 req.getEngine(), req.getBrand(), req.getBody());
 
         report = reportRepository.save(report);
@@ -79,10 +83,8 @@ public class InspectionReportImpl implements InspectionReportService {
         report.setIsVinNumberReal(reqData.getIsVinNumberReal());
         report.setCostValue(reqData.getCostValue());
         report.setAuctionValue(report.getAuctionValue());
-        Set<CarComputerError> errorSet = carComputerErrorsMapper.toEntitySet(reqData.getCarComputerErrors());
-        report.setCarComputerErrors(errorSet);
 
-        setJoinedValues(report, reqData.getCurrencyType(), reqData.getDrive(), reqData.getTransmission(),
+        setJoinedValues(report, reqData.getCurrencyType().getName(), reqData.getDrive(), reqData.getTransmission(),
                 reqData.getEngine(), reqData.getBrand(), reqData.getBody());
 
         reportRepository.save(report);
@@ -165,6 +167,29 @@ public class InspectionReportImpl implements InspectionReportService {
     public InspectionReportResp getReportByOrderId(Long orderId) {
         return null;
         // return inspectionReportMapper.toDto(findOrderById(orderId).getReport());
+    }
+
+    @Override
+    public String saveImage(Long orderId, MultipartFile file) {
+        String path = storageService.uploadFile("reports/orderId" + orderId, file);
+//        User user = getUserById(id);
+//        if (user.getImageUrl() != null) {
+//            storageService.deleteFile(user.getImageUrl());
+//        }
+//        user.setImageUrl(path);
+//        userRepository.save(user);
+        return path;
+    }
+
+    @Override
+    public InspectionReportResp editCarErrorsReport(Long orderId, CarErrorsReportReq reqData) {
+        InspectionReport report = findReportByOrderId(orderId);
+        Set<CarComputerError> errorSet = carComputerErrorsMapper.toEntitySet(reqData.getCarComputerErrors());
+        report.setCarComputerErrors(errorSet);
+
+        reportRepository.save(report);
+
+        return inspectionReportMapper.toDto(report);
     }
 
     private void setJoinedValues(InspectionReport report, String currencyType, DriveReq drive, TransmissionReq transmission, EngineReq engine, CarBrandReq brand, BodyReq body) {

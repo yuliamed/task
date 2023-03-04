@@ -27,5 +27,5 @@ public abstract class AbstractOrderResp extends AbstractResp {
 
     private String additionalInfo;
 
-    private Report report;
+    //private Report report;
 }

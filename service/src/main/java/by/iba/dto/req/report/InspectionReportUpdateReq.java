@@ -51,9 +51,8 @@ public class InspectionReportUpdateReq extends AbstractReq {
     private Double costValue;
     @NotNull
     private Double auctionValue;
-    @NotBlank
-    @EnumPattern(enumClass = CurrencyEnum.class, message = "Input correct name of currency type")
-    private String currencyType;
+
+    private @Valid CurrencyTypeReq currencyType;
 
     private @Valid DriveReq drive;
 
@@ -64,15 +63,6 @@ public class InspectionReportUpdateReq extends AbstractReq {
     private @Valid EngineReq engine;
 
     private @Valid CarBrandReq brand;
-    // reports
-//    private @Valid EngineReportReq engineReport;
 //
-//    private @Valid TransmissionReportReq transmissionReport;
-//
-//    private @Valid SalonReportReq salonReport;
-//    private @Valid BodyReportReq bodyReport;
-//    private @Valid ElectricalEquipmentReportReq electricalEquipmentReport;
-//    private @Valid PendantReport pendantReport;
-//
-    private Set<@Valid CarComputerErrorReq> carComputerErrors = new HashSet<>();
+//    private Set<@Valid CarComputerErrorReq> carComputerErrors = new HashSet<>();
 }

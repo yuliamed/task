@@ -50,11 +50,13 @@ public class InspectionReportReq extends AbstractReq {
 
     @NotNull
     private Double costValue;
+
     @NotNull
     private Double auctionValue;
-    @NotBlank
-    @EnumPattern(enumClass = CurrencyEnum.class, message = "Input correct name of currency type")
-    private String currencyType;
+
+//    @NotBlank
+//    @EnumPattern(enumClass = CurrencyEnum.class, message = "Input correct name of currency type")
+    private @Valid CurrencyTypeReq currencyType;
 
     private @Valid DriveReq drive;
 

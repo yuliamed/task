@@ -8,13 +8,18 @@ import by.iba.dto.resp.ApiResp;
 import by.iba.dto.resp.user.UserResp;
 import by.iba.exception.ControllerHelper;
 import by.iba.service.UserService;
+import by.iba.service.impl.StorageServiceImpl;
 import lombok.AllArgsConstructor;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.util.Base64;
 
 @AllArgsConstructor
 @RestController
@@ -23,6 +28,7 @@ import javax.validation.Valid;
 @RequestMapping(value = "/api/v1/users/{id}")
 public class UserController {
     private final UserService userService;
+    private final StorageServiceImpl storageService;
 
     @GetMapping()
     public ResponseEntity<UserResp> getProfile(@PathVariable("id") Long id) {
@@ -34,27 +40,31 @@ public class UserController {
     public ResponseEntity<UserResp> updateProfile(@PathVariable("id") Long id, @Valid @RequestBody UserUpdateReq userUpdateReq, BindingResult result) {
         ControllerHelper.checkBindingResultAndThrowExceptionIfInvalid(result);
         UserResp user = userService.updateInfo(id, userUpdateReq);
+
         return ResponseEntity.ok(user);
     }
 
-    @PatchMapping(value = "/add-image")
-    public ResponseEntity<UserResp> saveImage(@PathVariable("id") Long id, @RequestBody ImageReq imageUrl) {
-        UserResp resp = userService.saveImage(id, imageUrl);
+    @PatchMapping(value = "/image")
+    public ResponseEntity<UserResp> saveImage(@PathVariable("id") Long id, @RequestParam("file") MultipartFile file) {
+        UserResp resp = userService.saveImage(id, file);
         return ResponseEntity.ok(resp);
     }
 
-    @DeleteMapping(value = "/delete-image")
+    @GetMapping(value = "/image")
+    public ResponseEntity<byte[]> getUserImage(@PathVariable("id") Long id) {
+        byte[] resp = userService.getUserPhoto(id);
+        //ByteArrayResource resource = new ByteArrayResource(resp);
+
+        return ResponseEntity.ok().contentLength(resp.length)
+                .header("Content-type", "application/octet-stream")
+                .header("Content-disposition", "attachment; filename=\"" + "file.png"  + "\"")
+                .body(Base64.getEncoder().encode(resp));
+    }
+
+    @DeleteMapping(value = "/image")
     public ResponseEntity<UserResp> deleteImage(@PathVariable("id") Long id) {
         UserResp resp = userService.deleteImage(id);
         return ResponseEntity.ok(resp);
     }
-
-
-//    @PutMapping("/change-password")
-//    public ResponseEntity<ApiResp> changePassword(@PathVariable("id") Long id, @RequestBody @Valid ChangePassDto resetDto, BindingResult result) {
-//        ControllerHelper.checkBindingResultAndThrowExceptionIfInvalid(result);
-//        ApiResp resp = userService.changePass(id, resetDto);
-//        return ResponseEntity.ok(resp);
-//    }
 
 }

@@ -12,5 +12,5 @@ import java.time.LocalDate;
 public class SelectedCarResp {
     private String carUrl;
     private String comment;
-    private LocalDate dateJointInspection;
+    //private LocalDate dateJointInspection;
 }

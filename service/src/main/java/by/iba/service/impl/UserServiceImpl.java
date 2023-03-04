@@ -1,6 +1,5 @@
 package by.iba.service.impl;
 
-import by.iba.dto.req.ImageReq;
 import by.iba.dto.req.user.*;
 import by.iba.dto.resp.ApiResp;
 import by.iba.dto.resp.user.UserResp;
@@ -15,8 +14,8 @@ import by.iba.mapper.UserMapper;
 import by.iba.security.dto.JwtResp;
 import by.iba.security.jwt.JwtTokenProvider;
 import by.iba.security.service.JwtUser;
-import by.iba.service.MailService;
 import by.iba.service.MailTrueService;
+import by.iba.service.StorageService;
 import by.iba.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.mail.SimpleMailMessage;
@@ -27,6 +26,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
 import java.time.Duration;
@@ -45,6 +45,7 @@ public class UserServiceImpl implements UserService {
     private final JwtTokenProvider jwtTokenProvider;
     private final AuthenticationManager authenticationManager;
     private final MailTrueService mailTrueService;
+    private final StorageService storageService;
 
     private final Duration TOKEN_TIME_VALIDITY = Duration.ofMinutes(5);
 
@@ -142,16 +143,6 @@ public class UserServiceImpl implements UserService {
         return new ApiResp("Your pass was successfully changed");
     }
 
-    @Transactional
-    @Override
-    public UserResp deleteImage(Long id) {
-        if (isChangeAllowed(id)) {
-            User user = getUserById(id);
-            user.setImageUrl(null);
-            return userMapper.toDto(user);
-        } else throw new ServiceException("Changes are not allowed!");
-    }
-
 //    @Transactional
 //    @Override
 //    public ApiResp changePass(Long id, ChangePassDto dto) {
@@ -169,6 +160,14 @@ public class UserServiceImpl implements UserService {
     public UserResp findByEmail(String email) {
         User user = getUserByEmail(email);
         return userMapper.toDto(user);
+    }
+
+    @Override
+    public byte[] getUserPhoto(Long id) {
+        User user = getUserById(id);
+        byte[] resp = storageService.downloadFile(user.getImageUrl());
+        // ByteArrayResource resource = new ByteArrayResource(resp);
+        return resp;
     }
 
     @Override
@@ -190,17 +189,30 @@ public class UserServiceImpl implements UserService {
         } else throw new ServiceException("Changes are not allowed!");
     }
 
-
     @Transactional
     @Override
-    public UserResp saveImage(Long id, ImageReq image) {
+    public UserResp saveImage(Long id, MultipartFile image) {
         if (isChangeAllowed(id)) {
+            String path = storageService.uploadFile("users", image);
             User user = getUserById(id);
-            user.setImageUrl(Base64.getEncoder().encodeToString(image.getImagePath().getBytes()));
+            if (user.getImageUrl() != null) {
+                storageService.deleteFile(user.getImageUrl());
+            }
+            user.setImageUrl(path);
             userRepository.save(user);
             return userMapper.toDto(user);
         } else throw new ServiceException("Changes are not allowed!");
+    }
 
+    @Transactional
+    @Override
+    public UserResp deleteImage(Long id) {
+        if (isChangeAllowed(id)) {
+            User user = getUserById(id);
+            storageService.deleteFile(user.getImageUrl());
+            user.setImageUrl(null);
+            return userMapper.toDto(user);
+        } else throw new ServiceException("Changes are not allowed!");
     }
 
     boolean isChangeAllowed(Long id) {

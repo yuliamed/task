@@ -1,6 +1,7 @@
 package by.iba.controller.admin;
 
 import by.iba.dto.page.PageWrapper;
+import by.iba.dto.req.user.RoleListReq;
 import by.iba.dto.req.user.RoleReq;
 import by.iba.dto.req.user.UserBanReq;
 import by.iba.dto.req.user.UserSearchCriteriaReq;
@@ -14,6 +15,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "api/v1/admin")
@@ -45,11 +47,23 @@ public class AdminController {
         return ResponseEntity.ok(resp);
     }
 
+    @PatchMapping("/users/{id}/roles")
+    public ResponseEntity<UserResp> changeUserRoleList(@PathVariable("id") Long id, @RequestBody @Valid RoleListReq roles, BindingResult result) {
+        ControllerHelper.checkBindingResultAndThrowExceptionIfInvalid(result);
+        UserResp resp = service.changeRoleList(id, roles);
+        return ResponseEntity.ok(resp);
+    }
+
     @PatchMapping("/users/approve/{id}")
     public ResponseEntity<UserResp> approveUser(@PathVariable("id") Long id) {
         UserResp user = service.approveUser(id);
         return ResponseEntity.ok(user);
     }
 
+    @GetMapping("/users/auto-pickers")
+    public ResponseEntity<List<UserResp>> findAllAutoPickers() {
+        List<UserResp> resp = service.findAllAutoPickers();
+        return ResponseEntity.ok().body(resp);
+    }
 
 }
