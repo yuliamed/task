@@ -1,8 +1,8 @@
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://aaaaaaaaaaaaaa.cnov1ap5fy4d.eu-west-2.rds.amazonaws.com/spring-security
-    #url: jdbc:postgresql://localhost:5432/spring-security
+    #url: jdbc:postgresql://aaaaaaaaaaaaaa.cnov1ap5fy4d.eu-west-2.rds.amazonaws.com/spring-security
+    url: jdbc:postgresql://localhost:5432/autopicker
     username: root
     password: 12431243
     #initialization-mode: ALWAYS
