@@ -1,33 +1,37 @@
-spring:
-  datasource:
-    driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://db:5432/spring-security
-    username: root
-    password: 1243
-  #sql.init.mode: always
-  jpa:
-   defer-datasource-initialization: true
-    show-sql: true
-    generate-ddl: false
-    hibernate:
-      ddl-auto: none
-  mail:
-    protocol: smtps
-    host: smtp.mail.ru
-    port: 465
-    username: test_my_sender
-    password: 'VpWXD3mxgBSb2VaGDPmT'
-  postfix:
-    image: juanluisbaptiste/postfix:latest
-    expose:
-      - "25"
-    env_file:
-      - .env
-    restart: always
-    volumes:
-      - "/etc/localtime:/etc/localtime:ro"
-
-jwt:
-  token:
-    secret: jwtapp
-    expired: 3600000
+#spring:
+#  datasource:
+#    driver-class-name: org.postgresql.Driver
+#    #url: jdbc:postgresql://aaaaaaaaaaaaaa.cnov1ap5fy4d.eu-west-2.rds.amazonaws.com/spring-security
+#    url: jdbc:postgresql://localhost:5432/postgres
+#    username: root
+#    password: 1243
+#    #initialization-mode: ALWAYS
+#  #sql.init.mode: always
+#  #  http:
+#  #    multipart:
+#  #      max-file-size: 10MB
+#  #      max-request-size: 10MB
+#  servlet:
+#    multipart:
+#      max-file-size: 15MB
+#      max-request-size: 15MB
+#
+#  jpa:
+#    defer-datasource-initialization: true
+#    show-sql: true
+#    generate-ddl: false
+#    hibernate:
+#      ddl-auto: update
+#  mail:
+#    protocol: smtps
+#    host: smtp.mail.ru
+#    port: 465
+#    username: test_my_sender
+#    password: 'VpWXD3mxgBSb2VaGDPmT'
+#
+#jwt:
+#  token:
+#    secret: jwtapp
+#    expired: 3600000
+#server:
+#  port: 8080
