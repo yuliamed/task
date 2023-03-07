@@ -115,6 +115,10 @@ public class OrdersTest {
         autoPickerResp = userService.signUp(autoPickerReq);
         assertNotNull(autoPickerResp);
         assertNotNull(autoPickerResp.getId());
+        assertEquals(autoPickerResp.getName(), autoPickerReq.getName());
+        assertEquals(autoPickerResp.getSurname(), autoPickerReq.getSurname());
+        assertEquals(autoPickerResp.getEmail(), autoPickerReq.getEmail());
+        assertEquals(autoPickerResp.getIsActive(), false);
         assertTrue(autoPickerResp.getRoles().contains(new RoleResp(RoleEnum.AUTO_PICKER.name())));
     }
 
@@ -153,7 +157,11 @@ public class OrdersTest {
         assertNotNull(testSelectionOrderResp);
         assertNotNull(testSelectionOrderResp.getId());
         assertNotNull(testSelectionOrderResp.getCreationDate());
-        assertEquals(testSelectionOrderResp.getRangeFrom(), testSelectionOrderReq.getRangeFrom());
+        assertEquals(testSelectionOrderReq.getRangeFrom(), testSelectionOrderResp.getRangeFrom());
+        assertEquals(testSelectionOrderReq.getRangeTo(), testSelectionOrderResp.getRangeTo());
+        assertEquals(testSelectionOrderReq.getMinYear(), testSelectionOrderResp.getMinYear());
+        assertEquals(testSelectionOrderReq.getMileage(), testSelectionOrderResp.getMileage());
+        assertEquals(testSelectionOrderReq.getCurrencyType().getName(), testSelectionOrderResp.getCurrencyType().getName());
     }
 
     @Test
@@ -162,6 +170,7 @@ public class OrdersTest {
         OrderResp orderResp = orderService.setAutoPicker(testSelectionOrderResp.getId(), new OrderAutoPickerReq(autoPickerResp.getId()));
         assertNotNull(orderResp);
         assertNotNull(orderResp.getAutoPicker());
+        assertEquals(autoPickerResp.getId(), orderResp.getAutoPicker().getId());
     }
 
     @Test
@@ -171,7 +180,7 @@ public class OrdersTest {
         assertNotNull(selectionReportResp);
         assertNotNull(selectionReportResp.getId());
         assertNotNull(selectionReportResp.getCreationDate());
-        assertEquals(selectionReportResp.getSelectedCarSet().size(), selectionReportReq.getSelectedCarSet().size());
+        assertEquals(selectionReportReq.getSelectedCarSet().size(), selectionReportResp.getSelectedCarSet().size());
     }
 
     @Test
@@ -198,6 +207,7 @@ public class OrdersTest {
         List<OrderResp> list = orderService.getOrdersByAutoPickerId(autoPickerResp.getId());
         assertNotNull(list);
         assertEquals(1, list.size());
+        assertEquals(list.get(0).getAutoPicker().getId(), autoPickerResp.getId());
     }
 
 
@@ -257,7 +267,7 @@ public class OrdersTest {
         assertNotNull(inspectionOrderResp);
         assertNotNull(inspectionOrderResp.getId());
         assertNotNull(inspectionOrderResp.getCreationDate());
-        assertEquals(inspectionOrderResp.getAutoUrl(), inspectionOrderReq.getAutoUrl());
+        assertEquals(inspectionOrderReq.getAutoUrl(), inspectionOrderResp.getAutoUrl());
     }
 
     @Test
@@ -267,7 +277,7 @@ public class OrdersTest {
         assertNotNull(inspectionReportResp);
         assertNotNull(inspectionReportResp.getId());
         assertNotNull(inspectionReportResp.getCreationDate());
-        assertEquals(inspectionReportResp.getCostValue(), inspectionReportReq.getCostValue());
+        assertEquals(inspectionReportReq.getCostValue(), inspectionReportResp.getCostValue());
     }
 
     @Test
@@ -277,6 +287,16 @@ public class OrdersTest {
         assertNotNull(resp);
         assertNotNull(resp.getId());
         assertNotNull(resp.getCreationDate());
+        assertEquals(inspectionReportReq.getModel(), resp.getModel());
+        assertEquals(inspectionReportReq.getYear(), resp.getYear());
+        assertEquals(inspectionReportReq.getEngineVolume(), resp.getEngineVolume());
+        assertEquals(inspectionReportReq.getInspectionDate(), resp.getInspectionDate());
+        assertEquals(inspectionReportReq.getMileage(), resp.getMileage());
+        assertEquals(inspectionReportReq.getIsMileageReal(), resp.getIsMileageReal());
+        assertEquals(inspectionReportReq.getCostValue(), resp.getCostValue());
+        assertEquals(inspectionReportReq.getAuctionValue(), resp.getAuctionValue());
+        assertEquals(inspectionReportReq.getCurrencyType().getName(), resp.getCurrencyType().getName());
+
     }
 
 }
