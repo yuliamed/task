@@ -1,6 +1,7 @@
 package by.iba.dto.req.user;
 
 import by.iba.dto.req.AbstractReq;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -10,6 +11,7 @@ import javax.validation.constraints.Pattern;
 
 @Getter
 @Setter
+@AllArgsConstructor
 @NoArgsConstructor
 public class SignUpReq extends AbstractReq {
     @NotBlank(message = "User name can`t be empty")

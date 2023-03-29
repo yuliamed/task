@@ -48,8 +48,8 @@ public class JwtConfigurer extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(HttpSecurity http) throws Exception {
         http
-//                .cors()
-//                .and()
+                .cors()
+                .and()
                 .csrf().disable()
                 .exceptionHandling()
                 .authenticationEntryPoint(entryPointJwt)
@@ -60,8 +60,8 @@ public class JwtConfigurer extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/api/v1/auth/**").permitAll()
                 .antMatchers("/api/v1/mail/**").permitAll()
-                .antMatchers("/api/v1/orders/**")
-                .hasAnyAuthority(RoleEnum.USER.name(), RoleEnum.AUTO_PICKER.name(), RoleEnum.ADMIN.name())
+                .antMatchers("/api/v1/orders/**").permitAll()
+                //.hasAnyAuthority(RoleEnum.USER.name(), RoleEnum.AUTO_PICKER.name(), RoleEnum.ADMIN.name())
                 .antMatchers("/api/v1/admin/**").hasAnyAuthority(RoleEnum.ADMIN.name())
                 .antMatchers("/api/v1/auto-picker/**").hasAnyAuthority(RoleEnum.AUTO_PICKER.name())
                 .antMatchers("/api/v1/users/**").hasAnyAuthority("USER")

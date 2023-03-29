@@ -23,14 +23,14 @@ public class UserOrdersController {
     private final OrderService orderService;
 
     @GetMapping()
-    @PreAuthorize("hasAnyAuthority('AUTO_PICKER', 'ADMIN','USER')")
+    //@PreAuthorize("hasAnyAuthority('AUTO_PICKER', 'ADMIN','USER')")
     public ResponseEntity<List<OrderResp>> findUsersOrders(@PathVariable("id") Long id) {
         List<OrderResp> orders = orderService.getOrdersByUserId(id);
         return new ResponseEntity<>(orders, HttpStatus.OK);
     }
 
     @PatchMapping("/{orderId}")
-    @PreAuthorize("hasAnyAuthority('AUTO_PICKER', 'ADMIN','USER')")
+   // @PreAuthorize("hasAnyAuthority('AUTO_PICKER', 'ADMIN','USER')")
     public ResponseEntity<OrderResp> changeOrderStatus(@PathVariable("orderId") Long id,
                                                        @RequestBody @Valid OrderStatusReq orderStatusReq,
                                                        BindingResult result) {

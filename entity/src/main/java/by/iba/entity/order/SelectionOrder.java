@@ -32,11 +32,8 @@ public class SelectionOrder extends Order {
     @Column(name = "currency_range_to")
     private Double currencyRangeTo;
 
-    public void abstractEntityPreUpdate() {
-        super.abstractEntityPreUpdate();
-        currencyRangeTo = rangeTo / currencyType.getRateRelativeDollar();
-        currencyRangeFrom = rangeFrom / currencyType.getRateRelativeDollar();
-    }
+    @Column(name = "model")
+    private String model;
 
     @ManyToOne
     @JoinColumn(name = "currency_type_id")
@@ -54,17 +51,21 @@ public class SelectionOrder extends Order {
     @Column(name = "additional_info", length = 512)
     private String additionalInfo;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "selec_orders_drives",
-            joinColumns = {@JoinColumn(name = "order_id", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "drive_id", referencedColumnName = "id")})
-    private Set<Drive> drives = new HashSet<>();
+    //    @ManyToMany(fetch = FetchType.EAGER)
+//    @JoinTable(name = "selec_orders_drives",
+//            joinColumns = {@JoinColumn(name = "order_id", referencedColumnName = "id")},
+//            inverseJoinColumns = {@JoinColumn(name = "drive_id", referencedColumnName = "id")})
+    @ManyToOne
+    @JoinColumn(name = "drive_id")
+    private Drive drive;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "selec_orders_transmissions",
-            joinColumns = {@JoinColumn(name = "order_id", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "transmission_id", referencedColumnName = "id")})
-    private Set<Transmission> transmissions = new HashSet<>();
+    //    @ManyToMany(fetch = FetchType.EAGER)
+//    @JoinTable(name = "selec_orders_transmissions",
+//            joinColumns = {@JoinColumn(name = "order_id", referencedColumnName = "id")},
+//            inverseJoinColumns = {@JoinColumn(name = "transmission_id", referencedColumnName = "id")})
+    @ManyToOne
+    @JoinColumn(name = "transmission_id")
+    private Transmission transmission;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "selec_orders_engines",
@@ -72,15 +73,25 @@ public class SelectionOrder extends Order {
             inverseJoinColumns = {@JoinColumn(name = "engine_id", referencedColumnName = "id")})
     private Set<Engine> engines = new HashSet<>();
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "selec_orders_car_brands",
-            joinColumns = {@JoinColumn(name = "order_id", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "brand_id", referencedColumnName = "id")})
-    private Set<CarBrand> brands = new HashSet<>();
+    //    @ManyToMany(fetch = FetchType.EAGER)
+//    @JoinTable(name = "selec_orders_car_brands",
+//            joinColumns = {@JoinColumn(name = "order_id", referencedColumnName = "id")},
+//            inverseJoinColumns = {@JoinColumn(name = "brand_id", referencedColumnName = "id")})
+    @ManyToOne
+    @JoinColumn(name = "brand_id")
+    private CarBrand brand;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "selec_orders_body",
-            joinColumns = {@JoinColumn(name = "order_id", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "body_id", referencedColumnName = "id")})
-    private Set<Body> bodies = new HashSet<>();
+    //    @ManyToMany(fetch = FetchType.EAGER)
+//    @JoinTable(name = "selec_orders_body",
+//            joinColumns = {@JoinColumn(name = "order_id", referencedColumnName = "id")},
+//            inverseJoinColumns = {@JoinColumn(name = "body_id", referencedColumnName = "id")})
+    @ManyToOne
+    @JoinColumn(name = "body_id")
+    private Body body;
+
+    public void abstractEntityPreUpdate() {
+        super.abstractEntityPreUpdate();
+        currencyRangeTo = rangeTo / currencyType.getRateRelativeDollar();
+        currencyRangeFrom = rangeFrom / currencyType.getRateRelativeDollar();
+    }
 }

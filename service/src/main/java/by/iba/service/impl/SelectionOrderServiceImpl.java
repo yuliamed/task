@@ -59,14 +59,14 @@ public class SelectionOrderServiceImpl implements SelectionOrderService {
     @Override
     public SelectionOrderResp createOrder(SelectionOrderReq orderReq) {
         SelectionOrder newOrder = selectionOrderMapper.toEntityFromReq(orderReq);
-        newOrder.setDrives(mapToDriveEntity(orderReq.getDrives()));
+        //newOrder.setDrives(mapToDriveEntity(orderReq.getDrives()));
         newOrder.setEngines(mapToEngineEntity(orderReq.getEngines()));
-        newOrder.setTransmissions(mapToTransmissionEntity(orderReq.getTransmissions()));
-        newOrder.setBrands(mapToCarBrandEntity(orderReq.getBrands()));
+        // newOrder.setTransmissions(mapToTransmissionEntity(orderReq.getTransmissions()));
+        //newOrder.setBrands(mapToCarBrandEntity(orderReq.getBrands()));
         newOrder.setCreator(getUserById(getUserFromAuth().getId()));
         newOrder.setCurrencyType(getCurrencyTypeByName(orderReq.getCurrencyType().getName()));
         newOrder.setStatus(orderStatusRepository.getByName(OrderStatusEnum.CREATED.name()));
-        newOrder.setBodies(mapToBodyEntity(orderReq.getBodies()));
+        //newOrder.setBodies(mapToBodyEntity(orderReq.getBodies()));
         if (Objects.nonNull(orderReq.getAutoPickerId())) {
             newOrder.setAutoPicker(getAutoPickerById(orderReq.getAutoPickerId()));
         }
@@ -87,12 +87,13 @@ public class SelectionOrderServiceImpl implements SelectionOrderService {
         editingOrder.setAdditionalInfo(orderReq.getAdditionalInfo());
         editingOrder.setRangeFrom(orderReq.getRangeFrom());
         editingOrder.setRangeTo(orderReq.getRangeTo());
+        editingOrder.setModel(orderReq.getModel());
 
-        editingOrder.setDrives(mapToDriveEntity(orderReq.getDrives()));
+        editingOrder.setDrive(mapToDriveEntity(orderReq.getDrive()));
         editingOrder.setEngines(mapToEngineEntity(orderReq.getEngines()));
-        editingOrder.setTransmissions(mapToTransmissionEntity(orderReq.getTransmissions()));
-        editingOrder.setBodies(mapToBodyEntity(orderReq.getBodies()));
-        editingOrder.setBrands(mapToCarBrandEntity(orderReq.getBrands()));
+        editingOrder.setTransmission(mapToTransmissionEntity(orderReq.getTransmissions()));
+        editingOrder.setBody(mapToBodyEntity(orderReq.getBody()));
+        editingOrder.setBrand(mapToCarBrandEntity(orderReq.getBrand()));
         editingOrder.setCurrencyType(getCurrencyTypeByName(orderReq.getCurrencyType().getName()));
         editingOrder = selectionOrderRepository.save(editingOrder);
         SelectionOrderResp resp = selectionOrderMapper.toDto(editingOrder);
@@ -121,6 +122,7 @@ public class SelectionOrderServiceImpl implements SelectionOrderService {
 
     @Override
     public SelectionReportResp getOrderReport(Long id) {
+        List<SelectionOrder> list = selectionOrderRepository.findAll();
         SelectionOrder editingOrder = getOrderById(id);
         return selectionReportMapper.toDto((SelectionReport) editingOrder.getReport());
     }
@@ -181,23 +183,17 @@ public class SelectionOrderServiceImpl implements SelectionOrderService {
         return specification;
     }
 
-    private Set<Drive> mapToDriveEntity(Set<DriveReq> drivesReq) {
-        Set<Drive> drives = drivesReq.stream().map((dto) -> {
-                    if (Objects.isNull(dto)) return null;
-                    return driveRepository.findByName(dto.getName())
-                            .orElseThrow(() -> new ResourceNotFoundException("There is no Drive with name = " + dto.getName()));
-                })
-                .collect(Collectors.toSet());
-        return drives;
+    private Drive mapToDriveEntity(DriveReq drivesReq) {
+        if (Objects.isNull(drivesReq)) return null;
+        return driveRepository.findByName(drivesReq.getName())
+                .orElseThrow(() -> new ResourceNotFoundException("There is no Drive with name = " + drivesReq.getName()));
     }
 
-    private Set<Body> mapToBodyEntity(Set<BodyReq> bodies) {
-        Set<Body> bodySet = bodies.stream().map((dto) -> {
-                    if (Objects.isNull(dto)) return null;
-                    return getBodyByName(dto.getName());
-                })
-                .collect(Collectors.toSet());
-        return bodySet;
+    private Body mapToBodyEntity(BodyReq bodies) {
+
+        if (Objects.isNull(bodies)) return null;
+        return getBodyByName(bodies.getName());
+
     }
 
     private Set<Engine> mapToEngineEntity(Set<EngineReq> engines) {
@@ -209,14 +205,11 @@ public class SelectionOrderServiceImpl implements SelectionOrderService {
         return engineSet;
     }
 
-    private Set<Transmission> mapToTransmissionEntity(Set<TransmissionReq> transmissions) {
-        Set<Transmission> transmissionSet = transmissions.stream().map((dto) -> {
-                    if (Objects.isNull(dto)) return null;
-                    return transmissionRepository.findByName(dto.getName())
-                            .orElseThrow(() -> new ResourceNotFoundException("There is no Transmission with name = " + dto.getName()));
-                })
-                .collect(Collectors.toSet());
-        return transmissionSet;
+    private Transmission mapToTransmissionEntity(TransmissionReq transmissions) {
+        if (Objects.isNull(transmissions)) return null;
+        return transmissionRepository.findByName(transmissions.getName())
+                .orElseThrow(() -> new ResourceNotFoundException("There is no Transmission with name = " + transmissions.getName()));
+
     }
 
     private User getUserById(Long id) {
@@ -244,14 +237,11 @@ public class SelectionOrderServiceImpl implements SelectionOrderService {
 
     }
 
-    private Set<CarBrand> mapToCarBrandEntity(Set<CarBrandReq> brands) {
-        Set<CarBrand> carBrandSet = brands.stream().map((dto) -> {
-                    if (Objects.isNull(dto)) return null;
-                    return carBrandRepository.findByName(dto.getName())
-                            .orElseThrow(() -> new ServiceException("There is no car brand with name = " + dto.getName()));
-                })
-                .collect(Collectors.toSet());
-        return carBrandSet;
+    private CarBrand mapToCarBrandEntity(CarBrandReq brands) {
+        if (Objects.isNull(brands)) return null;
+        return carBrandRepository.findByName(brands.getName())
+                .orElseThrow(() -> new ServiceException("There is no car brand with name = " + brands.getName()));
+
     }
 
     private OrderStatus getOrderStatusByName(String status) {
@@ -273,6 +263,7 @@ public class SelectionOrderServiceImpl implements SelectionOrderService {
     }
 
     private CurrencyType getCurrencyTypeByName(String currencyType) {
+        List<CurrencyType> list = currencyTypeRepository.findAll();
         CurrencyType type = currencyTypeRepository.findByName(currencyType)
                 .orElseThrow(() -> new ServiceException("There is no currency type with name " + currencyType));
         return type;

@@ -37,14 +37,16 @@ public class SelectionOrderUpdateReq extends AbstractReq {
 
     private @Valid CurrencyTypeReq currencyType;
 
-    private Set<@Valid DriveReq> drives = new HashSet<>();
+    private @Valid DriveReq drive;
 
-    private Set<@Valid TransmissionReq> transmissions = new HashSet<>();
+    private @Valid BodyReq body;
+
+    private @Valid TransmissionReq transmissions;
 
     private Set<@Valid EngineReq> engines = new HashSet<>();
 
-    private Set<@Valid CarBrandReq> brands = new HashSet<>();
+    private @Valid CarBrandReq brand;
 
-    private Set<@Valid BodyReq> bodies = new HashSet<>();
+    private String model;
 
 }

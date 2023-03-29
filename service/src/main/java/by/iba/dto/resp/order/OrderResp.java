@@ -32,13 +32,15 @@ public class OrderResp extends AbstractOrderResp {
 
     private CurrencyType currencyType;
 
-    private Set<Drive> drives = new HashSet<>();
+    private String model;
 
-    private Set<Transmission> transmissions = new HashSet<>();
+    private Drive drive;
+
+    private Transmission transmission;
 
     private Set<Engine> engines = new HashSet<>();
 
-    private Set<CarBrand> brands = new HashSet<>();
+    private CarBrand brand;
 
-    private Set<Body> bodies = new HashSet<>();
+    private Body body;
 }

@@ -24,6 +24,8 @@ public class SelectionOrderReq extends OrderReq {
     @Max(value = 2022)
     private Integer minYear;
 
+    private String model;
+
     @NotNull
     private Integer mileage;//default in km
     @NotNull
@@ -37,14 +39,14 @@ public class SelectionOrderReq extends OrderReq {
 
     private @Valid CurrencyTypeReq currencyType;
 
-    private Set<@Valid DriveReq> drives = new HashSet<>();
+    private @Valid DriveReq drive;
 
-    private Set<@Valid BodyReq> bodies = new HashSet<>();
+    private @Valid BodyReq body;
 
-    private Set<@Valid TransmissionReq> transmissions = new HashSet<>();
+    private @Valid TransmissionReq transmissions;
 
     private Set<@Valid EngineReq> engines = new HashSet<>();
 
-    private Set<@Valid CarBrandReq> brands = new HashSet<>();
+    private @Valid CarBrandReq brand;
 
 }
